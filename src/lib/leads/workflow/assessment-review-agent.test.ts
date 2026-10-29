@@ -203,11 +203,13 @@ describe("LeadAssessmentReviewAgent", () => {
     expect(bodies[0]).toMatchObject({ model: "openai/gpt-5.6-terra",
       reasoning: { effort: "medium" }, max_tokens: 8192,
       provider: { require_parameters: true, data_collection: "deny" } });
-    expect(bodies[1]).toMatchObject({ model: "openai/gpt-5.6-sol", temperature: 0,
-      reasoning: { effort: "high" }, max_completion_tokens: 12000,
+    expect(bodies[1]).toMatchObject({ model: "openai/gpt-5.6-sol",
+      reasoning: { effort: "high" }, max_tokens: 12000,
       provider: { require_parameters: true, data_collection: "deny" } });
     expect(bodies[0]).not.toHaveProperty("temperature");
     expect(bodies[0]).not.toHaveProperty("max_completion_tokens");
+    expect(bodies[1]).not.toHaveProperty("max_completion_tokens");
+    expect(bodies[1]).not.toHaveProperty("temperature");
     for (const body of bodies) {
       expect(body).not.toHaveProperty("tools");
       expect(body).not.toHaveProperty("plugins");

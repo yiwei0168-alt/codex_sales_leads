@@ -57,7 +57,12 @@ it("checks Places FieldMask headers as part of the bound before accepting any re
   for(const change of [{pageSize:21},{pageToken:"next"},{routingParameters:{}}])
     expect(()=>assertRequestContract(rule,{...body,...change},"","POST",headers)).toThrow("request-out-of-bounds");
 });
-const bodies=()=>rules.map(rule=>JSON.parse(deepSeekRequestBody({task:"lead-qualification",modelVersion:rule.model,promptVersion:"fixture",input:{},evidenceIds:[],outputSchema:{type:"object"}}).body));
+// Historical native bounds must be exercised with native wire fixtures, not
+// the current OpenRouter serializer whose route and model identities differ.
+const bodies=()=>rules.map(rule=>({model:rule.model,thinking:{type:"disabled"},temperature:0,max_tokens:8192,
+  ...(rule.pathname==="/chat/completions"
+    ?{messages:[{role:"system",content:"fixture"},{role:"user",content:"fixture"}],response_format:{type:"json_object"}}
+    :{system:"fixture",messages:[{role:"user",content:"fixture"}]})}));
 
 it("permits only bounded Exa auto company text search and rejects unsupported or additional capabilities",()=>{
   const rule=quoteRequest({origin:"https://api.exa.ai",pathname:"/search",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
@@ -70,7 +75,7 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.13.0");
+  expect(billingPolicy.version).toBe("request-bounds-v1.14.0");
   expect(billingPolicy.rules).toHaveLength(14);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
@@ -117,7 +122,7 @@ it.each([{model:"openai/gpt-5.6-terra",key:"openrouter-terra-review-credits-stan
   contract:"openrouter-terra-review-json-v2",maximum:11019202,output:8192,
   effort:"medium",name:"lead-review-secondary"},
 {model:"openai/gpt-5.6-sol",key:"openrouter-sol-judge-credits-standard-json",
-  contract:"openrouter-sol-judge-json-v1",maximum:27736500,output:12000,
+  contract:"openrouter-sol-judge-json-v2",maximum:27736500,output:12000,
   effort:"high",name:"lead-review-judge"}])("admits only the confirmed $name task's exact OpenRouter wire",entry=>{
   const now=Date.parse("2026-09-14T10:30:00Z");
   const quote={origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",
@@ -125,18 +130,18 @@ it.each([{model:"openai/gpt-5.6-terra",key:"openrouter-terra-review-credits-stan
   const rule=quoteRequest(quote,undefined,now,entry.key);
   expect(rule).toMatchObject({requestContract:entry.contract,maximumChargeMicros:entry.maximum,
     maximumOutputTokens:entry.output});
-  const terraV2=entry.contract==="openrouter-terra-review-json-v2";
-  const body={model:entry.model,...(terraV2?{}:{temperature:0}),reasoning:{effort:entry.effort},
-    ...(terraV2?{max_tokens:entry.output}:{max_completion_tokens:entry.output}),
+  const modernReview=entry.contract==="openrouter-terra-review-json-v2"||entry.contract==="openrouter-sol-judge-json-v2";
+  const body={model:entry.model,...(modernReview?{}:{temperature:0}),reasoning:{effort:entry.effort},
+    ...(modernReview?{max_tokens:entry.output}:{max_completion_tokens:entry.output}),
     provider:{require_parameters:true,data_collection:"deny"},
     response_format:{type:"json_schema",json_schema:{name:entry.name,strict:true,schema:{type:"object"}}},
     messages:[{role:"system",content:"instructions"},{role:"user",content:"facts"}]};
   expect(()=>assertRequestContract(rule,body,"")).not.toThrow();
-  for(const change of [{reasoning:{effort:"low"}},terraV2?{max_tokens:entry.output+1}:{max_completion_tokens:entry.output+1},
+  for(const change of [{reasoning:{effort:"low"}},modernReview?{max_tokens:entry.output+1}:{max_completion_tokens:entry.output+1},
     {response_format:{type:"json_schema",json_schema:{name:"unrelated",strict:true,schema:{type:"object"}}}},
     {provider:{...body.provider,only:["openai"]}},{stream:true},{tools:[]},{plugins:[]},
-    {service_tier:"priority"},terraV2?{max_completion_tokens:entry.output}:{max_tokens:entry.output},
-    ...(terraV2?[{temperature:0}]:[]),{messages:[...body.messages,{role:"assistant",content:"extra"}]}])
+    {service_tier:"priority"},modernReview?{max_completion_tokens:entry.output}:{max_tokens:entry.output},
+    ...(modernReview?[{temperature:0}]:[]),{messages:[...body.messages,{role:"assistant",content:"extra"}]}])
     expect(()=>assertRequestContract(rule,{...body,...change},"")).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest({...quote,requestBytes:61441},undefined,now,entry.key)).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest(quote,undefined,Date.parse(rule.expiresAt),entry.key)).toThrow("expired-tariff");
@@ -249,9 +254,18 @@ it("admits only the confirmed Tavily basic Extract wire under its expiry and byt
   expect(captured).toBe(2);
 });
 
-it("accepts current exact Flash Chat and Pro Messages serializers with unchanged non-thinking settings",()=>{
+it("accepts historical exact native Flash Chat and Pro Messages non-thinking fixtures",()=>{
   vi.stubEnv("DEEPSEEK_TRANSPORT","");
   bodies().forEach((body,index)=>expect(()=>assertRequestContract(rules[index],body,"")).not.toThrow());
+});
+it("does not apply historical native bounds to the current OpenRouter serializer",()=>{
+  vi.stubEnv("DEEPSEEK_TRANSPORT","");
+  rules.forEach(rule=>{
+    const body=JSON.parse(deepSeekRequestBody({task:"lead-qualification",modelVersion:rule.model,
+      promptVersion:"fixture",input:{},evidenceIds:[],outputSchema:{type:"object"}}).body);
+    expect(body.model).toMatch(/^deepseek\//);
+    expect(()=>assertRequestContract(rule,body,"")).toThrow("request-out-of-bounds");
+  });
 });
 it("rejects hidden paid capabilities, unknown fields, thinking, multimodal messages and alternate contracts",()=>{
   vi.stubEnv("DEEPSEEK_TRANSPORT","");

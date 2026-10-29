@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {tariffValidity} from "./tariff-validity";
 import baseConfiguration from "../../../config/billing/request-bounds-v1.10.0.json";
-import activeDelta from "../../../config/billing/request-bounds-v1.13.0.json";
+import activeDelta from "../../../config/billing/request-bounds-v1.14.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
@@ -40,11 +40,11 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1","openrouter-sol-openai-playbook-v2","openrouter-sol-rag-answer-text-v1","openrouter-sol-rag-answer-primary-v2","openrouter-sol-rag-answer-bedrock-v1","openrouter-terra-review-json-v1","openrouter-terra-review-json-v2","openrouter-sol-judge-json-v1"]).optional(),
+  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1","openrouter-sol-openai-playbook-v2","openrouter-sol-rag-answer-text-v1","openrouter-sol-rag-answer-primary-v2","openrouter-sol-rag-answer-bedrock-v1","openrouter-terra-review-json-v1","openrouter-terra-review-json-v2","openrouter-sol-judge-json-v1","openrouter-sol-judge-json-v2"]).optional(),
 }).strict();
 const delta=z.object({version:z.string().min(1),baseVersion:z.literal("request-bounds-v1.10.0"),ruleOverrides:z.array(z.object({
   key:z.string().min(1),requestContract:tariffSchema.shape.requestContract.unwrap(),
-}).strict()).length(1),additionalRules:z.array(tariffSchema).min(1)}).strict().parse(activeDelta);
+}).strict()).length(2),additionalRules:z.array(tariffSchema).min(1)}).strict().parse(activeDelta);
 if(baseConfiguration.version!==delta.baseVersion)throw new Error("Billing policy delta base mismatch");
 const overriddenKeys=new Set(delta.ruleOverrides.map(item=>item.key));
 if(overriddenKeys.size!==delta.ruleOverrides.length||baseConfiguration.rules.filter(rule=>overriddenKeys.has(rule.key)).length!==overriddenKeys.size)
@@ -69,7 +69,8 @@ export function quoteRequest(input:{origin:string;pathname:string;model:string;r
   const selected=key?matches.filter(rule=>rule.key===key):matches.filter(rule=>
     rule.requestContract!=="openrouter-terra-review-json-v1"
       &&rule.requestContract!=="openrouter-terra-review-json-v2"
-      &&rule.requestContract!=="openrouter-sol-judge-json-v1");
+      &&rule.requestContract!=="openrouter-sol-judge-json-v1"
+      &&rule.requestContract!=="openrouter-sol-judge-json-v2");
   // Without an explicit contract selection, overlapping routes keep the highest bound.
   const highest=Math.max(...selected.map(rule=>rule.maximumChargeMicros));
   const conservative=selected.filter(rule=>rule.maximumChargeMicros===highest);

@@ -55,10 +55,11 @@ export class OpenAiCompatibleProvider implements AiProvider {
     const outputCompletionTask=compatibleOutputTask(request.task);
     const outputLimit=outputCompletionTask?textOutputLimit(outputCompletionTask):undefined;
     const openAiModel=/^(openai\/)?(?:gpt-|o[1-9])/.test(request.modelVersion);
-    const terraReviewV2=request.task==="lead-review-secondary"&&request.modelVersion==="openai/gpt-5.6-terra";
+    const modernReview=request.task==="lead-review-secondary"&&request.modelVersion==="openai/gpt-5.6-terra"
+      ||request.task==="lead-review-judge"&&request.modelVersion==="openai/gpt-5.6-sol";
     return JSON.stringify({
             model: request.modelVersion,
-            temperature: terraReviewV2?undefined:0,
+            temperature: modernReview?undefined:0,
             ...(request.reasoningEffort ? { reasoning: { effort: request.reasoningEffort } } : {}),
             response_format: request.outputSchema ? { type: "json_schema", json_schema: {
               name: request.task.replace(/[^a-z0-9_-]/gi, "_").slice(0, 64), strict: true,
@@ -73,7 +74,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
               { role: "user", content: structuredUserPrompt(request) },
             ],
             ...this.options.extraBody,
-            ...(outputLimit===undefined?{}:terraReviewV2?{max_tokens:outputLimit}:openAiModel
+            ...(outputLimit===undefined?{}:modernReview?{max_tokens:outputLimit}:openAiModel
               ?{max_tokens:undefined,max_completion_tokens:outputLimit}
               :{max_completion_tokens:undefined,max_tokens:outputLimit}),
           });
