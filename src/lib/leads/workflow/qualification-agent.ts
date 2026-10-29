@@ -473,6 +473,13 @@ export class LeadQualificationAgent {
     }));
   }
 
+  private responseCacheIdentity(request:StructuredAiRequest<unknown>,response:StructuredAiResponse<unknown>){
+    if(this.provider.responseCacheIdentity)return this.provider.responseCacheIdentity(request,response);
+    if(response.modelVersion!==request.modelVersion
+      ||response.actualProviderId&&response.actualProviderId!==this.provider.id.replace(/^resilient:/,""))return undefined;
+    return this.provider.cacheIdentity?.(request);
+  }
+
   /** Pure preflight: no phase or final provider request is sent. */
   planPhasedFinalRequest(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string,
@@ -1018,9 +1025,8 @@ export class LeadQualificationAgent {
       const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
       // This is a per-candidate checkpoint, not a claim that the entire batch completed.
       // Each complete candidate retains the ORIGINAL whole-batch request dependency.
-      const exactContract=routine.response.modelVersion===this.routineModel
-        &&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))
-        ?this.provider.cacheIdentity?.(this.request(candidates,playbook,countryCode,countryName,objective,this.routineModel)):undefined;
+      const exactContract=this.responseCacheIdentity(
+        this.request(candidates,playbook,countryCode,countryName,objective,this.routineModel),routine.response);
       const values = new Map(routine.parsed.assessments.map((item) => [item.candidateId, item]));
       const stable=new Map<string,LeadCandidateAssessment>();
       for(const candidate of candidates){
@@ -1031,10 +1037,12 @@ export class LeadQualificationAgent {
           this.includeCooperationPaths);
         if (requiresEscalation(candidate, normalized, value)) {
           if (this.routineModel === this.escalationModel) {
-            stable.set(candidate.candidateId,{ ...normalized, warnings: [
+            const completed={ ...normalized, warnings: [
               "Escalation was skipped because the configured routine and escalation models are identical.",
               ...normalized.warnings,
-            ] });continue;
+            ] };
+            if(exactContract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,exactContract);
+            stable.set(candidate.candidateId,completed);continue;
           }
           continue;
         }
@@ -1085,10 +1093,8 @@ export class LeadQualificationAgent {
         `${reason} Same-tier single-candidate schema repair succeeded.`,
         ...normalized.warnings,
       ] };
-      if(routine.response.modelVersion===this.routineModel&&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))){
-        const contract=this.provider.cacheIdentity?.(this.request([candidate],playbook,countryCode,countryName,objective,this.routineModel));
-        if(contract)this.exactAssessmentContracts.set(completed,contract);
-      }
+      const contract=this.responseCacheIdentity(this.request([candidate],playbook,countryCode,countryName,objective,this.routineModel),routine.response);
+      if(contract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,contract);
       return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
@@ -1122,7 +1128,10 @@ export class LeadQualificationAgent {
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
       const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm,
         this.includeCooperationPaths);
-      return { ...normalized, warnings: [reason, ...normalized.warnings] };
+      const completed={ ...normalized, warnings: [reason, ...normalized.warnings] };
+      const contract=this.responseCacheIdentity(this.request([candidate],playbook,countryCode,countryName,objective,this.escalationModel),escalation);
+      if(contract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,contract);
+      return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
       return failedAssessment(candidate,

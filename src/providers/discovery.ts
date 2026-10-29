@@ -149,7 +149,11 @@ function webQueryWithDomainExclusions(query: DiscoveryQuery): string {
   }
   return output.slice(0, maximumCharacters).trim();
 }
-function language(value: string): string { return value.toLowerCase().split(/[-_]/)[0] || "en"; }
+function language(value: string): string {
+  const normalized=value.trim().toLowerCase();
+  const names:Record<string,string>={english:"en",german:"de",spanish:"es",french:"fr",italian:"it",portuguese:"pt",dutch:"nl"};
+  return (names[normalized]??normalized.split(/[-_]/)[0])||"en";
+}
 
 function usage(value: Record<string, unknown> | undefined, paidSearchCredits = 1): DiscoveryUsage {
   const number = (keys: string[]): number => {

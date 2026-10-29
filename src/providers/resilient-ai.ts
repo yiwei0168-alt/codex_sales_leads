@@ -110,6 +110,13 @@ export class ResilientAiProvider implements AiProvider {
     return this.primary.paidRequestFingerprint?.(request)??"";
   }
 
+  responseCacheIdentity(request:StructuredAiRequest<unknown>,response:StructuredAiResponse<unknown>):string|undefined {
+    if(this.primary.responseCacheIdentity)return this.primary.responseCacheIdentity(request,response);
+    if(response.modelVersion!==request.modelVersion
+      ||response.actualProviderId&&response.actualProviderId!==this.primary.id)return undefined;
+    return this.primary.cacheIdentity?.(request);
+  }
+
   executionRoutes(request:StructuredAiRequest<unknown>):AiExecutionRoute[]{
     const route=(provider:AiProvider,actualRequest:StructuredAiRequest<unknown>):AiExecutionRoute|null=>{
       const cacheIdentity=provider.cacheIdentity?.(actualRequest);

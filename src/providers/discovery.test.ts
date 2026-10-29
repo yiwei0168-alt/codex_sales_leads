@@ -18,6 +18,14 @@ function grounded(finish = "stop", urls = ["https://example.de/"]) {
 function configured(provider: DiscoveryProviderId) { vi.stubEnv(keyByProvider[provider], "test-key"); }
 
 afterEach(() => vi.unstubAllEnvs());
+it.each(["English","en-GB","en"])("normalizes the English search language for Brave (%s)",async languageCode=>{
+  configured("brave");
+  const transport=vi.fn<typeof fetch>(async()=>Response.json({web:{results:[]}}));
+  await createDiscoveryProvider("brave",{fetchImplementation:transport,maxAttempts:1})
+    .search({...baseQuery,countryCode:"GB",countryName:"United Kingdom",languageCode});
+  const url=new URL(String(transport.mock.calls[0][0]));
+  expect(url.searchParams.get("country")).toBe("GB");expect(url.searchParams.get("search_lang")).toBe("en");
+});
 
 it("uses the same trimmed model fallback for the actual Gemini request and recovery identity",async()=>{
   configured("gemini-full");

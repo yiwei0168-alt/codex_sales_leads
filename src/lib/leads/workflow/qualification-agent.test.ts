@@ -144,6 +144,23 @@ function incompressibleCandidate(count=150):CorrectedLeadWorkflowCandidate{
 }
 
 describe("LeadQualificationAgent", () => {
+  it("retains exact cache identity for gateway-normalized DeepSeek responses, including the resilient primary",async()=>{
+    const fixture=await new FakeProvider().execute({task:"lead-qualification",modelVersion:"deepseek-v4-pro",promptVersion:"fixture",input:{},evidenceIds:[]});
+    for(const wrapped of [false,true]){
+      let calls=0;
+      const primary=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
+        fetchImplementation:async()=>{calls++;return Response.json({model:"deepseek/deepseek-v4-pro",
+          choices:[{finish_reason:"stop",message:{content:JSON.stringify(fixture.output)}}]});}});
+      const provider=wrapped?new ResilientAiProvider(primary,{fallbacks:[]}):primary;
+      const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro",concurrency:1});
+      const expected=agent.cacheContracts([candidate],playbook,"GB","United Kingdom","new-market");
+      let saved=0;
+      const result=await agent.evaluateWithUsage([candidate],playbook,"GB","United Kingdom","new-market",async(_items,assessments)=>{
+        expect(agent.completedCacheContracts(assessments)).toEqual(expected);saved++;
+      });
+      expect(saved).toBe(1);expect(calls).toBe(1);expect(result.assessments[0].model).toBe("deepseek/deepseek-v4-pro");
+    }
+  });
   it("keeps a 151-source company with an additional long critical statement pending when complete recovery cannot fit",async()=>{
     const large=structuredClone(incompressibleCandidate(150));
     large.correction.findings.find(item=>item.kind==="role")!.statement=Array.from({length:2_000},

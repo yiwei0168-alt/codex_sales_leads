@@ -91,6 +91,8 @@ export interface AiProvider {
   requestBytes?(request: StructuredAiRequest<unknown>): number;
   /** Exact primary-route wire contract; absence disables persisted result reuse. Never returns secrets. */
   cacheIdentity?(request:StructuredAiRequest<unknown>):string;
+  /** Match a completed primary response to this exact wire request; never relabel a fallback. */
+  responseCacheIdentity?(request:StructuredAiRequest<unknown>,response:StructuredAiResponse<unknown>):string|undefined;
   /** Exact primary-route paid HTTP replay identity, excluding credentials. */
   paidRequestFingerprint?(request:StructuredAiRequest<unknown>):string;
   executionRoutes?(request:StructuredAiRequest<unknown>):AiExecutionRoute[];

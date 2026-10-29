@@ -5,6 +5,14 @@ import { paidRequestFingerprint } from "@/lib/billing/paid-request-fingerprint";
 afterEach(()=>vi.unstubAllEnvs());
 
 describe("DeepSeekProvider", () => {
+  it("matches only the exact OpenRouter primary model and prompt to a response cache identity",()=>{
+    const provider=new DeepSeekProvider({apiKey:"fixture-never-sent"});
+    const request={task:"lead-qualification" as const,modelVersion:"deepseek-v4-pro",promptVersion:"v1",input:{},evidenceIds:[]};
+    const response={output:{},modelVersion:"deepseek/deepseek-v4-pro",actualProviderId:"openrouter",promptVersion:"v1",latencyMs:1,warnings:[]};
+    expect(provider.responseCacheIdentity(request,response)).toBe(provider.cacheIdentity(request));
+    for(const change of [{modelVersion:"deepseek/deepseek-v4-flash"},{actualProviderId:"other"},{promptVersion:"v2"}])
+      expect(provider.responseCacheIdentity(request,{...response,...change})).toBeUndefined();
+  });
   it("requests JSON output and returns usage metadata", async () => {
     const fetchImplementation = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({
       id: "request-1",

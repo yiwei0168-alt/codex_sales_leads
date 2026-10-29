@@ -87,6 +87,13 @@ export class DeepSeekProvider implements AiProvider {
     return paidRequestFingerprint("POST",new URL(`${this.baseUrl}/chat/completions`),body);
   }
 
+  responseCacheIdentity(request:StructuredAiRequest<unknown>,response:StructuredAiResponse<unknown>):string|undefined {
+    const model=request.modelVersion.trim()||this.defaultModel;
+    if(response.actualProviderId!=="openrouter"||response.modelVersion!==deepSeekGatewayModel(model)
+      ||response.promptVersion!==request.promptVersion)return undefined;
+    return this.cacheIdentity(request);
+  }
+
   requestBytes(request: StructuredAiRequest<unknown>): number {
     return Buffer.byteLength(deepSeekRequestBody(request, request.modelVersion.trim() || this.defaultModel).body, "utf8");
   }
