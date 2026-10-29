@@ -1,0 +1,50 @@
+{
+  "verifiedAt": "2026-10-29T04:04:02.597Z",
+  "sourceCommit": "3abec17c",
+  "buildId": "22KrfBLJ6zHwcy8Ax7UkO",
+  "migration": 172,
+  "webAndMailWorkerSwitched": true,
+  "unchangedMainAgentCommit": "405ec008",
+  "backupArchiveVerified": true,
+  "artifactHashes": {
+    "webServer": "b7de3b5dc09fdb94532bb65c3d21fab3b5482d99b5dcd5420b579a2a7c267d2e",
+    "mailboxWorker": "ca6ba28822f6e60f4ecd031271e12bab10e6bf2908e287a3573057ab792f0c6d"
+  },
+  "regression": {
+    "passed": 102,
+    "skipped": 1,
+    "typecheck": true,
+    "changedFilesLint": true,
+    "productionBuild": true
+  },
+  "database": {
+    "transactionRolledBackFixtures": true,
+    "frozenPreviousDay": true,
+    "sameMailboxDeduplication": true,
+    "missedDayCatchup": true,
+    "tenantIsolation": true,
+    "rejectedLinksPreserved": true
+  },
+  "ui": {
+    "dailyTogglePersisted": true,
+    "defaultOff": true,
+    "existingCustomerIdentityCheckOptional": true,
+    "customerConfirmationBackfilledOriginal": true,
+    "desktopAndMobileReviewed": true,
+    "mobileNoOverflow": true,
+    "legacyMailboxLink": true
+  },
+  "live": {
+    "intranetHttps": true,
+    "login": true,
+    "dailySettingsApi": true,
+    "existingCustomersApi": true,
+    "anonymousSettingsDenied": true,
+    "allFiveComponentsAdopted": true
+  },
+  "existingCustomerBackfillCompleted": true,
+  "agentEnabledAutomaticSchedules": false,
+  "agentSubmittedModelQuestions": 0,
+  "agentTriggeredMailboxSyncs": 0,
+  "actualEightAmRunObserved": false
+}
