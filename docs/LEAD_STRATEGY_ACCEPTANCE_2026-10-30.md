@@ -45,3 +45,8 @@
 验证：13 文件 160 项测试、TypeScript 和定向 lint 通过（保留两条既有 unused-variable warning）。覆盖合并类别、市场轨道、条件工具、成熟市场补本地接线、轮次契约、角色评分、路径、账户等级、默认零抽检及关键复核。实际评分政策只读校验通过；本阶段没有发起新的搜索、评分、盲审或邮件发送。部署状态在阶段完成记录中追加。
 
 部署核验：最终源码生产构建通过；c3dd9174 已切换至本地正式网页和业务 API，六个运行组件均 ready。没有启动新的六组任务或改写既有结果。六组真实搜索及用户业务质量仍待逐组验收。
+
+
+## SG-02 follow-up - saved quantity met, quality pending
+
+A separately linked targeted follow-up saved two additional unique candidates while preserving their original scores and the original task checkpoint. The merged group now has three unique saved results including the prior one. This is quantity/workflow evidence, not user quality acceptance or proof that all provider routes were exercised. Three other candidates remain deferred; planner-schema quality and SG-03 through SG-06 remain pending. See [quality follow-up verification](LEAD_QUALITY_FOLLOWUP_2026-10-30.md).

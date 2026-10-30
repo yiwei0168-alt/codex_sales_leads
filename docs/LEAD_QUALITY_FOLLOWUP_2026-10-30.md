@@ -43,3 +43,10 @@ A recursive same-owner fingerprint check now spans processing-recovery ancestors
 The first live official extraction ended without a confirmed response. Its unknown receipt remains unchanged and is not replayed. Known read-only Tavily routes can be identified from their trusted tariff key or canonical route hash for MA05 continuation; ambiguous endpoints still stop. Exact request fingerprints now guard same-action stage changes as well as recovery ancestors, including unknown non-model acquisition.
 
 Fresh retained-score path repairs run before evidence acquisition. Once enough primary eligible results exist for the remaining target, other candidates remain explicitly deferred in the checkpoint and acquisition queue is cleared; downstream required review still determines final eligibility and delivery. This does not upgrade deferred evidence or assert that unprocessed companies failed qualification. 61 focused tests, TypeScript/lint and the rollback-only ancestor guard check passed.
+
+
+### Final live outcome
+
+The linked child completed and saved two additional unique companies. Together with the original saved company, the group's quantity is three of three. Read-only post-run validation confirmed an unchanged original checkpoint fingerprint, unchanged original dimension scores and gates for both repaired candidates, current evidence-linked compatible paths, exactly two encrypted path-only responses and zero full-score requests in the child. No old result or bill was rewritten. The prior unknown extraction remains recorded once; three other candidates remain explicitly deferred for possible later research.
+
+Web and API code 1f1c40a3 is deployed. The production build passed; all six configured local components are healthy. Group quantity and workflow execution are verified; actual business value still requires user review. Planner fallback/schema quality, deferred candidates, and other strategy-group cases remain open. Detailed task identities, companies and raw response evidence stay in ignored private artifacts.
