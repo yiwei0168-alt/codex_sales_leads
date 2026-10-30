@@ -770,7 +770,7 @@ flowchart TD
 | `src/lib/leads/global-search.ts` | `e203e2114b9b3d9121525eacda6053f2cdb4268885e11c0a60918bf0fbdb9f1f` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `518a9143ef42fb3cab6e71c1e20557e4d3ee628f680018f770885829fdc153ab` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `dedc9ee1a420811a438a50103502f28bd87d74a2112d401c9fcaf370c0318f25` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `12f3607a42b450b7865fad8d6a103a4c40b4ad98b4e32c863d001dd23ba7918a` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `22cae65fa2d3fa7b9f2c75801d1899200c1acaedc277f786d9270dac3b43adb1` |
 | `src/providers/deepseek.ts` | `87e79d28a8c5bdf0e3a5e874fce19b5d9492c8ac804894440cf9c887d89b3650` |
