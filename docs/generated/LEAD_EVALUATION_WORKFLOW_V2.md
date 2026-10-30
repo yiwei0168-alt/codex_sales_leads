@@ -768,7 +768,7 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `082485d5a557fe42c162e78bbb422651a4c1ad112095d6ccff008a369d8ed474` |
 | `src/lib/leads/workflow/discovery.ts` | `f1175541f0ab88ff206e74da40e41f7cb1b0617d6e00c4baa4bb0f0173870b1b` |
 | `src/lib/leads/global-search.ts` | `e203e2114b9b3d9121525eacda6053f2cdb4268885e11c0a60918bf0fbdb9f1f` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `b367b2c9a50367a4a65aae894758df21a27eea55ce63c9c32c5610d1df80c8c8` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `3c9ea543252e2d6a17784214ec6a9758279c4ca571514f3dff6f502eb80569b0` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `aaa53fa72b137d37a0c7c5142eabae82f12daa67d8c920af19a5a5f3e0653c17` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
@@ -779,7 +779,7 @@ flowchart TD
 | `src/providers/resilient-ai.ts` | `94a44e6434c62f36d1d319e1505e570fb99b1b611461feb31d419fb187b24118` |
 | `src/providers/openrouter.ts` | `5c6db9671958ece7bf9272ba1bfa48cb9da058ac8160db446682ab071294d472` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
-| `src/providers/tavily.ts` | `b02257f8499a16b370ca42493e45bbbf53b7214b9f803203ab5e19ef80969eda` |
+| `src/providers/tavily.ts` | `0a6f09b08addeb2efd5eb504018b14458f449036403fa3ed9823c51aca7eb051` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `007cf0814e962e59d94b76466606275ff3594b107255c098f2e0941f3f048ccc` |
 | `src/lib/leads/workflow/persistence.ts` | `93287f60fdd5bdf9c6aefcad8fc66cb58e43e014f98c711b78c04dfee6d87067` |
 | `src/lib/sales/repository.ts` | `cec19d120f945ebea8031bb60a80043b7dea5d6002ab2aa2bca9193dfc7ca287` |
