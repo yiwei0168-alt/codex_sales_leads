@@ -31,8 +31,9 @@ import {productQualificationSingletonChunkCheckpoint} from "./qualification-sing
 import {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
 import {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
-  leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
-  type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
+  type LeadAssessmentModelOutput,
+  type LeadAssessmentScoreOnlyModelOutput,leadAssessmentResponseModelSchema,
+  leadAssessmentResponseScoreOnlySchema,assessmentExplanationCharacters } from "./schemas";
 import type {
   LeadCandidateAssessment,
   CorrectedLeadWorkflowCandidate,
@@ -44,8 +45,9 @@ export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v8-validated-paths"
 export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v10-role-anchors-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 function validatedAssessmentSchema(includePaths:boolean):z.ZodType<QualificationModelOutput>{
-  return (includePaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema)
-    .refine(value=>new Set(value.dimensionRationales.map(item=>item.dimension)).size===7,"Each score dimension must have exactly one rationale");
+  return (includePaths?leadAssessmentResponseModelSchema:leadAssessmentResponseScoreOnlySchema)
+    .refine(value=>new Set(value.dimensionRationales.map(item=>item.dimension)).size===7,"Each score dimension must have exactly one rationale")
+    .refine(value=>assessmentExplanationCharacters(value)<=12_000,"Explanation text exceeds the bounded response reader");
 }
 
 interface LeadAssessmentRequest {
@@ -989,6 +991,9 @@ export class LeadQualificationAgent {
     const validated=validateBatchItems<QualificationModelOutput>(response.output,"assessments",
       validatedAssessmentSchema(this.includeCooperationPaths),
       candidates.map(candidate=>candidate.candidateId));
+    const conciseSchema=this.includeCooperationPaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyBatchSchema.shape.assessments.element;
+    if(validated.items.some(item=>!conciseSchema.safeParse(item).success))response.warnings=[...response.warnings,
+      "Complete explanation text exceeded the concise generation target and was retained within bounded response limits; scores, gates and citations were not rewritten."];
     const parsed={assessments:validated.items,complete:validated.complete};
     if(usageIndex!==undefined)usageRecords[usageIndex].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
     return { response, parsed };

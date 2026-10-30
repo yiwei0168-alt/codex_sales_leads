@@ -13,3 +13,12 @@ Rule: LEAD-STRATEGY-ACCEPTANCE-01. The user accepted the prior B2B resale group'
 ## Acceptance evidence
 
 Real execution, route outcomes, qualification counts, original citations, scoring and final saved results must be recorded as observed. A configured provider is not an executed provider. Deferred/unknown evidence is not a negative fact, and a partial result is not market exhaustion. User business-quality acceptance for this group remains pending.
+
+
+## First live execution and bounded response reading
+
+The model-generated playbook validated without fallback. Two core discovery requests completed; twelve candidates reached acquisition and role correction. Nine were in the requested retail roles and three remained unresolved. One Pro scoring batch ended without a confirmed outcome. Completed response bodies and four independent score-cache entries remained retained.
+
+The completed-response reader now accepts bounded complete explanation text beyond the concise generation target: at most 2,000 characters per summary, dimension explanation, path reason or escalation explanation, and 12,000 such characters per assessment. Generation still requests the original concise schema. Facts and qualifiers are not truncated; numeric ranges, gates, identity, roles, reference IDs, cardinalities, scoring weights and transport/request limits remain enforced. A failed wire/gate/number is not repaired by this reader. Stored normalized explanations have the same bound.
+
+Eighty focused tests plus TypeScript/lint passed. A read-only replay of the actual encrypted response matched its original paid-request fingerprint, exact batch contract and independently cached peer. One additional completed assessment became valid without any model call. The resulting five complete assessments leave exactly the original four-candidate unknown request as the remaining scoring batch. This preflight does not assert that the unknown request completed or that the group has qualified delivery. A single bounded continuation is allowed under existing MA05; completed work must not be repurchased.

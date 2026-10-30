@@ -218,21 +218,45 @@ export const leadAssessmentModelSchema = leadAssessmentCommonSchema.extend({
   selectedPathId: z.string().max(80).nullable(),
 });
 
+// Generation still requests the original concise schema. A completed response may
+// contain longer explanation text without losing valid scores or original qualifiers.
+// Keep bounded full text; do not truncate facts or relax numbers, gates, roles or references.
+const responsePathSchema = cooperationPathSchema.extend({reason:z.string().min(2).max(2_000)});
+const responseExplanationShape = {
+  summary:z.string().min(8).max(2_000),
+  dimensionRationales:z.array(leadAssessmentCommonSchema.shape.dimensionRationales.element
+    .extend({reason:z.string().min(2).max(2_000)})).length(7),
+  escalation:escalationSchema.extend({reason:z.string().max(2_000)}),
+};
+export const leadAssessmentResponseScoreOnlySchema = leadAssessmentScoreOnlyModelSchema.extend(responseExplanationShape);
+export const leadAssessmentResponseModelSchema = leadAssessmentModelSchema.extend({
+  ...responseExplanationShape,cooperationPaths:z.array(responsePathSchema).max(2),
+});
+
+export function assessmentExplanationCharacters(value: z.infer<typeof leadAssessmentResponseScoreOnlySchema>
+  | z.infer<typeof leadAssessmentResponseModelSchema>) {
+  return value.summary.length+value.escalation.reason.length
+    +value.dimensionRationales.reduce((sum,item)=>sum+item.reason.length,0)
+    +("cooperationPaths" in value?value.cooperationPaths.reduce((sum,item)=>sum+item.reason.length,0):0);
+}
+
 /** Stored normalized results have deterministic fields and expanded system warnings, not a model escalation request. */
-export const cachedLeadAssessmentSchema=leadAssessmentModelSchema.omit({escalation:true}).extend({
+export const cachedLeadAssessmentSchema=leadAssessmentResponseModelSchema.omit({escalation:true}).extend({
   eligible:z.boolean(),roles:z.array(channelRoleSchema),primaryRole:primaryBusinessRoleSchema,
   recommendationPriority:z.enum(["High","Medium","Low","Hold/Research Required"]),
   accountTier:z.enum(["Strategic Distributor","Priority Distributor","Standard Distributor","Long-tail Distributor","KA","Priority","Standard","Long-tail"]),
   supplyModel:z.enum(["Distributor Supply","Brand Direct","Co-sell/Co-supply","TBD"]),brandInvolvement:z.enum(["Light","Standard","Deep"]),
   totalScore:z.number().int().min(0).max(100),scoreRange:z.object({lower:z.number().min(0).max(100),upper:z.number().min(0).max(100)}),
-  cooperationPaths:z.array(cooperationPathSchema.extend({fitScore:z.number().min(0).max(100),rank:z.number().int().min(1).max(2)})).max(2),
+  cooperationPaths:z.array(responsePathSchema.extend({fitScore:z.number().min(0).max(100),rank:z.number().int().min(1).max(2)})).max(2),
   model:z.string().min(1),promptVersion:z.string().min(1),escalated:z.boolean(),scoringStatus:z.literal("completed"),warnings:z.array(z.string()),
   evidenceProfileAssessment:z.object({profile:z.enum(["standard","confirmed-small-long-tail","probable-small-long-tail"]),confidence:z.enum(["high","medium","none"]),exceptionEligible:z.boolean(),
     directSizeSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
     structuralSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
     longTailSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
     largeCompanyOverrides:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),reason:z.string()}).optional(),
-});
+}).refine(value=>value.summary.length+value.dimensionRationales.reduce((sum,item)=>sum+item.reason.length,0)
+  +value.cooperationPaths.reduce((sum,item)=>sum+item.reason.length,0)<=12_000,
+  "Stored explanations exceed the bounded response reader");
 
 export const leadAssessmentBatchSchema = z.object({
   assessments: z.array(leadAssessmentModelSchema).min(1).max(5),

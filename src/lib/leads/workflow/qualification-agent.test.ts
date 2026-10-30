@@ -1298,3 +1298,20 @@ describe('bounded cooperation path recovery',()=>{
     expect(result.assessment.eligible).toBe(true);
   });
 });
+it('retains a verbose complete explanation without purchasing a schema repair',async()=>{
+ class VerboseProvider extends CacheableFakeProvider{
+  override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+   const response=await super.execute<I,{assessments:LeadAssessmentModelOutput[]}>(request);
+   response.output.assessments[0].summary='Evidence-grounded explanation. '.repeat(18)+'The limitations remain visible.';
+   response.output.assessments[0].dimensionRationales[0].reason='Detailed product reasoning. '.repeat(22)+'No claim of exclusivity is made.';
+   return{...response,output:response.output as O};
+  }
+ }
+ const provider=new VerboseProvider(),agent=new LeadQualificationAgent(provider),[result]=await agent.evaluate([candidate],playbook,'DE','Germany','new-market');
+ expect(provider.calls).toHaveLength(1);expect(result.scoringStatus).toBe('completed');
+ expect(result.summary.endsWith('The limitations remain visible.')).toBe(true);
+ expect(result.dimensionRationales[0].reason.endsWith('No claim of exclusivity is made.')).toBe(true);
+ expect(result.warnings.join(' ')).toContain('bounded response limits');expect(validCachedAssessment(result,candidate)).toBe(true);
+ const schema=provider.calls[0].outputSchema as {properties:{assessments:{items:{properties:{summary:{maxLength:number}}}}}};
+ expect(schema.properties.assessments.items.properties.summary.maxLength).toBe(400);
+});
