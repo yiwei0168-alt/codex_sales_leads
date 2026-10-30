@@ -8,6 +8,7 @@ import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 import { LeadAssessmentReviewAgent, assessmentReviewTriggers,
   type LeadReviewCheckpoint, type LeadReviewInvoker } from "./assessment-review-agent";
 import { enforceAssessmentEvidenceCaps } from "./qualification-agent";
+import { researchQuestionHash } from "./research-answer";
 import type { LeadAssessmentModelOutput } from "./schemas";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook } from "./types";
 
@@ -111,6 +112,61 @@ function memoryReviewCheckpoint() {
 }
 
 describe("LeadAssessmentReviewAgent", () => {
+  it.each(["broader-question","contradicted-relationship","other-gate","conflicting-fact"])(
+    "does not use an owner declaration to clear %s",async(kind)=>{
+      const proposed=modelOutput(20);proposed.gates.independentProspect="unknown";
+      if(kind==="contradicted-relationship")proposed.gates.independentProspect="conflicting";
+      if(kind==="other-gate")proposed.gates.companyExists="unknown";
+      const question=`Is ${candidate.companyName} independent of Cudy, and does it currently have any supplier, reseller, distribution, ownership, or contractual relationship with Cudy?`
+        +(kind==="broader-question"?" Confirm financial solvency too.":"");
+      const invoker:LeadReviewInvoker={assess:async()=>({output:modelOutput(8),model:"secondary"}),
+        judge:async()=>({output:{candidateId:candidate.candidateId,decision:"targeted-research",assessment:proposed,
+          researchQuestion:question,rationale:"Further research is necessary",warnings:[]},model:"judge"}),
+        cacheIdentity:(phase,input)=>createHash("sha256").update(JSON.stringify({phase,input})).digest("hex")};
+      const checkpoint:LeadReviewCheckpoint={...memoryReviewCheckpoint(),loadResearchAnswer:async()=>({
+        id:"11111111-1111-4111-8111-111111111111",candidateId:candidate.candidateId,
+        questionHash:researchQuestionHash(question),relationshipStatus:"none",answer:"No relationship",receivedAt:"2026-10-30T00:00:00Z"})};
+      const c=kind==="conflicting-fact"?{...candidate,correction:{...candidate.correction,
+        findings:candidate.correction.findings.map(f=>({...f,status:"conflicting" as const}))}}:candidate;
+      const out=await new LeadAssessmentReviewAgent(invoker,{randomAuditPercent:100}).review([c],[assessment()],playbook,plan,checkpoint);
+      expect(out.reviews[0].status).toBe("targeted-research-required");
+    });
+  it("resolves a relationship-only question locally from an owner answer without replaying either model", async () => {
+    const checkpoint: LeadReviewCheckpoint = memoryReviewCheckpoint();
+    const question = `Is ${candidate.companyName} independent of Cudy, and does it currently have any supplier, reseller, distribution, ownership, or contractual relationship with Cudy?`;
+    const proposed = modelOutput(20);
+    proposed.gates.independentProspect = "unknown";
+    const invoker: LeadReviewInvoker = {
+      assess: vi.fn(async()=>({output:modelOutput(8),model:"secondary"})),
+      judge: vi.fn(async()=>({output:{candidateId:candidate.candidateId,decision:"targeted-research" as const,
+        assessment:proposed,rationale:"Resolve the current relationship before recommendation.",researchQuestion:question,warnings:[]},model:"judge"})),
+      cacheIdentity:(phase,input)=>createHash("sha256").update(JSON.stringify({phase,input})).digest("hex"),
+    };
+    const agent=new LeadAssessmentReviewAgent(invoker,{randomAuditPercent:100});
+    const first=await agent.review([candidate],[assessment()],playbook,plan,checkpoint);
+    expect(first.reviews[0].status).toBe("targeted-research-required");
+    checkpoint.loadResearchAnswer=vi.fn(async()=>({id:"11111111-1111-4111-8111-111111111111",
+      candidateId:candidate.candidateId,questionHash:researchQuestionHash(question),relationshipStatus:"none" as const,
+      answer:"PRIVATE OWNER DECLARATION",receivedAt:"2026-10-30T00:00:00Z"}));
+    const resolved=await agent.review([candidate],[assessment()],playbook,plan,checkpoint);
+    expect(resolved.reviews[0]).toMatchObject({status:"owner-evidence-resolved",ownerEvidence:{scope:"current-cudy-relationship"}});
+    expect(resolved.assessments[0].gates.independentProspect).toBe("supported");
+    expect(resolved.cacheHits).toEqual({secondary:1,judge:1});
+    expect(invoker.assess).toHaveBeenCalledOnce();expect(invoker.judge).toHaveBeenCalledOnce();
+    expect(JSON.stringify([vi.mocked(invoker.assess).mock.calls,vi.mocked(invoker.judge).mock.calls])).not.toContain("PRIVATE OWNER DECLARATION");
+    for(const status of ["exists","unknown"] as const){
+      checkpoint.loadResearchAnswer=vi.fn(async()=>({id:"11111111-1111-4111-8111-111111111111",
+        candidateId:candidate.candidateId,questionHash:researchQuestionHash(question),relationshipStatus:status,
+        answer:"Not a no-relationship declaration",receivedAt:"2026-10-30T00:00:00Z"}));
+      expect((await agent.review([candidate],[assessment()],playbook,plan,checkpoint)).reviews[0].status)
+        .toBe("targeted-research-required");
+    }
+    checkpoint.loadResearchAnswer=vi.fn(async()=>({id:"11111111-1111-4111-8111-111111111111",
+      candidateId:"another-candidate",questionHash:researchQuestionHash(question),relationshipStatus:"none" as const,
+      answer:"Wrong company",receivedAt:"2026-10-30T00:00:00Z"}));
+    expect((await agent.review([candidate],[assessment()],playbook,plan,checkpoint)).reviews[0].status)
+      .toBe("targeted-research-required");
+  });
   it("routes deterministic gate conflicts and sparse high scores to independent review", () => {
     const primary = assessment();
     primary.gates.networkingRelevant = "conflicting";

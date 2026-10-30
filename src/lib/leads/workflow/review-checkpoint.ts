@@ -1,7 +1,9 @@
 import { tenantQuery } from "@/lib/rag/db";
 import type { LeadReviewCheckpoint } from "./assessment-review-agent";
+import { researchQuestionHash, type LeadResearchAnswer } from "./research-answer";
 
-export interface ReviewCheckpointScope { userId: string; workspaceId: string; countryCode: string }
+export interface ReviewCheckpointScope { userId: string; workspaceId: string; countryCode: string;
+  actionId?: string; graphThreadId?: string }
 
 function validScope(scope: ReviewCheckpointScope, candidateId: string, contract: string) {
   if (!/^[A-Z]{2}$/.test(scope.countryCode) || !candidateId.trim()
@@ -10,6 +12,16 @@ function validScope(scope: ReviewCheckpointScope, candidateId: string, contract:
 
 export function productReviewCheckpoint(scope: ReviewCheckpointScope): LeadReviewCheckpoint {
   return {
+    async loadResearchAnswer(candidateId, question) {
+      if (!scope.actionId || !scope.graphThreadId) return null;
+      const rows = await tenantQuery<LeadResearchAnswer>(scope.userId,
+        `select id,candidate_id as "candidateId",question_hash as "questionHash",
+          relationship_status as "relationshipStatus",answer,received_at::text as "receivedAt"
+         from lead_research_answer where user_id=$1 and action_id=$2 and graph_thread_id=$3
+          and candidate_id=$4 and question_hash=$5 and question=$6`,
+        [scope.userId,scope.actionId,scope.graphThreadId,candidateId,researchQuestionHash(question),question]);
+      return rows[0] ?? null;
+    },
     async load(phase, candidateId, contract) {
       validScope(scope, candidateId, contract);
       const rows = await tenantQuery<{ response: unknown }>(scope.userId,

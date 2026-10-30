@@ -522,6 +522,15 @@ export function buildLeadWorkflowGraph(
     .addNode("recover_incomplete_processing", async (state) => {
       if (!state.processingRecoveryAuthorized) throw new WorkflowProcessingIncompleteError();
       const recovered = processingRecoveryWork(state);
+      // Research answers revise review only. Preserve the original successful
+      // primary score so recovery cannot purchase the same score again.
+      const researchIds = new Set(state.assessmentReviews.filter(review =>
+        review.status === "targeted-research-required").map(review => review.candidateId));
+      for (const assessment of state.primaryAssessments ?? []) {
+        if (researchIds.has(assessment.candidateId) && assessment.scoringStatus === "completed"
+          && !recovered.assessments.some(item => item.candidateId === assessment.candidateId))
+          recovered.assessments.push(assessment);
+      }
       const completedIds = new Set(recovered.assessments.map(assessment => assessment.candidateId));
       return { ...recovered, primaryAssessments: (state.primaryAssessments ?? state.assessments)
         .filter(assessment => completedIds.has(assessment.candidateId)),
@@ -535,7 +544,7 @@ export function buildLeadWorkflowGraph(
       const reviewed = await dependencies.assessmentReviewAgent.review(
         state.correctedCandidates, primaryAssessments, state.playbook, state.plan,
         productReviewCheckpoint({userId:state.userId,workspaceId:state.workspaceId,
-          countryCode:state.plan.countryCode}),
+          countryCode:state.plan.countryCode,actionId:state.actionId,graphThreadId:state.graphThreadId}),
       );
       const reviewUsage: WorkflowModelUsage[] = (reviewed.usage ?? []).map((usage) => ({
         stage: usage.phase === "judge" ? "judge" : "secondary-review",

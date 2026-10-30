@@ -277,6 +277,7 @@ export type LeadAssessmentReviewStatus =
   | "not-required"
   | "secondary-confirmed"
   | "judge-resolved"
+  | "owner-evidence-resolved"
   | "targeted-research-required"
   | "review-failed";
 
@@ -294,6 +295,8 @@ export interface LeadAssessmentReview {
   materialDisagreements: string[];
   rationale: string;
   researchQuestion?: string;
+  ownerEvidence?: { answerId: string; questionHash: string; receivedAt: string;
+    scope: "current-cudy-relationship"; originalDecision: "targeted-research" };
   warnings: string[];
 }
 

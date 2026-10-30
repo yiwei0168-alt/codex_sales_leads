@@ -741,6 +741,15 @@ describe("LangGraph lead workflow", () => {
     expect(snapshot.values.acceptedCandidateCount).toBe(0);
     expect(deps.discover).toHaveBeenCalledTimes(1);
     expect(deps.persist).not.toHaveBeenCalled();
+    deps.assessmentReviewAgent.review = vi.fn(async () => ({ assessments: [assessment],
+      reviews: [{candidateId:candidate.candidateId,required:true,triggers:["test"],status:"secondary-confirmed" as const,
+        primaryModel:assessment.model,primaryScore:assessment.totalScore,finalScore:assessment.totalScore,
+        materialDisagreements:[],rationale:"Supplementary evidence resolved",warnings:[]}],warnings:[] }));
+    await graph.updateState(config,{processingRecoveryAuthorized:true},"score_candidates");
+    const resumed=await graph.invoke(null,config);
+    expect(resumed.targetCompletionReason).toBe("target-met");
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
+    expect(deps.discover).toHaveBeenCalledTimes(1);
   });
   it("keeps a failed necessary review as processing incomplete instead of a market shortfall", async () => {
     const deps = dependencies([]);

@@ -16,6 +16,7 @@ import { normalizeAssessment } from "./qualification-agent";
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { preparePublicReviewDisclosure } from "./public-review-disclosure";
+import { isCudyRelationshipQuestion, relationshipAnswerMatches, type LeadResearchAnswer } from "./research-answer";
 import {
   leadAssessmentJudgeSchema,
   leadAssessmentModelSchema,
@@ -50,6 +51,7 @@ export interface LeadReviewUsage {
 }
 
 export interface LeadReviewCheckpoint {
+  loadResearchAnswer?(candidateId: string, question: string): Promise<LeadResearchAnswer | null>;
   load(phase: "secondary" | "judge", candidateId: string, contract: string): Promise<unknown | null>;
   save(phase: "secondary" | "judge", candidateId: string, contract: string,
     response: { output: unknown; model: string; usage?: LeadReviewUsage["usage"] }): Promise<void>;
@@ -431,6 +433,35 @@ export class LeadAssessmentReviewAgent {
         throw new Error("Judge returned a different candidateId");
       }
       if (judgeResult.output.decision === "targeted-research") {
+        // Keep the exact completed model responses intact. Owner declarations are
+        // resolved locally and never enter public secondary/judge request payloads.
+        const question = judgeResult.output.researchQuestion;
+        const answer = await checkpoint?.loadResearchAnswer?.(candidate.candidateId, question);
+        const proposed = judgeResult.output.assessment;
+        const otherGatesSupported = Object.entries(proposed.gates).every(([key, value]) =>
+          key === "independentProspect" || value === "supported");
+        if (answer && answer.relationshipStatus === "none"
+          && relationshipAnswerMatches(answer, candidate.candidateId, question)
+          && isCudyRelationshipQuestion(question, candidate.companyName)
+          && otherGatesSupported && ["supported", "unknown"].includes(proposed.gates.independentProspect)
+          && !candidate.correction.findings.some(finding => finding.status === "conflicting")) {
+          const resolved = normalizeAssessment({ ...proposed,
+            gates: { ...proposed.gates, independentProspect: "supported" } }, candidate,
+          responseFor(proposed, judgeResult.model, JUDGE_PROMPT_VERSION), true);
+          // Normalization can still discover an unrelated evidence gap. Never
+          // release the research gate if the remaining qualification is incomplete.
+          if (resolved.eligible) return { assessment: resolved, review: {
+            candidateId: candidate.candidateId, required: true, triggers, status: "owner-evidence-resolved" as const,
+            primaryModel: primary.model, secondaryModel: secondaryResult.model, judgeModel: judgeResult.model,
+            primaryScore: primary.totalScore, secondaryScore: secondary.totalScore, finalScore: resolved.totalScore,
+            materialDisagreements: disagreements, researchQuestion: question,
+            rationale: "Completed judge assessment retained; owner declaration resolved only the current Cudy relationship gate locally.",
+            ownerEvidence: { answerId: answer.id, questionHash: answer.questionHash, receivedAt: answer.receivedAt,
+              scope: "current-cudy-relationship" as const, originalDecision: "targeted-research" as const },
+            warnings: [...judgeResult.output.warnings,
+              "Current relationship is based on a dated private owner declaration, not public proof or cooperation interest."],
+          } };
+        }
         const assessment = { ...primary, scoringStatus: "retry-required" as const,
           warnings: [...primary.warnings, `Judge requested targeted research: ${judgeResult.output.researchQuestion}`] };
         const review: LeadAssessmentReview = {

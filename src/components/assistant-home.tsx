@@ -5,6 +5,7 @@ import { AgentRunCard, useAgentRuns } from "./agent-runs";
 import {AgentAttachments} from "./agent-attachments";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
+import {LeadResearchAnswer} from "./lead-research-answer";
 import type {
   AssistantActionDto, AssistantConversationDto, AssistantMessageDto,
 } from "@/lib/assistant/types";
@@ -158,6 +159,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
                 {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}
                 {action.status === "completed" && <button onClick={() => onOpenResults(action.payload.countryCode)}>查看 {action.payload.countryName} 结果</button>}
                 {action.errorMessage && <p>{action.errorMessage}</p>}
+                {action.status === "failed" && <LeadResearchAnswer actionId={action.id} onChange={refreshAgentConversation}/>}
                 <button onClick={()=>setTaskId(action.id)}>查看任务详情</button>
               </div>}
               {(message.metadata.citations?.length ?? 0) > 0 && <div className="ai-citations"><strong>知识库证据</strong>{message.metadata.citations?.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl || undefined} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}]</span><b>{citation.documentTitle}</b><em>{Math.round(citation.score * 100)}%</em></a>)}</div>}
