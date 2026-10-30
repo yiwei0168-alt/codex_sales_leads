@@ -120,6 +120,12 @@ function validReportedCredits(value: unknown): number | null {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 }
 
+export function tavilySearchBody(input:TavilySearchInput):string {
+  return JSON.stringify({query:input.query,country:input.country,search_depth:input.searchDepth??"basic",
+    auto_parameters:false,max_results:Math.max(1,Math.min(input.maxResults??10,20)),include_answer:false,
+    include_raw_content:input.includeRawContent?"markdown":false,include_domains:input.includeDomains});
+}
+
 export class TavilySearchProvider {
   readonly id = "tavily";
   private readonly maxAttempts: number;
@@ -150,16 +156,7 @@ export class TavilySearchProvider {
       result = await fetchWithRetry(`${this.baseUrl}/search`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          query: input.query,
-          country: input.country,
-          search_depth: depth,
-          auto_parameters: false,
-          max_results: Math.max(1, Math.min(input.maxResults ?? 10, 20)),
-          include_answer: false,
-          include_raw_content: input.includeRawContent ? "markdown" : false,
-          include_domains: input.includeDomains,
-        }),
+        body: tavilySearchBody(input),
         signal,
       }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {

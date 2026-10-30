@@ -1802,3 +1802,9 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 
 
 2026-10-30 / LEAD-STRATEGY-ACCEPTANCE-01 deployment verification: product c3dd9174 is running in the standalone web and updated business API; all six configured local components report ready. No new grouped search/model task was submitted. The six-group plan and historical single-role evidence remain distinct. [Acceptance plan](LEAD_STRATEGY_ACCEPTANCE_2026-10-30.md).
+
+
+2026-10-30 / LEAD-STRATEGY-ACCEPTANCE-01 continuation: user reported no adjustments needed for now on the prior three results and instructed continuation. This is scoped business feedback, not full route/provider acceptance. SG-02 alone started for UK VAR/Dealer/Reseller, three final-qualified results across the merged group. Actual discovery and evidence completed; model planning used a disclosed deterministic fallback after schema failure, and correction paused on two unknown model outcomes. Six completed supplement requests are now reused by exact owner/task/stage/company/request receipt with retained public evidence only; no lost response is invented. 26 regressions, TypeScript/lint and real receipt reads pass. One bounded correction recovery was queued under existing MA05; scoring, delivery and group quality remain pending. [Recovery scope](LEAD_B2B_ACCEPTANCE_RECOVERY_2026-10-30.md).
+
+
+2026-10-30 / SG-02 recovery outcome: the single bounded correction recovery again returned no usable model output. Completed supplemental HTTP requests remained at six, preserving acquisition without duplicate search. The task retains 12 admitted candidates and saved evidence at correct_candidates, with zero scores/delivery; no further retry is queued. Model-response recovery and planning-schema quality remain open, and this is not market exhaustion or a business-quality verdict. [Retained evidence and scope](LEAD_B2B_ACCEPTANCE_RECOVERY_2026-10-30.md).

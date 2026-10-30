@@ -3,6 +3,7 @@ import {createHash} from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import * as roleCache from "./role-correction-cache";
 import * as publicEvidence from "./public-evidence-repository";
+import * as supplementReuse from "./correction-supplement-reuse";
 import {correctionCompletion} from "./correction-completion";
 afterEach(()=>vi.restoreAllMocks());
 
@@ -81,6 +82,18 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("does not purchase supplemental search again after a completed receipt was recovered",async()=>{
+    vi.spyOn(roleCache,"loadPublicRoleCorrection").mockResolvedValue(null);
+    vi.spyOn(roleCache,"savePublicRoleCorrection").mockResolvedValue(undefined);
+    vi.spyOn(supplementReuse,"reuseCompletedCorrectionSupplement").mockResolvedValue({receiptId:"saved-search",evidence:[]});
+    const search=vi.spyOn(searchProvider,"search");
+    const provider=new FakeCorrectionProvider();
+    const out=await new LeadEvidenceCorrectionAgent(provider,searchProvider).correct([candidate],{
+      countryCode:"DE",countryName:"Germany",objective:"new-market",roles:["Distributor"],targetCount:1,queryLanguage:"en",userRequest:"Find prospects"});
+    expect(search).not.toHaveBeenCalled();expect(provider.calls.length).toBeGreaterThan(0);
+    expect(out.providerMetrics).toMatchObject({attempts:0,retries:0});
+    expect(out.warnings.join(" ")).toContain("Missing facts remain unknown");
+  });
   it("can correct existing evidence without hidden supplemental search",async()=>{
     const provider=new FakeCorrectionProvider(), search=vi.spyOn(searchProvider,"search");
     const corrected=await new LeadEvidenceCorrectionAgent(provider,searchProvider,{supplementEvidence:false,allowReusableCorrections:false,persistCorrections:false})

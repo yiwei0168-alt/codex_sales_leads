@@ -21,6 +21,7 @@ import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorre
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { loadPublicRoleCorrection, savePublicRoleCorrection } from "./role-correction-cache";
+import{reuseCompletedCorrectionSupplement}from"./correction-supplement-reuse";
 import { persistPublicEvidence } from "./public-evidence-repository";
 import {
   CHANNEL_ROLE_FAMILIES,
@@ -259,12 +260,21 @@ export class LeadEvidenceCorrectionAgent {
         }
         try {
           const gaps = candidate.discoveryGate?.missingEvidence ?? [];
-          const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.searchProvider.search({
+          const input = {
             query: `\"${candidate.companyName}\" ${plan.countryName} ${gaps.join(" ")} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
-            searchDepth: "basic",
+            searchDepth: "basic" as const,
             maxResults: 5,
             includeRawContent: false,
-          }, AbortSignal.timeout(45_000)));
+          };
+          const reused=this.persistCorrections&&this.allowReusableCorrections
+            ?await reuseCompletedCorrectionSupplement(candidate,plan.countryCode,input):null;
+          if(reused){
+            output[index]={candidate:{...candidate,evidence:[...new Map([...candidate.evidence,...reused.evidence]
+              .map(item=>[item.url,item])).values()]},credits:0,attempts:0,retries:0,latencyMs:0,
+              warning:`Reused completed correction search ${reused.receiptId} for ${candidate.domain}; only retained public evidence was recovered. Missing facts remain unknown.`};
+            continue;
+          }
+          const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.searchProvider.search(input, AbortSignal.timeout(45_000)));
           const added = response.results.flatMap((item) => {
             const evidence = supplementalEvidence(item, candidate.companyName, candidate.domain,
               candidate.evidenceSnapshotRunId);
