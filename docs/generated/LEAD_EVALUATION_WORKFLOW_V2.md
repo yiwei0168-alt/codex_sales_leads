@@ -768,7 +768,7 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `082485d5a557fe42c162e78bbb422651a4c1ad112095d6ccff008a369d8ed474` |
 | `src/lib/leads/workflow/discovery.ts` | `f1175541f0ab88ff206e74da40e41f7cb1b0617d6e00c4baa4bb0f0173870b1b` |
 | `src/lib/leads/global-search.ts` | `e203e2114b9b3d9121525eacda6053f2cdb4268885e11c0a60918bf0fbdb9f1f` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `3c9ea543252e2d6a17784214ec6a9758279c4ca571514f3dff6f502eb80569b0` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `e101562439c48374e6953c89f72cce3d421d1ff6a2f59dccedcaaf4f06c3c769` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `aaa53fa72b137d37a0c7c5142eabae82f12daa67d8c920af19a5a5f3e0653c17` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
