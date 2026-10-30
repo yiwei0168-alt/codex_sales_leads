@@ -780,6 +780,7 @@ export async function executeLeadWorkflowGraph(input: {
     ? {...config,configurable:{...config.configurable,...(await graph.getState(config)).config.configurable}}
     : config;
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
+    durableQualificationResponses:true,
     ...(parent?.fixedFxReferenceVersion?{fixedFxReferenceVersion:parent.fixedFxReferenceVersion}:{}),
     costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,invocationConfig));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");

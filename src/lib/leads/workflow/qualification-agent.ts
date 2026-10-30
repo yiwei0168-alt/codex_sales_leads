@@ -436,6 +436,10 @@ export class LeadQualificationAgent {
     return this.includeCooperationPaths ? LEAD_QUALIFICATION_PROMPT_VERSION : LEAD_SCORE_ONLY_PROMPT_VERSION;
   }
 
+  private batchLimit(candidates:CorrectedLeadWorkflowCandidate[]){
+    return candidates.some(c=>c.qualificationResponseRecovery)?Math.min(2,this.batchSize):this.batchSize;
+  }
+
   private requestableCandidates(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string){
     const ready:CorrectedLeadWorkflowCandidate[]=[];
@@ -458,7 +462,7 @@ export class LeadQualificationAgent {
     if(!this.provider.cacheIdentity)return result;
     const {ready}=this.requestableCandidates(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),
       playbook,countryCode,countryName,objective);
-    const batches=leadRequestBatches(ready,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
+    const batches=leadRequestBatches(ready,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchLimit(ready),this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     for(const batch of batches){
       const contract=this.provider.cacheIdentity(this.request(batch,playbook,countryCode,countryName,objective,this.routineModel));
       if(contract)for(const candidate of batch)result.set(candidate.candidateId,contract);
@@ -471,6 +475,16 @@ export class LeadQualificationAgent {
       const contract=this.exactAssessmentContracts.get(assessment);
       return contract?[[assessment.candidateId,contract] as const]:[];
     }));
+  }
+
+  /** Read-only recovery preflight. Exposes identities, never model input bodies. */
+  requestDependencies(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string){
+    const {ready}=this.requestableCandidates(candidates.filter(c=>roleScoringAnchors(c.correction)),playbook,countryCode,countryName,objective);
+    return leadRequestBatches(ready,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),
+      this.batchLimit(ready),this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider)).map(items=>{
+      const request=this.request(items,playbook,countryCode,countryName,objective,this.routineModel);
+      return{candidateIds:items.map(c=>c.candidateId),paidFingerprint:this.provider.paidRequestFingerprint?.(request),contract:this.provider.cacheIdentity?.(request)};
+    });
   }
 
   private responseCacheIdentity(request:StructuredAiRequest<unknown>,response:StructuredAiResponse<unknown>){
@@ -742,7 +756,7 @@ export class LeadQualificationAgent {
   }
 
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
-    synthesis?:ReturnType<typeof assembleQualificationPhaseSynthesis>) {
+    synthesis?:ReturnType<typeof assembleQualificationPhaseSynthesis>,schemaRepair=false) {
     if(synthesis&&(candidates.length!==1||candidates[0].candidateId!==synthesis.candidateId))
       throw new Error("Phase synthesis must match one scoring candidate");
     const pathInstructions = this.includeCooperationPaths ? [
@@ -849,6 +863,9 @@ export class LeadQualificationAgent {
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
       },
     };
+    if(schemaRepair)input.instructions.push("Schema repair v1: the previous output omitted or invalidated this exact candidate. Return exactly one complete assessment for the supplied candidate ID and all required schema fields; do not infer prior scores, add evidence or change the rubric.");
+    const recovering=candidates.filter(c=>c.qualificationResponseRecovery);
+    if(recovering.length)input.instructions.push(`Missing response recovery v1 for candidate IDs: ${recovering.map(c=>c.candidateId).join(", ")}. The prior raw response is unavailable; generate a fresh evidence-grounded assessment under the unchanged rubric. Do not infer or reconstruct prior values.`);
     const request=compactLeadSingleton({
       task: "lead-qualification" as const,
       modelVersion,
@@ -875,7 +892,8 @@ export class LeadQualificationAgent {
       request,
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
     ));
-    if(recordUsage)usageRecords.push({ stage: "qualification", requestPreparation:request.preparation, requestedModel: response.requestedModelVersion ?? modelVersion,
+    const usageIndex=recordUsage&&!response.warnings.includes("qualification-response-checkpoint-hit")?usageRecords.length:undefined;
+    if(usageIndex!==undefined)usageRecords.push({ stage: "qualification", requestPreparation:request.preparation, requestedModel: response.requestedModelVersion ?? modelVersion,
       actualModel: response.modelVersion, providerId: response.actualProviderId,
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
@@ -887,7 +905,7 @@ export class LeadQualificationAgent {
       validatedAssessmentSchema(this.includeCooperationPaths),
       candidates.map(candidate=>candidate.candidateId));
     const parsed={assessments:validated.items,complete:validated.complete};
-    if(recordUsage)usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
+    if(usageIndex!==undefined)usageRecords[usageIndex].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
     return { response, parsed };
   }
 
@@ -1074,8 +1092,9 @@ export class LeadQualificationAgent {
     playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
     reason: string, usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment> {
     try {
+      const repairRequest=this.request([candidate],playbook,countryCode,countryName,objective,this.routineModel,undefined,true);
       const routine = await this.invokeBatch([candidate], playbook, countryCode, countryName,
-        objective, this.routineModel, usageRecords);
+        objective, this.routineModel, usageRecords,repairRequest);
       const value = routine.parsed.assessments.find((item) => item.candidateId === candidate.candidateId);
       if (!value||!routine.parsed.complete) {
         return failedAssessment(candidate,
@@ -1093,7 +1112,7 @@ export class LeadQualificationAgent {
         `${reason} Same-tier single-candidate schema repair succeeded.`,
         ...normalized.warnings,
       ] };
-      const contract=this.responseCacheIdentity(this.request([candidate],playbook,countryCode,countryName,objective,this.routineModel),routine.response);
+      const contract=this.responseCacheIdentity(repairRequest,routine.response);
       if(contract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,contract);
       return completed;
     } catch (error) {
@@ -1111,7 +1130,7 @@ export class LeadQualificationAgent {
         this.request([candidate], playbook, countryCode, countryName, objective, this.escalationModel),
         AbortSignal.timeout(120_000),
       ));
-      usageRecords.push({ stage: "qualification", requestedModel: escalation.requestedModelVersion ?? this.escalationModel,
+      if(!escalation.warnings.includes("qualification-response-checkpoint-hit"))usageRecords.push({ stage: "qualification", requestedModel: escalation.requestedModelVersion ?? this.escalationModel,
         actualModel: escalation.modelVersion, providerId: escalation.actualProviderId,
         promptTokens: escalation.usage?.promptTokens ?? 0, completionTokens: escalation.usage?.completionTokens ?? 0,
         reasoningTokens: escalation.usage?.reasoningTokens ?? 0, totalTokens: escalation.usage?.totalTokens ?? 0,
@@ -1149,7 +1168,7 @@ export class LeadQualificationAgent {
       failedAssessment(candidate, "Primary role family/subtype is incomplete or inconsistent; resolve correction before scoring. No scoring request was sent.", this.promptVersion));
     const batches=leadRequestBatches(ready,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
-    ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
+    ),this.batchLimit(ready),this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
     const published=new Set<LeadCandidateAssessment>();
     let publicationFailed=false;

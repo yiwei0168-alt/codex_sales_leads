@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { afterEach,describe, expect, it,vi } from "vitest";
+afterEach(()=>vi.restoreAllMocks());
 import {createHash} from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {currentSpendContext,withProductSpend} from "@/lib/billing/context";
@@ -20,6 +21,7 @@ import type {productQualificationFinalCheckpoint} from "./qualification-final-ch
 import type {productQualificationSingletonChunkCheckpoint} from "./qualification-singleton-checkpoint";
 import {validateQualificationSingletonChunkOutput} from "./qualification-singleton-chunks";
 import { CHANNEL_ROLE_FAMILIES } from "./types";
+import * as rawResponseCheckpoint from "./model-response-checkpoint";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
 class FakeProvider implements AiProvider {
@@ -144,6 +146,27 @@ function incompressibleCandidate(count=150):CorrectedLeadWorkflowCandidate{
 }
 
 describe("LeadQualificationAgent", () => {
+  it("bounds only explicitly marked missing-response recovery batches while preserving candidates",()=>{
+    const candidates=Array.from({length:5},(_,i)=>({...candidate,candidateId:`lead-batch-${i}`}));
+    const agent=new LeadQualificationAgent(new FakeProvider(),{batchSize:5,maxBatchInputCharacters:1000000});
+    const initial=agent.requestDependencies(candidates,playbook,"DE","Germany","new-market");
+    const repaired=agent.requestDependencies(candidates.map((c,i)=>i===4?{...c,qualificationResponseRecovery:{version:"missing-response-v1" as const,receiptId:"receipt",requestFingerprint:"a".repeat(64)}}:c),playbook,"DE","Germany","new-market");
+    expect(initial).toHaveLength(1);expect(repaired.map(b=>b.candidateIds.length)).toEqual([2,2,1]);
+    expect(repaired.flatMap(b=>b.candidateIds)).toEqual(candidates.map(c=>c.candidateId));
+  });
+  it("repairs a singleton with a distinct request and reuses both raw responses after process reconstruction",async()=>{
+    const rows=new Map<string,unknown>();
+    vi.spyOn(rawResponseCheckpoint,"qualificationResponseCheckpoint").mockImplementation(async(_task,fingerprint)=>({
+      load:async()=>rows.get(fingerprint)??null,save:async body=>{rows.set(fingerprint,structuredClone(body));}}));
+    const valid=await new FakeProvider().execute({task:"lead-qualification",modelVersion:"deepseek-v4-pro",promptVersion:"fixture",input:{},evidenceIds:[]});
+    const bodies:string[]=[];
+    const provider=()=>new DeepSeekProvider({apiKey:"fixture-not-sent",maxAttempts:1,fetchImplementation:async(_url,init)=>{
+      bodies.push(String(init?.body));return Response.json({model:"deepseek/deepseek-v4-pro",choices:[{finish_reason:"stop",message:{content:JSON.stringify(bodies.length===1?{assessments:[]}:valid.output)}}]});}});
+    const first=await new LeadQualificationAgent(provider(),{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro"}).evaluateWithUsage([candidate],playbook,"DE","Germany","new-market");
+    expect(first.assessments[0].scoringStatus).toBe("completed");expect(bodies).toHaveLength(2);expect(bodies[0]).not.toBe(bodies[1]);expect(bodies[1]).toContain("Schema repair v1");
+    const recovered=await new LeadQualificationAgent(provider(),{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro"}).evaluateWithUsage([candidate],playbook,"DE","Germany","new-market");
+    expect(recovered.assessments[0].scoringStatus).toBe("completed");expect(bodies).toHaveLength(2);expect(recovered.usage).toHaveLength(0);
+  });
   it("retains exact cache identity for gateway-normalized DeepSeek responses, including the resilient primary",async()=>{
     const fixture=await new FakeProvider().execute({task:"lead-qualification",modelVersion:"deepseek-v4-pro",promptVersion:"fixture",input:{},evidenceIds:[]});
     for(const wrapped of [false,true]){

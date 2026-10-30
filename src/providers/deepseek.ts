@@ -2,6 +2,7 @@ import { getOpenRouterConfig, validatedOpenRouterBaseUrl } from "./openrouter";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import {deepSeekRequestBody,deepSeekGatewayModel} from "./deepseek-request";
+import{qualificationResponseCheckpoint}from"@/lib/leads/workflow/model-response-checkpoint";
 import {assertLeadRequestBytes} from "./lead-request-bounds";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -110,11 +111,13 @@ export class DeepSeekProvider implements AiProvider {
     const invocationId = randomUUID();
     const {body:wireBody}=deepSeekRequestBody(request,model);
     assertLeadRequestBytes(request,wireBody);
+    const checkpoint=await qualificationResponseCheckpoint(request.task,this.paidRequestFingerprint(request));
+    const retained=await checkpoint?.load() as DeepSeekWireResponse|null|undefined;
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:"openrouter",task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
+        const response = retained?Response.json(retained):await withModelAttempt({invocationId,provider:"openrouter",task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
           method: "POST",
           headers: { authorization: `Bearer ${this.apiKey}`, "content-type": "application/json", ...this.defaultHeaders },
           redirect: "error",
@@ -137,14 +140,20 @@ export class DeepSeekProvider implements AiProvider {
         if (!content) throw new Error("DeepSeek returned empty JSON content");
         const finishReason = choice?.finish_reason;
         if (finishReason !== "stop") throw new DeepSeekRequestError("DeepSeek returned incomplete JSON output", false);
+        if(checkpoint){
+          if(deepSeekGatewayModel(body.model??model)!==model)throw new BudgetDeniedError("request-out-of-bounds");
+          if(!retained)await checkpoint.save(body);
+        }
         let output: TOutput;
         try {
           output = JSON.parse(content) as TOutput;
         } catch (error) {
           if(error instanceof BudgetDeniedError)throw error;
-          throw new Error("DeepSeek returned invalid JSON", { cause: error });
+          if(checkpoint)output=content as TOutput;
+          else throw new Error("DeepSeek returned invalid JSON", { cause: error });
         }
         const warnings = finishReason && !["stop", "end_turn"].includes(finishReason) ? [`finish_reason:${finishReason}`] : [];
+        if(retained)warnings.push("qualification-response-checkpoint-hit");
         return {
           output,
           modelVersion: body.model ?? deepSeekGatewayModel(model),
@@ -153,9 +162,9 @@ export class DeepSeekProvider implements AiProvider {
           latencyMs: Math.round(performance.now() - startedAt),
           warnings,
           providerRequestId: body.id,
-          attempts: attempt + 1,
-          retries: attempt,
-          usage: body.usage ? {
+          attempts: retained?0:attempt + 1,
+          retries: retained?0:attempt,
+          usage: !retained&&body.usage ? {
             promptTokens: body.usage.prompt_tokens ?? 0,
             completionTokens: body.usage.completion_tokens ?? 0,
             reasoningTokens: body.usage.completion_tokens_details?.reasoning_tokens ?? 0,

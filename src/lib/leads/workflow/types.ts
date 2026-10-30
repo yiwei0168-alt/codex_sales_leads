@@ -122,6 +122,7 @@ export interface LeadEvidenceItem {
 }
 
 export interface LeadWorkflowCandidate {
+  qualificationResponseRecovery?:{version:"missing-response-v1";receiptId:string;requestFingerprint:string};
   candidateId: string;
   evidenceSnapshotRunId: string;
   companyName: string;

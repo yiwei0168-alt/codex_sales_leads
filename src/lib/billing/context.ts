@@ -5,6 +5,7 @@ import type { CostAttribution } from "./cost-allocation";
 
 // Server-side acceptance scopes only; never populated from an API request body.
 export interface SpendContext {userId:string;operationId:string;stage:string;costAttribution?:CostAttribution;tariffPolicy?:{version:string;rules:RequestBound[]};
+  durableQualificationResponses?:boolean;
   /** Server-side local acceptance only: one already stored official FX snapshot, never API input. */
   fixedFxReferenceVersion?:string;
   /** The dedicated MA24 runner pins nested paid requests to its leased run. */

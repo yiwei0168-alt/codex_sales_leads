@@ -46,7 +46,11 @@ export async function assertUncheckpointedQualificationResponsesAbsent(
           or exists(select 1 from lead_qualification_final_checkpoint c
           where c.user_id=paid_call_reservation.user_id
             and c.action_id::text=paid_call_reservation.operation_id
-            and c.paid_request_fingerprint=paid_call_reservation.request_fingerprint))) limit 1`,
+            and c.paid_request_fingerprint=paid_call_reservation.request_fingerprint)
+          or exists(select 1 from lead_model_response_checkpoint c
+          where c.user_id=paid_call_reservation.user_id
+            and c.action_id::text=paid_call_reservation.operation_id
+            and c.request_fingerprint=paid_call_reservation.request_fingerprint))) limit 1`,
     [userId, operationId, checkpointAt, companyKeys]);
   if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
 }
