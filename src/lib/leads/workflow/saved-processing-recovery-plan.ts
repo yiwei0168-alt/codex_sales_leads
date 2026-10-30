@@ -1,13 +1,14 @@
 import {normalizedCompanyDomain} from "./candidate-registry";
 import {processingRecoveryWork} from "./processing-recovery";
 import {routeCorrectedCandidates} from "./candidate-routing";
-import type {LeadWorkflowCandidate,LeadWorkflowState,LeadWorkflowResult} from "./types";
+import type {LeadCandidateAssessment,LeadWorkflowCandidate,LeadWorkflowState,LeadWorkflowResult} from "./types";
 
 export interface RecoveryCompany {
   domain:string;
-  stage:"correction"|"scoring";
+  stage:"correction"|"scoring"|"path-repair";
   sourceCandidateIds:string[];
   candidates:LeadWorkflowCandidate[];
+  pathAssessment?:LeadCandidateAssessment;
 }
 
 /** Prepares a reviewable recovery scope only. No new company discovery, inference, or mutation. */
@@ -19,7 +20,7 @@ export function planSavedProcessingRecovery(input:{state:LeadWorkflowState;resul
     ||!Number.isSafeInteger(result.accepted)||result.accepted<0||result.accepted>=result.requested) {
     throw new Error("Original recovery scope or saved count is incomplete or inconsistent");
   }
-  if(!["processing-incomplete","role-unresolved"].includes(result.targetCompletionReason??""))throw new Error("Original result is not an incomplete-processing result");
+  if(!["processing-incomplete","role-unresolved","qualified-shortfall"].includes(result.targetCompletionReason??""))throw new Error("Original result is not an incomplete-processing result");
   for(const items of [state.candidates,state.correctedCandidates]){
     if(new Set(items.map(item=>item.candidateId)).size!==items.length)throw new Error("Recovery source candidate identity collision");
   }
@@ -48,7 +49,16 @@ export function planSavedProcessingRecovery(input:{state:LeadWorkflowState;resul
     if(route.status==="pending-role")add(byId.get(route.candidateId)!,"correction");
   }
   for(const candidate of routed.queued){
-    if(!state.assessments.some(assessment=>assessment.candidateId===candidate.candidateId&&assessment.scoringStatus==="completed"))add(candidate,"scoring");
+    const completed=state.assessments.find(assessment=>assessment.candidateId===candidate.candidateId&&assessment.scoringStatus==="completed");
+    if(!completed)add(candidate,"scoring");
+    else if(completed.eligibilityStatus==="research-required"&&!completed.cooperationPaths.length
+      &&Object.values(completed.gates).every(value=>value==="supported")
+      &&completed.warnings.some(warning=>warning.startsWith("Cooperation path rejected:")
+        ||warning.startsWith("Cooperation paths with unsupported roles"))){
+      add(candidate,"path-repair");
+      const company=companies.get(domain(candidate.domain));
+      if(company?.stage==="path-repair")company.pathAssessment=structuredClone(completed);
+    }
   }
   if(!companies.size)throw new Error("No uncompleted company remains outside the saved selection");
   let remainingTaskBudgetMicros:string|null=null;

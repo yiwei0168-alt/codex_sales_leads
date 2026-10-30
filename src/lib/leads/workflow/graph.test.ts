@@ -819,3 +819,18 @@ describe("LangGraph lead workflow", () => {
     expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
   });
 });
+it('runs a linked path-only child without discovery, evidence acquisition, correction or rescoring',async()=>{
+  const deps=dependencies([]);
+  const held={...assessment,eligible:false,eligibilityStatus:'research-required' as const,cooperationPaths:[],selectedPathId:null,
+    warnings:['Cooperation path rejected: invalid (role-path-incompatible).']};
+  deps.qualificationAgent.repairSavedPathsWithUsage=vi.fn(async()=>({assessment,usage:[]}));
+  const result=await buildLeadWorkflowGraph(deps).invoke({userId:'u',actionId:'path-child',workspaceId:'w',graphThreadId:'path-child',
+    runId:'run-1',plan:{...plan,targetCount:1},phase:'queued',candidates:[candidate],correctedCandidates:[correctedCandidate],
+    assessments:[],creditsUsed:0,ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],
+    terminalRecoveryOnly:true,savedProcessingRecovery:{sourceActionId:'parent',sourceRunId:'parent-run',sourceFingerprint:'proof',refreshCandidateIds:[]},
+    savedPathRepairs:[{candidateId:candidate.candidateId,assessment:held}]});
+  expect(deps.qualificationAgent.repairSavedPathsWithUsage).toHaveBeenCalledOnce();
+  expect(deps.discover).not.toHaveBeenCalled();expect(deps.collectEvidence).not.toHaveBeenCalled();
+  expect(deps.correctionAgent.correct).not.toHaveBeenCalled();expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+  expect(result.assessments[0].dimensions).toEqual(held.dimensions);expect(result.savedPathRepairs).toEqual([]);
+});

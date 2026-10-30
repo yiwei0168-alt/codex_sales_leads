@@ -1,0 +1,31 @@
+# Lead quality follow-up — 2026-10-30
+
+## Confirmed scope
+
+Rule LEAD-QUALITY-FOLLOWUP-01 implements the four approved improvements. The original six merged channel groups, scoring weights, normal path-fit threshold and zero-random-audit policy stay unchanged. Planner-schema repair is deferred.
+
+## Findings
+
+An independent-only public-evidence cache previously stopped official-page collection. A discovered company URL did not guarantee its body was read. Completed scoring responses also contained a role/path incompatibility: VAR or Reseller paired with Direct Tier-1 Supply. Deterministic filtering correctly withheld those paths, but the model summary could still claim eligibility, and required review did not cover every empty-path state.
+
+## Resulting behavior
+
+- Extract up to three known company URLs first. If no usable official content is obtained, search the exact company domain and extract up to four alternative results without repeating a URL in that acquisition. Retain summaries as discovery seeds; failed acquisition remains unknown.
+- Independent cache hits retain their evidence while official extraction continues. A recovery with no current official page is explicitly queued for refresh. Original dates, hashes and expiry checks remain binding.
+- Validate each path against corrected roles, enabled path types and current citations. Return specific rejection reasons without coercing role or path labels.
+- Attempt at most one path-only repair per scoring result. The request cannot revise the seven scoring dimensions or gates; any normalization change to retained scores/gates aborts path-only application. Complete primary scores are checkpointed before batch repair. Raw repair responses use the existing encrypted owner/action/request checkpoint.
+- Derive held/rejected summaries from final normalized gates and path availability. Necessary Pro review includes unresolved empty paths; generic warnings and low confidence do not add random audits.
+- A separately linked recovery can repair held paths using retained scores and fresh evidence, reuse the source playbook, and acquire evidence only where needed. Source results remain immutable; the child target is only the original shortfall. Expired evidence clears stale downstream primary scores and path-repair work in the child before requalification.
+- A subsequent discovery continuation includes recovery-ancestor exclusions, preventing reprocessing the parent's saved/scored companies.
+
+## Verification
+
+Automated checks and live acceptance outcomes are recorded after execution. An implemented workflow is not proof that the group has three qualified results or that users accept their business value. Company identities, account identifiers and live evidence remain in ignored private runtime artifacts.
+
+
+### Verified development stage
+
+- 169 tests across 15 focused files passed, including real failure-shape fixtures, path-only child execution with no scoring/discovery calls, strict evidence refresh, immutable source binding, ancestor exclusions, and response-checkpoint regressions.
+- TypeScript passed. Targeted ESLint completed with zero errors and two existing unused-variable warnings in the review serializer. Diff whitespace check passed.
+- Read-only verification against the actual completed checkpoint prepared five companies for a remaining target of two: two fresh path-only seeds and three evidence-refresh seeds. One originally scored company requires fresh evidence because some cited content lacks a retained snapshot; its old score is kept as history, not silently reused as a new result.
+- Live task creation was correctly blocked by unresolved historical paid-request state. No new action or paid request was submitted, and no historical fee/outcome was changed. The previous delivered count remains one of three. This is a pending live follow-up, not business acceptance or market exhaustion.

@@ -49,3 +49,12 @@ it('allows a proven run with zero completed assessments without permanently excl
   expect(await proposeSearchContinuationInTransaction({query} as unknown as PoolClient,'owner','parent'))
     .toEqual({actionId:'child',reused:false,gap:15,excludedCount:0});
 });
+it('keeps processing-recovery ancestors excluded when proposing a fresh shortfall search',async()=>{
+  const baseline=query.getMockImplementation()!;
+  query.mockImplementation(async(sql:string,...args:unknown[])=>sql.includes('with recursive recovery_parents')
+    ?{rows:[{domain:'already-delivered.example'}]}:baseline(sql,...args));
+  const result=await proposeSearchContinuationInTransaction({query} as unknown as PoolClient,'owner','parent');
+  expect(result.gap).toBe(15);expect(result.excludedCount).toBe(2);
+  const link=query.mock.calls.find(([sql])=>sql.includes('insert into lead_search_continuation'));
+  expect(link?.[1][5]).toEqual(['already-delivered.example','example.test']);
+});

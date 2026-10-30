@@ -73,6 +73,7 @@ export const WorkflowAnnotation = Annotation.Root({
   scoreRecoveryCheckpointAt: Annotation<string | undefined>(),
   terminalRecoveryOnly: Annotation<boolean | undefined>(),
   savedProcessingRecovery: Annotation<LeadWorkflowState["savedProcessingRecovery"]>(),
+  savedPathRepairs: Annotation<LeadWorkflowState["savedPathRepairs"]>(),
   targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
@@ -99,7 +100,7 @@ export interface LeadWorkflowDependencies {
       reportedCreditCalls?: number; estimatedCreditCalls?: number;
       reportedCredits?: number; estimatedCredits?: number; unknownCreditAttempts?: number };
   }> };
-  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts"|"phasedCacheContracts">>;
+  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts"|"phasedCacheContracts"|"repairSavedPathsWithUsage">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
   handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
@@ -175,7 +176,7 @@ export function buildLeadWorkflowGraph(
     .addNode("build_playbook", async (state) => {
       const startedAt = Date.now();
       await phase(dependencies, state, "planning");
-      const cachedPlaybook = dependencies.loadPlaybookCache
+      const cachedPlaybook = state.savedProcessingRecovery && state.playbook ? state.playbook : dependencies.loadPlaybookCache
         ? await dependencies.loadPlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext)
         : null;
       const playbook = cachedPlaybook ?? await dependencies.buildPlaybook(state.plan, state.ragContext);
@@ -231,6 +232,21 @@ export function buildLeadWorkflowGraph(
             unknownCreditAttempts:output.providerMetrics?.unknownCreditAttempts??null}})]};
     })
     .addNode("recover_saved_evidence",async()=>{throw new WorkflowProcessingIncompleteError();})
+    .addNode("repair_saved_paths",async(state)=>{
+      const pending=state.savedPathRepairs??[];
+      if(!pending.length)return {};
+      if(!state.savedProcessingRecovery||!state.playbook||!dependencies.qualificationAgent.repairSavedPathsWithUsage)
+        throw new Error("Saved path repair requires a linked recovery and path repair agent");
+      await phase(dependencies,state,"scoring");
+      const item=pending[0],candidate=state.correctedCandidates.find(candidate=>candidate.candidateId===item.candidateId);
+      if(!candidate)throw new Error("Saved path candidate is missing or requires evidence refresh");
+      const result=await dependencies.qualificationAgent.repairSavedPathsWithUsage(candidate,item.assessment,state.playbook,
+        state.plan.countryCode,state.plan.countryName,state.plan.objective);
+      return {phase:"scoring" as const,savedPathRepairs:pending.slice(1),
+        assessments:mergeByCandidateId(state.assessments,[result.assessment]),
+        primaryAssessments:mergeByCandidateId(state.primaryAssessments??[],[result.assessment]),
+        modelUsage:[...(state.modelUsage??[]),...result.usage]};
+    })
     .addNode("discover_candidates", async (state) => {
       if(state.savedProcessingRecovery)throw new Error("Company discovery is forbidden for processing recovery");
       const startedAt = Date.now();
@@ -323,14 +339,18 @@ export function buildLeadWorkflowGraph(
     .addNode("correct_candidates", async (state) => {
       const startedAt = Date.now();
       await phase(dependencies, state, "correcting-evidence");
-      const corrected = await dependencies.correctionAgent.correct(state.candidates, state.plan);
+      const sources=state.savedProcessingRecovery?state.candidates.filter(candidate=>
+        !(state.primaryAssessments??[]).some(assessment=>assessment.candidateId===candidate.candidateId
+          &&assessment.scoringStatus==="completed")):state.candidates;
+      const corrected = sources.length ? await dependencies.correctionAgent.correct(sources, state.plan)
+        : {candidates:[] as CorrectedLeadWorkflowCandidate[],creditsUsed:0,warnings:[]};
       const valid = corrected.candidates.filter((candidate) => correctionCompletion(candidate.correction) === "completed").length;
       const retryRequired = corrected.candidates.filter(candidate => correctionCompletion(candidate.correction) === "retry-required").length;
       const unresolved = corrected.candidates.filter(candidate => correctionCompletion(candidate.correction) === "unresolved").length;
       const inScope = corrected.candidates.filter((candidate) => candidateMatchesRequestedRole(candidate, state.plan)).length;
       const correctedCandidates = mergeByCandidateId(state.correctedCandidates ?? [], corrected.candidates);
       const metric = completedStageMetric({ stage: "correct_candidates", startedAt,
-        input: state.candidates, output: corrected.candidates, inputItems: state.candidates.length,
+        input: sources, output: corrected.candidates, inputItems: sources.length,
         outputItems: corrected.candidates.length, paidSearchCredits: corrected.creditsUsed,
         generatedArtifacts: corrected.candidates.length, validArtifacts: valid, downstreamUsedArtifacts: inScope,
         metadata: { cacheHits: corrected.cacheHits ?? 0, cacheMisses: corrected.cacheMisses ?? state.candidates.length,
@@ -656,8 +676,10 @@ export function buildLeadWorkflowGraph(
     .addEdge("retrieve_knowledge", "build_playbook")
     .addConditionalEdges("build_playbook",state=>state.savedProcessingRecovery?"prepare_recovery_evidence":"discover_candidates",{
       prepare_recovery_evidence:"prepare_recovery_evidence",discover_candidates:"discover_candidates"})
-    .addConditionalEdges("prepare_recovery_evidence",state=>state.savedProcessingRecovery?.evidenceBlocked?"recover_saved_evidence":state.savedProcessingRecovery?.refreshCandidateIds.length?"prepare_recovery_evidence":"correct_candidates",{
-      prepare_recovery_evidence:"prepare_recovery_evidence",correct_candidates:"correct_candidates",recover_saved_evidence:"recover_saved_evidence"})
+    .addConditionalEdges("prepare_recovery_evidence",state=>state.savedProcessingRecovery?.evidenceBlocked?"recover_saved_evidence":state.savedProcessingRecovery?.refreshCandidateIds.length?"prepare_recovery_evidence":"repair_saved_paths",{
+      prepare_recovery_evidence:"prepare_recovery_evidence",repair_saved_paths:"repair_saved_paths",recover_saved_evidence:"recover_saved_evidence"})
+    .addConditionalEdges("repair_saved_paths",state=>state.savedPathRepairs?.length?"repair_saved_paths":"correct_candidates",{
+      repair_saved_paths:"repair_saved_paths",correct_candidates:"correct_candidates"})
     .addEdge("recover_saved_evidence","prepare_recovery_evidence")
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")

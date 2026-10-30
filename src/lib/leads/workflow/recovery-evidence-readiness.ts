@@ -33,6 +33,8 @@ export function recoveryEvidenceReadiness(candidate:LeadWorkflowCandidate,snapsh
     if(reason)reasons[reason]=(reasons[reason]??0)+1;else reusableEvidence++;
   }
   if(!reusableEvidence&&!Object.keys(reasons).length)reasons["missing-scoring-evidence"]=1;
+  if(!candidate.evidence.some(item=>item.sourceType==="official-website"
+    &&isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId)))reasons["missing-official-page"]=1;
   return {candidateId:candidate.candidateId,reusableEvidence,needsEvidenceRefresh:Object.keys(reasons).length>0,reasons};
 }
 

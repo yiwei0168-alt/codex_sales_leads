@@ -117,7 +117,8 @@ function supplementalEvidence(result: TavilySearchResult, companyName: string,
     url: result.url,
     title: result.title,
     excerpt,
-    sourceType: sameDomain(result.url, candidateDomain) ? "official-website" : "independent-public",
+    sourceType: !result.rawContent?.trim() ? "discovery"
+      : sameDomain(result.url, candidateDomain) ? "official-website" : "independent-public",
     provider: "tavily-correction",
     capturedAt: new Date().toISOString(),
     contentHash: leadEvidenceContentHash(excerpt),
@@ -271,7 +272,7 @@ export class LeadEvidenceCorrectionAgent {
             query: `\"${candidate.companyName}\" ${plan.countryName} ${gaps.join(" ")} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
             searchDepth: "basic" as const,
             maxResults: 5,
-            includeRawContent: false,
+            includeRawContent: true,
           };
           const reused=this.persistCorrections&&this.allowReusableCorrections
             ?await reuseCompletedCorrectionSupplement(candidate,plan.countryCode,input):null;

@@ -1,4 +1,4 @@
-import {afterEach,expect,it,vi} from "vitest";
+import {afterEach,beforeEach,expect,it,vi} from "vitest";
 import {collectLeadEvidence} from "./discovery";
 import {TavilySearchProvider} from "@/providers/tavily";
 import {BudgetDeniedError} from "@/lib/billing/policy";
@@ -7,6 +7,7 @@ import {companyCostKey} from "@/lib/billing/company-cost-context";
 import type {LeadWorkflowCandidate} from "./types";
 import type {LeadSearchPlan} from "@/lib/assistant/types";
 afterEach(()=>vi.restoreAllMocks());
+beforeEach(()=>vi.spyOn(TavilySearchProvider.prototype,"extract").mockResolvedValue({results:[],failedUrls:[],creditsUsed:0,creditSource:"no-call",attempts:0,retries:0,latencyMs:0}));
 const plan:LeadSearchPlan={countryCode:"DE",countryName:"德国",objective:"new-market",roles:["SI"],targetCount:2,queryLanguage:"en",userRequest:"fixture"};
 const candidates=["first.de","second.de"].map((domain,index)=>({candidateId:`candidate-${index}`,evidenceSnapshotRunId:"fixture-run",companyName:domain,domain,officialWebsiteUrl:`https://${domain}`,queryRoles:["SI"],queryFamily:"services",providerScore:0.5,evidence:[],evidenceWarnings:[]} as LeadWorkflowCandidate));
 const options={allowReusableEvidence:false,persistEvidence:false,concurrency:2};

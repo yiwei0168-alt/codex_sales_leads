@@ -11,7 +11,7 @@ import {OpenAiCompatibleProvider} from "@/providers/openai-compatible";
 import {ResilientAiProvider} from "@/providers/resilient-ai";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
-import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
+import { enforceAssessmentEvidenceCaps, normalizeAssessment, LeadQualificationAgent, LEAD_QUALIFICATION_PROMPT_VERSION } from "./qualification-agent";
 import {assessmentDependencyFingerprint,validCachedAssessment} from "./assessment-cache";
 import { roleScoringAnchors } from "./role-scoring-anchors";
 import {validateQualificationPhaseOutput,type QualificationPhaseOutput} from "./qualification-phase-output";
@@ -20,9 +20,10 @@ import type {productQualificationPhaseCheckpoint} from "./qualification-phase-ch
 import type {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import type {productQualificationSingletonChunkCheckpoint} from "./qualification-singleton-checkpoint";
 import {validateQualificationSingletonChunkOutput} from "./qualification-singleton-chunks";
+import type {LeadAssessmentModelOutput} from './schemas';
 import { CHANNEL_ROLE_FAMILIES } from "./types";
 import * as rawResponseCheckpoint from "./model-response-checkpoint";
-import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
+import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook, LeadCandidateAssessment } from "./types";
 
 class FakeProvider implements AiProvider {
   readonly id = "fake";
@@ -864,7 +865,7 @@ describe("LeadQualificationAgent", () => {
         .get(long.candidateId));
     expect(provider.calls.filter(item=>provider.cacheIdentity(item)===provider.cacheIdentity(firstChunk)))
       .toHaveLength(1);
-    expect(provider.calls.at(-1)?.promptVersion).toBe("lead-value-v7-role-anchors-five-paths");
+    expect(provider.calls.at(-1)?.promptVersion).toBe(LEAD_QUALIFICATION_PROMPT_VERSION);
     const callCount=provider.calls.length;
     const reused=await agent.evaluateWithUsage([long],playbook,"DE","Germany",
       "new-market",undefined,scope);
@@ -1230,5 +1231,70 @@ describe("LeadQualificationAgent", () => {
     expect(normalized.dimensions.cooperationPathAndBuyingInfluence).toBeLessThan(15);
     expect(normalized.totalScore).toBeLessThan(100);
     expect(normalized.warnings.join(" ")).toContain("neutral 8/15");
+  });
+});
+class PathRepairProvider extends CacheableFakeProvider {
+  constructor(private readonly repairMode: 'valid'|'invalid'|'foreign'|'budget' = 'valid') {
+    super({cooperationPaths:[{pathId:'wrong-tier',pathType:'Direct Tier-1 Supply',candidateRole:'VAR',
+      fitComponents:{roleStructureFit:27,userStageAndSupplyFit:22,productCustomerScenarioFit:16,procurementAndInfluence:13,executionFeasibility:8},
+      findingIds:['finding-path'],evidenceIds:['evidence-valid'],reason:'Business resale activity supports a supply discussion.',
+      prerequisites:[],risks:[],unknowns:[],allowedInExternalEmail:false}]});
+  }
+  override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>> {
+    if (!request.promptVersion.endsWith('-path-repair-v1')) return super.execute<I,O>(request);
+    this.calls.push(request as StructuredAiRequest<unknown>);
+    if(this.repairMode==='budget')throw new BudgetDeniedError('budget-exhausted');
+    return {modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:1,warnings:[],output:{
+      candidateId:this.repairMode==='foreign'?'other-company':candidate.candidateId,
+      cooperationPaths:[{pathId:'repaired-path',pathType:this.repairMode==='invalid'?'Direct Tier-1 Supply':'Direct Downstream Channel Supply',candidateRole:'VAR',
+        fitComponents:{roleStructureFit:27,userStageAndSupplyFit:22,productCustomerScenarioFit:16,procurementAndInfluence:13,executionFeasibility:8},
+        findingIds:['finding-path'],evidenceIds:['evidence-valid'],reason:'The evidenced VAR role supports downstream supply.',
+        prerequisites:[],risks:[],unknowns:[],allowedInExternalEmail:false}],selectedPathId:'repaired-path'} as O};
+  }
+}
+
+describe('bounded cooperation path recovery',()=>{
+  it('repairs only the incompatible path, preserving every score and an exact composite dependency',async()=>{
+    const provider=new PathRepairProvider(),agent=new LeadQualificationAgent(provider);
+    const raw=await new PathRepairProvider().execute<unknown,{assessments:LeadAssessmentModelOutput[]}>({task:'lead-qualification',modelVersion:'deepseek-v4-flash',promptVersion:'fixture',input:{},evidenceIds:[]});
+    const held=normalizeAssessment(raw.output.assessments[0],candidate,raw,false);
+    expect(held.eligibilityStatus).toBe('research-required');
+    expect(held.warnings.join(' ')).toContain('role-path-incompatible');
+    const saves:LeadCandidateAssessment[][]=[];
+    const result=await agent.evaluateWithUsage([candidate],playbook,'DE','Germany','new-market',async(_,items)=>{saves.push(items);});
+    expect(provider.calls).toHaveLength(2);
+    const repaired=result.assessments[0];
+    expect(repaired.eligible).toBe(true);
+    expect(repaired.dimensions).toEqual(held.dimensions);
+    expect(repaired.gates).toEqual(held.gates);
+    expect(repaired.totalScore).toBe(held.totalScore);
+    expect(repaired.cooperationPaths[0].pathType).toBe('Direct Downstream Channel Supply');
+    expect(provider.calls[1].input).not.toHaveProperty('dimensions');
+    expect(JSON.stringify(provider.calls[1].outputSchema)).not.toContain('dimensionRationales');
+    expect(saves[0][0].eligibilityStatus).toBe('research-required');
+    expect(agent.completedCacheContracts([repaired]).get(candidate.candidateId)).toMatch(/^[a-f0-9]{64}$/);
+    expect(agent.completedCacheContracts([repaired]).get(candidate.candidateId)).not.toBe(provider.cacheIdentity(provider.calls[0]));
+  });
+  it.each(['invalid','foreign'] as const)('keeps a %s repair held without a second repair loop',async mode=>{
+    const provider=new PathRepairProvider(mode);
+    const [result]=await new LeadQualificationAgent(provider).evaluate([candidate],playbook,'DE','Germany','new-market');
+    expect(provider.calls).toHaveLength(2);expect(result.eligible).toBe(false);
+    expect(result.summary).toContain('暂不推荐');expect(result.summary).not.toContain('Evidence-grounded');
+  });
+  it('saves the completed primary score before a repair budget stop',async()=>{
+    const provider=new PathRepairProvider('budget'),saved:LeadCandidateAssessment[]=[];
+    await expect(new LeadQualificationAgent(provider).evaluateWithUsage([candidate],playbook,'DE','Germany','new-market',
+      async(_,items)=>{saved.push(...items);})).rejects.toBeInstanceOf(BudgetDeniedError);
+    expect(saved).toHaveLength(1);expect(saved[0].scoringStatus).toBe('completed');
+    expect(saved[0].cooperationPaths).toEqual([]);
+  });
+  it('repairs a saved held assessment with one path request and zero scoring requests',async()=>{
+    const raw=await new PathRepairProvider().execute<unknown,{assessments:LeadAssessmentModelOutput[]}>({task:'lead-qualification',modelVersion:'deepseek-v4-flash',promptVersion:'fixture',input:{},evidenceIds:[]});
+    const held=normalizeAssessment(raw.output.assessments[0],candidate,raw,false);
+    const provider=new PathRepairProvider(),before=JSON.stringify(held);
+    const result=await new LeadQualificationAgent(provider).repairSavedPathsWithUsage(candidate,held,playbook,'DE','Germany','new-market');
+    expect(provider.calls).toHaveLength(1);expect(provider.calls[0].promptVersion).toContain('path-repair-v1');
+    expect(result.assessment.dimensions).toEqual(held.dimensions);expect(JSON.stringify(held)).toBe(before);
+    expect(result.assessment.eligible).toBe(true);
   });
 });

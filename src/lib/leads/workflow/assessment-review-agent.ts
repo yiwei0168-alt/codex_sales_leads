@@ -13,6 +13,7 @@ import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { normalizeAssessment } from "./qualification-agent";
+import { COOPERATION_PATH_ROLE_INSTRUCTION } from "./cooperation-path-validation";
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { preparePublicReviewDisclosure } from "./public-review-disclosure";
@@ -98,6 +99,7 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "You are blind to the primary score and discovery provider. Do not infer missing facts.",
         "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
         "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and at most two viable paths from the five-path taxonomy.",
+        COOPERATION_PATH_ROLE_INSTRUCTION,
         "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
       ], payload: input },
       outputSchema: z.toJSONSchema(leadAssessmentModelSchema) as Record<string, unknown>,
@@ -116,6 +118,7 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "Resolve a material disagreement between two anonymous lead assessments using only the frozen fact ledger.",
         "Do not assume A or B is primary. You may accept one, merge dimension judgments, or request one targeted research question.",
         "Never create a fact or evidence ID. Missing evidence remains unknown.",
+        COOPERATION_PATH_ROLE_INSTRUCTION,
       ], payload: input },
       outputSchema: z.toJSONSchema(leadAssessmentJudgeSchema) as Record<string, unknown>,
     };
@@ -222,7 +225,8 @@ export function assessmentReviewTriggers(options: {
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
   const proOrEscalated = assessment.escalated || /(?:^|[-/])pro(?:$|[-/])/i.test(assessment.model);
   const unresolvedCriticalState = Object.values(assessment.gates).some(state => state === "unknown" || state === "conflicting")
-    || candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved";
+    || candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved"
+    || (assessment.eligibilityStatus === "research-required" && assessment.cooperationPaths.length === 0);
   if (proOrEscalated && unresolvedCriticalState) triggers.push("pro-unresolved-critical-state");
   if (randomAuditPercent > 0 && stableAuditBucket(candidate.candidateId) < randomAuditPercent) triggers.push("random-audit");
   return [...new Set(triggers)];

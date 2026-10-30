@@ -21,3 +21,13 @@ it("keeps evidence requiring refresh as stale instead of renewing it",()=>{
   expect(seed.savedProcessingRecovery.refreshCandidateIds).toEqual([candidate.candidateId]);
   expect(seed.candidates[0].evidence.filter(item=>item.sourceType!=="discovery").every(item=>item.freshnessStatus==="stale")).toBe(true);
 });
+it('retains fresh corrected path-repair candidates and their saved scores; refresh work uses ordinary requalification',()=>{
+  const input={runId:'new-run',scope:{companies:[{stage:'path-repair',sourceCandidateIds:[candidate.candidateId],candidates:[correctedCandidate],pathAssessment:{candidateId:candidate.candidateId,totalScore:70}}]},
+    proof:{sourceActionId:'parent',sourceRunId:'old-run',checkpointFingerprint:'proof'},evidenceReadiness:[{candidateId:candidate.candidateId,needsEvidenceRefresh:false}]} as unknown as Prepared;
+  const seed=savedRecoverySeed(input);
+  expect(seed.savedPathRepairs).toHaveLength(1);expect(seed.correctedCandidates).toHaveLength(1);
+  expect(seed.correctedCandidates[0].evidenceSnapshotRunId).toBe('new-run');
+  const stale=savedRecoverySeed({...input,evidenceReadiness:[]});
+  expect(stale.savedPathRepairs).toEqual([]);expect(stale.correctedCandidates).toEqual([]);
+  expect(stale.savedProcessingRecovery.refreshCandidateIds).toEqual([candidate.candidateId]);
+});

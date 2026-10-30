@@ -8,6 +8,8 @@ import type { AiExecutionRoute,AiProvider,StructuredAiRequest, StructuredAiRespo
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
 import {isDeepStrictEqual} from "node:util";
+import {createHash} from "node:crypto";
+import {cooperationPathRejections, COOPERATION_PATH_ROLE_INSTRUCTION} from "./cooperation-path-validation";
 
 import { candidateValueScore, clampDimension, recommendationPriority, salesAccountTier, selectResearchDepth } from "../candidate-value";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
@@ -38,7 +40,7 @@ import type {
   WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v7-role-anchors-five-paths";
+export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v8-validated-paths";
 export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v10-role-anchors-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 function validatedAssessmentSchema(includePaths:boolean):z.ZodType<QualificationModelOutput>{
@@ -136,15 +138,6 @@ function cooperationLane(lane: CorrectedLeadWorkflowCandidate["queryFamily"]): C
   return "operator";
 }
 
-function pathRoleCompatible(path: LeadAssessmentModelOutput["cooperationPaths"][number]): boolean {
-  const tier1Role = path.candidateRole === "Distributor" || path.candidateRole === "VAD";
-  if (path.pathType === "Direct Tier-1 Supply") return tier1Role;
-  if (path.pathType === "Distributor-Mediated Supply" || path.pathType === "Direct Downstream Channel Supply") {
-    return !tier1Role;
-  }
-  return true;
-}
-
 function assessmentEvidenceCaps(candidate: CorrectedLeadWorkflowCandidate,
   companyScaleClass: LeadCandidateAssessment["companyScaleClass"]) {
   const claimEvidence = candidate.evidence.filter((item) =>
@@ -238,14 +231,13 @@ export function normalizeAssessment(
     executionAndEnablement: clampDimension("executionAndEnablement", value.dimensions.executionAndEnablement),
     opportunityAndRisk: clampDimension("opportunityAndRisk", value.dimensions.opportunityAndRisk),
   };
-  const allowedRoles = new Set(candidate.correction.resolvedRoles);
   const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
   const modelPaths = "cooperationPaths" in value ? value.cooperationPaths : [];
   const selectedPathId = "selectedPathId" in value ? value.selectedPathId : null;
+  const pathRejections = cooperationPathRejections(modelPaths, candidate, allowOemOdm);
+  const rejectedPathIds = new Set(pathRejections.map(item => item.pathId));
   const rankedPaths = modelPaths
-    .filter((path) => allowedRoles.has(path.candidateRole))
-    .filter(pathRoleCompatible)
-    .filter((path) => allowOemOdm || path.pathType !== "OEM/ODM")
+    .filter((path) => !rejectedPathIds.has(path.pathId))
     .map((path) => ({ ...path, ...normalizedPathFit(path),
       findingIds: [...new Set(path.findingIds.filter((id) => allowedFindings.has(id)))],
       evidenceIds: [...new Set(path.evidenceIds.filter((id) => allowedEvidence.has(id)))],
@@ -311,7 +303,8 @@ export function normalizeAssessment(
     eligibilityStatus,
     cooperationPaths,
     selectedPathId: selectedPath?.pathId ?? null,
-    summary: value.summary,
+    summary: eligibilityStatus === "eligible" ? value.summary
+      : finalAssessmentHoldSummary(gates, includeCooperationPaths && cooperationPaths.length === 0),
     reasons: value.reasons,
     risks: value.risks,
     unknowns: value.unknowns,
@@ -332,10 +325,19 @@ export function normalizeAssessment(
         ? [`Cooperation-path score was capped at ${caps.cooperationPathAndBuyingInfluence}/15 by deterministic evidence: ${pathEvidenceAssessment.reason}`] : []),
       ...(value.dimensions.scaleAndChannelCoverage > caps.scaleAndChannelCoverage
         ? ["Scale/channel score was capped at the neutral 8/15 because no positive evidence established a scale class; unknown was not treated as zero."] : []),
-      ...(includeCooperationPaths && cooperationPaths.length < modelPaths.length
-        ? ["Cooperation paths with unsupported roles, disabled OEM/ODM, or invalid evidence were removed."] : []),
+      ...pathRejections.map(item => `Cooperation path rejected: ${item.pathId} (${item.reasons.join(", ")}).`),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
+}
+
+function finalAssessmentHoldSummary(gates: LeadCandidateAssessment["gates"], missingPath: boolean) {
+  const labels: Record<keyof typeof gates, string> = { correctedIdentityUsable: "公司身份", companyExists: "公司存续",
+    targetCountryPresence: "目标国家业务存在", networkingRelevant: "网络产品业务相关性", independentProspect: "独立潜客资格" };
+  const failed = Object.entries(gates).filter(([, value]) => value === "not-supported").map(([key]) => labels[key as keyof typeof gates]);
+  if (failed.length) return `不符合本次任务条件：${failed.join("、")}缺少支持。`;
+  const pending = Object.entries(gates).filter(([, value]) => value !== "supported").map(([key]) => labels[key as keyof typeof gates]);
+  if (missingPath) pending.push("有效且有证据支持的合作路径");
+  return `需要补充研究，暂不推荐。待确认：${pending.join("、")}。`;
 }
 
 function requiresEscalation(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
@@ -475,6 +477,88 @@ export class LeadQualificationAgent {
       const contract=this.exactAssessmentContracts.get(assessment);
       return contract?[[assessment.candidateId,contract] as const]:[];
     }));
+  }
+
+  /** A path repair is an additional dependency, never a replacement scoring response. */
+  private readonly pathRepairContracts = new WeakMap<LeadCandidateAssessment, string>();
+  private rememberContract(assessment: LeadCandidateAssessment, sourceContract: string) {
+    const repair = this.pathRepairContracts.get(assessment);
+    this.exactAssessmentContracts.set(assessment, repair
+      ? createHash("sha256").update(JSON.stringify(["score-with-path-repair-v1", sourceContract, repair])).digest("hex")
+      : sourceContract);
+  }
+
+  private async repairRejectedPaths(candidate: CorrectedLeadWorkflowCandidate, value: QualificationModelOutput,
+    assessment: LeadCandidateAssessment, playbook: LeadMarketPlaybook, countryCode: string, countryName: string,
+    objective: string, usageRecords: WorkflowModelUsage[], savedRejections?: string[]) {
+    const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
+    if (!this.includeCooperationPaths || !("cooperationPaths" in value) || assessment.cooperationPaths.length
+      || !Object.values(assessment.gates).every(state => state === "supported")) return assessment;
+    const rejected = savedRejections?.length ? [{pathId:"saved-invalid-path",reasons:savedRejections}]
+      : cooperationPathRejections(value.cooperationPaths, candidate, allowOemOdm);
+    if (!rejected.length) return assessment;
+    const schema = leadAssessmentModelSchema.pick({candidateId: true, cooperationPaths: true, selectedPathId: true}).strict();
+    const base = this.request([candidate], playbook, countryCode, countryName, objective, this.routineModel);
+    const request = { ...base, promptVersion: `${this.promptVersion}-path-repair-v1`, input: {
+      instructions: ["Repair only the rejected cooperation paths for this exact candidate using supplied evidence. Return candidateId, cooperationPaths and selectedPathId only. Do not return or revise company facts, gates, dimension scores or an assessment summary.",
+        COOPERATION_PATH_ROLE_INSTRUCTION,
+        "Use the existing five-path policy and component limits. Cite current supplied evidence IDs. OEM/ODM is enabled only when allowOemOdm is true. If no path is supportable, return an empty list. Do not rename an incompatible path mechanically."],
+      market: base.input.market, cudyFitBrief: base.input.cudyFitBrief,
+      candidates: base.input.candidates, allowOemOdm,
+      rejectedPaths: value.cooperationPaths, rejectionReasons: rejected,
+      cooperationPathPolicy: COOPERATION_PATH_POLICY,
+    }, outputSchema: z.toJSONSchema(schema) as Record<string, unknown> };
+    try {
+      const bytes = this.provider.requestBytes?.(request), limit = leadRequestByteLimit(request);
+      if (bytes !== undefined && limit !== null && bytes > limit) throw new LeadRequestTooLargeError(bytes, limit);
+      const response = await withCompanyCostAttribution([candidate], countryCode, () =>
+        this.provider.execute(request, AbortSignal.timeout(120_000)));
+      if (!response.warnings.includes("qualification-response-checkpoint-hit")) usageRecords.push({stage: "qualification",
+        requestedModel: response.requestedModelVersion ?? request.modelVersion, actualModel: response.modelVersion,
+        providerId: response.actualProviderId, promptTokens: response.usage?.promptTokens ?? 0,
+        completionTokens: response.usage?.completionTokens ?? 0, reasoningTokens: response.usage?.reasoningTokens ?? 0,
+        totalTokens: response.usage?.totalTokens ?? 0, latencyMs: response.latencyMs, fallbackUsed: false,
+        attempts: response.attempts, retries: response.retries, accountCashCostUsd: response.usage?.accountCashCostUsd});
+      const parsed = schema.parse(response.output);
+      if (parsed.candidateId !== candidate.candidateId) throw new Error("Path repair returned another candidate");
+      const contract = this.responseCacheIdentity(request, response);
+      if (!contract && (this.provider.cacheIdentity || this.provider.responseCacheIdentity))
+        throw new Error("Path repair has no exact reusable response contract");
+      const repairedValue = {...value, cooperationPaths: parsed.cooperationPaths, selectedPathId: parsed.selectedPathId};
+      // Normalize against the ORIGINAL scoring response; model attribution and all seven scores stay unchanged.
+      const repaired = normalizeAssessment(repairedValue, candidate, {output: null, modelVersion: assessment.model,
+        promptVersion: assessment.promptVersion, latencyMs: 0, warnings: []}, assessment.escalated, allowOemOdm, true);
+      if (!isDeepStrictEqual(repaired.dimensions, assessment.dimensions)
+        || !isDeepStrictEqual(repaired.gates, assessment.gates) || repaired.totalScore !== assessment.totalScore)
+        throw new Error("Evidence normalization changed the retained score or gates; a path-only repair cannot replace them");
+      repaired.summary = repaired.eligible
+        ? `符合本次任务条件；合作路径已单独复核。评分 ${repaired.totalScore}/100，推荐优先级 ${repaired.recommendationPriority}。`
+        : repaired.summary;
+      repaired.warnings = [...assessment.warnings, ...repaired.warnings,
+        `Bounded cooperation-path-only repair completed with ${response.modelVersion}; original scores and gates were preserved.`];
+      if (contract) this.pathRepairContracts.set(repaired, contract);
+      return repaired;
+    } catch (error) {
+      if (error instanceof BudgetDeniedError) throw error;
+      return {...assessment, warnings: [...assessment.warnings,
+        `Cooperation-path-only repair stopped without changing scores: ${error instanceof Error ? error.message : String(error)}`]};
+    }
+  }
+
+  /** A linked child run can repair a retained held assessment without buying its score again. */
+  async repairSavedPathsWithUsage(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
+    playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string) {
+    if (assessment.candidateId !== candidate.candidateId || assessment.scoringStatus !== "completed"
+      || assessment.eligibilityStatus !== "research-required" || assessment.cooperationPaths.length
+      || !Object.values(assessment.gates).every(state=>state==="supported")) throw new Error("Invalid saved path repair scope");
+    const rejections=assessment.warnings.filter(warning=>warning.startsWith("Cooperation path rejected:")
+      ||warning.startsWith("Cooperation paths with unsupported roles"));
+    if(!rejections.length)throw new Error("Saved assessment has no recorded path rejection");
+    const usage:WorkflowModelUsage[]=[];
+    const value:LeadAssessmentModelOutput={...assessment,escalation:{required:false,expectedTotalScoreChange:0,
+      criticalStateChanges:[],higherCapabilityCanResolve:false,reason:"Saved scores are preserved during path-only repair."}};
+    const repaired=await this.repairRejectedPaths(candidate,value,assessment,playbook,countryCode,countryName,objective,usage,rejections);
+    return {assessment:repaired,usage};
   }
 
   /** Read-only recovery preflight. Exposes identities, never model input bodies. */
@@ -761,6 +845,7 @@ export class LeadQualificationAgent {
       throw new Error("Phase synthesis must match one scoring candidate");
     const pathInstructions = this.includeCooperationPaths ? [
       "Return at most two evidence-supported cooperation paths using only: Direct Tier-1 Supply, Distributor-Mediated Supply, Direct Downstream Channel Supply, OEM/ODM, or Other.",
+      COOPERATION_PATH_ROLE_INSTRUCTION,
       "Score each path semantically with role/structure 0-30, user-stage/supply fit 0-25, product/customer/scenario fit 0-20, procurement/influence 0-15, and execution feasibility 0-10. Do not return a path total or path confidence; code computes and ranks the total.",
       "Normally recommend paths scoring at least 65. If every path is below 65, code retains only the highest path. Keep path explanations short; later strategy and email agents add titles, value propositions and calls to action only after explicit user action.",
       "Do not use an upward channel hierarchy. The recommended path depends on the user stage, market, product track, candidate roles and evidence.",
@@ -1009,7 +1094,9 @@ export class LeadQualificationAgent {
     if(!value||!routine.parsed.complete)return failedAssessment(candidate,
       "Phased final score omitted or invalidated the candidate; paid output is retained for investigation, not replayed.",this.promptVersion);
     const allowOemOdm=/\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
-    const normalized=normalizeAssessment(value,candidate,routine.response,false,allowOemOdm,this.includeCooperationPaths);
+    const normalized=await this.repairRejectedPaths(candidate,value,
+      normalizeAssessment(value,candidate,routine.response,false,allowOemOdm,this.includeCooperationPaths),
+      playbook,countryCode,countryName,objective,usageRecords);
     if(requiresEscalation(candidate,normalized,value)&&this.routineModel!==this.escalationModel){
       let pro:ReturnType<LeadQualificationAgent["planPhasedFinalRequest"]>;
       try{pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
@@ -1023,15 +1110,17 @@ export class LeadQualificationAgent {
       if(!proValue||!escalated.parsed.complete)return failedAssessment(candidate,
         "Phased Pro score omitted or invalidated the candidate; paid output remains saved, not replayed.",
         this.promptVersion);
-      const decided=normalizeAssessment(proValue,candidate,escalated.response,true,allowOemOdm,
-        this.includeCooperationPaths);
+      const decided=await this.repairRejectedPaths(candidate,proValue,
+        normalizeAssessment(proValue,candidate,escalated.response,true,allowOemOdm,this.includeCooperationPaths),
+        playbook,countryCode,countryName,objective,usageRecords);
       const finalDecision={...decided,warnings:["Material semantic escalation from the saved routine score.",
         ...decided.warnings]};
-      if(finalDecision.scoringStatus==="completed")this.exactAssessmentContracts.set(finalDecision,
-        escalated.contract);
+      const repairContract=this.pathRepairContracts.get(decided);
+      if(repairContract)this.pathRepairContracts.set(finalDecision,repairContract);
+      if(finalDecision.scoringStatus==="completed")this.rememberContract(finalDecision,escalated.contract);
       return finalDecision;
     }
-    if(normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,
+    if(normalized.scoringStatus==="completed")this.rememberContract(normalized,
       routine.contract);
     return normalized;
   }
@@ -1067,12 +1156,23 @@ export class LeadQualificationAgent {
         if(exactContract&&normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,exactContract);
         stable.set(candidate.candidateId,normalized);
       }
-      // Save independently complete peers BEFORE any repair can pause on budget/unknown outcome.
-      if(publish&&stable.size>0&&stable.size<candidates.length)await publish(candidates.filter(candidate=>stable.has(candidate.candidateId)),[...stable.values()]);
+      // Preserve complete scores before any schema/path repair can pause on budget or unknown outcome.
+      const needsPathRepair = candidates.some(candidate => {
+        const assessment = stable.get(candidate.candidateId), value = values.get(candidate.candidateId);
+        return assessment && value && "cooperationPaths" in value && !assessment.cooperationPaths.length
+          && cooperationPathRejections(value.cooperationPaths, candidate, /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective)).length > 0;
+      });
+      if(publish&&stable.size>0&&(stable.size<candidates.length||needsPathRepair))await publish(candidates.filter(candidate=>stable.has(candidate.candidateId)),[...stable.values()]);
       if(shouldDefer?.())return candidates.map(candidate=>stable.get(candidate.candidateId)
         ??deferredAfterCacheFailure(candidate,this.promptVersion));
       return await Promise.all(candidates.map(async candidate=>{
-        const completed=stable.get(candidate.candidateId);if(completed)return completed;
+        const completed=stable.get(candidate.candidateId);
+        if(completed){
+          const repaired=await this.repairRejectedPaths(candidate,values.get(candidate.candidateId)!,completed,
+            playbook,countryCode,countryName,objective,usageRecords);
+          if(exactContract&&repaired.scoringStatus==="completed")this.rememberContract(repaired,exactContract);
+          return repaired;
+        }
         if(!values.has(candidate.candidateId))return this.evaluateOneRoutineRepair(candidate,playbook,countryCode,countryName,objective,"Routine batch omitted or invalidated the candidate.",usageRecords);
         return this.evaluateOneEscalated(candidate,playbook,countryCode,countryName,objective,"Routine assessment requested evidence-conflict escalation.",usageRecords);
       }));
@@ -1102,8 +1202,9 @@ export class LeadQualificationAgent {
           this.promptVersion);
       }
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
-      const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm,
-        this.includeCooperationPaths);
+      const normalized = await this.repairRejectedPaths(candidate,value,
+        normalizeAssessment(value, candidate, routine.response, false, allowOemOdm, this.includeCooperationPaths),
+        playbook,countryCode,countryName,objective,usageRecords);
       if (requiresEscalation(candidate, normalized, value) && this.routineModel !== this.escalationModel) {
         return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective,
           `${reason} Same-tier schema repair requested material semantic escalation.`, usageRecords);
@@ -1113,7 +1214,9 @@ export class LeadQualificationAgent {
         ...normalized.warnings,
       ] };
       const contract=this.responseCacheIdentity(repairRequest,routine.response);
-      if(contract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,contract);
+      const repairContract=this.pathRepairContracts.get(normalized);
+      if(repairContract)this.pathRepairContracts.set(completed,repairContract);
+      if(contract&&completed.scoringStatus==="completed")this.rememberContract(completed,contract);
       return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
@@ -1145,11 +1248,14 @@ export class LeadQualificationAgent {
       if(!validated.complete)throw new Error("Escalation did not return exactly the requested candidate");
       const parsed=validated.items[0];
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
-      const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm,
-        this.includeCooperationPaths);
+      const normalized = await this.repairRejectedPaths(candidate,parsed,
+        normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm,this.includeCooperationPaths),
+        playbook,countryCode,countryName,objective,usageRecords);
       const completed={ ...normalized, warnings: [reason, ...normalized.warnings] };
       const contract=this.responseCacheIdentity(this.request([candidate],playbook,countryCode,countryName,objective,this.escalationModel),escalation);
-      if(contract&&completed.scoringStatus==="completed")this.exactAssessmentContracts.set(completed,contract);
+      const repairContract=this.pathRepairContracts.get(normalized);
+      if(repairContract)this.pathRepairContracts.set(completed,repairContract);
+      if(contract&&completed.scoringStatus==="completed")this.rememberContract(completed,contract);
       return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;

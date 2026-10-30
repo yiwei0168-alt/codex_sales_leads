@@ -273,3 +273,8 @@ The first MX Retail cell improved final fill from the historical 6/30 to 15/30, 
 ## 2026-10-10 Gemini 网关执行更新
 
 gemini-full/product 均通过 OpenRouter 原生 web 插件执行，使用网关密钥与规范化 google/ 模型标识。只将有效 URL annotations 转成待核验候选，未知搜索次数保留 unknown。恢复契约 discovery-request-v5-gemini-openrouter-native 不接受旧直连任务依赖，须核对历史已付费工作；不会自动重做。其他搜索服务的路由和查询范围不变。87 项本地回归通过，无真实搜索验收，详见 OPENROUTER_DISCOVERY_MIGRATION_2026-10-10.md。
+
+
+### 2026-10-30: targeted quality follow-up
+
+LEAD-QUALITY-FOLLOWUP-01 adds official-page extraction before new broad search, explicit role/path rejection reasons and bounded path-only repair. Held summaries follow the normalized decision. Linked processing recovery preserves source scores and history; only fresh bound evidence may support path-only repair, while expired/missing official evidence requires targeted acquisition. Remaining-gap discovery retains ancestor exclusions. See [implementation and verification](LEAD_QUALITY_FOLLOWUP_2026-10-30.md). This does not lower scoring thresholds or declare a shortfall to be market exhaustion.

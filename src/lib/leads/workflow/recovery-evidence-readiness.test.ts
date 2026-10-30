@@ -20,12 +20,19 @@ it("treats expired evidence as refreshable, including the exact expiry boundary"
 it("rejects missing, superseded and altered source bindings without business rejection",()=>{
   expect(recoveryEvidenceReadiness(source,[],now).reasons).toEqual({"missing-saved-evidence":1});
   expect(recoveryEvidenceReadiness(source,[{...row,public_valid:false}],now).reasons).toEqual({"superseded-or-invalid-public-evidence":1});
-  expect(recoveryEvidenceReadiness({...source,evidence:[{...evidence,excerpt:"Changed"}]},[row],now).reasons).toEqual({"invalid-evidence-binding":1});
-  expect(recoveryEvidenceReadiness({...source,evidence:[]},[],now).reasons).toEqual({"missing-scoring-evidence":1});
+  expect(recoveryEvidenceReadiness({...source,evidence:[{...evidence,excerpt:"Changed"}]},[row],now).reasons).toEqual({"invalid-evidence-binding":1,"missing-official-page":1});
+  expect(recoveryEvidenceReadiness({...source,evidence:[]},[],now).reasons).toEqual({"missing-scoring-evidence":1,"missing-official-page":1});
 });
 it("does not renew evidence by changing capture time or accepting unknown clocks",()=>{
   for(const saved of [{...row,retrieved_at:now},{...row,expires_at:"invalid"},{...row,retrieved_at:"2027-01-01"}]){
     expect(recoveryEvidenceReadiness(source,[saved],now).reasons).toEqual({"invalid-evidence-date":1});
   }
   expect(recoveryEvidenceReadiness(source,[row],new Date("invalid")).needsEvidenceRefresh).toBe(true);
+});
+
+it("requires official extraction when the retained usable evidence is independent only",()=>{
+  const independent={...evidence,sourceType:"independent-public" as const};
+  const readiness=recoveryEvidenceReadiness({...source,evidence:[independent]},[{...row,source_type:"independent-public"}],now);
+  expect(readiness.reusableEvidence).toBe(1);expect(readiness.needsEvidenceRefresh).toBe(true);
+  expect(readiness.reasons).toEqual({"missing-official-page":1});
 });

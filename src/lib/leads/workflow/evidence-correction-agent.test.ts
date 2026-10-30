@@ -68,7 +68,8 @@ const searchProvider = {
   async search(): Promise<TavilySearchResponse> {
     return { query: "fixture", creditsUsed: 2, results: [{ title: "Smart Technik official",
       url: "https://smarttechnik.eu/netzwerk", score: 0.9,
-      content: "Smart Technik GmbH in Germany plans and installs WLAN, Wi-Fi access points and network switches for customers." }] };
+      content: "Smart Technik GmbH in Germany plans and installs WLAN, Wi-Fi access points and network switches for customers.",
+      rawContent: "Smart Technik GmbH in Germany plans and installs WLAN, Wi-Fi access points and network switches for customers." }] };
   },
 };
 

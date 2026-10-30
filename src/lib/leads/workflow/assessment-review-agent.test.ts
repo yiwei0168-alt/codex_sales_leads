@@ -126,6 +126,8 @@ describe("LeadAssessmentReviewAgent", () => {
     expect(assessmentReviewTriggers({candidate,assessment:unresolved,randomAuditPercent:0})).toContain("pro-unresolved-critical-state");
     const conflicting={...assessment(),gates:{...assessment().gates,networkingRelevant:"conflicting" as const}};
     expect(assessmentReviewTriggers({candidate,assessment:conflicting,randomAuditPercent:0})).toContain("deterministic-conflict");
+    const missingPath={...assessment(),model:"deepseek-v4-pro",eligible:false,eligibilityStatus:"research-required" as const,cooperationPaths:[],selectedPathId:null};
+    expect(assessmentReviewTriggers({candidate,assessment:missingPath,randomAuditPercent:0})).toContain("pro-unresolved-critical-state");
   });
   it.each(["broader-question","contradicted-relationship","other-gate","conflicting-fact"])(
     "does not use an owner declaration to clear %s",async(kind)=>{

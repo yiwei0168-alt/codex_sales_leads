@@ -7,7 +7,7 @@ import { tenantTransaction, tenantQuery } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { TavilySearchProvider, tavilyFailureMetrics } from "@/providers/tavily";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
-import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
+import { isCurrentLeadScoringEvidence, leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import type {
   LeadEvidenceItem,
@@ -261,57 +261,62 @@ async function enrichOne(
         evidenceRunId: candidate.evidenceSnapshotRunId,
       }).catch(() => ({ evidence: [], stale: false }))
       : { evidence: [], stale: false };
-    if (reusable.evidence.length > 0) {
-      const evidence = [...new Map([...candidate.evidence, ...reusable.evidence]
-        .map((item) => [item.id, item])).values()];
-      const onlyStale = reusable.evidence.every((item) => item.freshnessStatus === "stale");
-      const warning = onlyStale
-        ? `Reusable evidence for ${candidate.domain} is stale; retained without automatic Web Search. User reverification is required.`
-        : undefined;
-      return { candidate: { ...candidate, evidence, evidenceWarnings: warning
-        ? [...candidate.evidenceWarnings, warning] : candidate.evidenceWarnings }, credits,
-      requests, retries, latencyMs, warning };
+    candidate = { ...candidate, evidence: [...new Map([...candidate.evidence, ...reusable.evidence]
+      .map(item => [item.id, item])).values()] };
+    const hasOfficial = candidate.evidence.some(item => item.sourceType === "official-website"
+      && sameDomain(item.url, candidate.domain) && Boolean(item.excerpt.trim())
+      && isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+    if (options.allowReusableEvidence && hasOfficial) return { candidate, credits, requests, retries, latencyMs };
+    if (reusable.evidence.length && reusable.evidence.every(item => item.freshnessStatus === "stale")) {
+      const warning = `Reusable evidence for ${candidate.domain} is stale; retained without automatic Web Search. User reverification is required.`;
+      return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] },
+        credits, requests, retries, latencyMs, warning };
     }
-    const official = await tavily.search({
-      query: `site:${candidate.domain} company products solutions customers locations networking ${plan.countryName}`,
-      country: new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode)?.toLowerCase(),
-      searchDepth: "basic",
-      maxResults: 6,
-      includeRawContent: false,
-      includeDomains: [candidate.domain],
-    }, AbortSignal.timeout(45_000));
-    credits += official.creditsUsed;
-    creditObservations.push({ source: official.creditSource ?? "estimate", credits: official.creditsUsed });
-    requests += official.attempts ?? 1;
-    retries += official.retries ?? 0;
-    latencyMs += official.latencyMs ?? 0;
-    const officialResults = official.results.filter((item) => sameDomain(item.url, candidate.domain)).slice(0, 4);
-    let extracted = { results: [] as Array<{ url: string; rawContent: string }>, creditsUsed: 0 };
-    if (officialResults.length > 0) {
-      const response = await tavily.extract(officialResults.map((item) => item.url), AbortSignal.timeout(45_000));
-      extracted = { results: response.results, creditsUsed: response.creditsUsed };
+    // Known company URLs are extraction seeds, not proof. Try them before broad discovery.
+    const knownUrls = [...new Set([...candidate.evidence.filter(item => sameDomain(item.url, candidate.domain))
+      .map(item => item.url), candidate.officialWebsiteUrl].filter(url => {
+        try { const parsed = new URL(url); return ["http:", "https:"].includes(parsed.protocol)
+          && !parsed.username && !parsed.password && sameDomain(url, candidate.domain); } catch { return false; }
+      }))].slice(0, 3);
+    const attempted = new Set<string>();
+    const added: LeadEvidenceItem[] = [];
+    const extract = async (urls: string[], titles = new Map<string, string>()) => {
+      const pending = urls.filter(url => !attempted.has(url));
+      if (!pending.length) return;
+      pending.forEach(url => attempted.add(url));
+      const response = await tavily.extract(pending, AbortSignal.timeout(45_000));
       credits += response.creditsUsed;
       if (response.creditSource !== "no-call") creditObservations.push({
         source: response.creditSource ?? "estimate", credits: response.creditsUsed });
-      requests += response.attempts ?? 1;
-      retries += response.retries ?? 0;
-      latencyMs += response.latencyMs ?? 0;
+      requests += response.attempts ?? 1; retries += response.retries ?? 0; latencyMs += response.latencyMs ?? 0;
+      for (const item of response.results) {
+        const excerpt = item.rawContent.replace(/\s+/g, " ").trim().slice(0, 4_000);
+        if (!sameDomain(item.url, candidate.domain) || !excerpt) continue;
+        added.push({ id: stableId("evidence", item.url), url: item.url,
+          title: titles.get(item.url) ?? new URL(item.url).hostname, excerpt, sourceType: "official-website",
+          provider: "tavily-extract", capturedAt: new Date().toISOString(),
+          evidenceRunId: candidate.evidenceSnapshotRunId, freshnessStatus: "fresh",
+          contentHash: leadEvidenceContentHash(excerpt) });
+      }
+    };
+    await extract(knownUrls);
+    if (!added.length) {
+      const official = await tavily.search({
+        query: `site:${candidate.domain} company products solutions customers locations networking ${plan.countryName}`,
+        country: new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode)?.toLowerCase(),
+        searchDepth: "basic", maxResults: 6, includeRawContent: false, includeDomains: [candidate.domain],
+      }, AbortSignal.timeout(45_000));
+      credits += official.creditsUsed;
+      creditObservations.push({ source: official.creditSource ?? "estimate", credits: official.creditsUsed });
+      requests += official.attempts ?? 1; retries += official.retries ?? 0; latencyMs += official.latencyMs ?? 0;
+      const officialResults = official.results.filter(item => sameDomain(item.url, candidate.domain)).slice(0, 4);
+      await extract(officialResults.map(item => item.url), new Map(officialResults.map(item => [item.url, item.title])));
+      // Search summaries remain discovery seeds; failed extraction cannot turn them into verified page content.
+      const extractedUrls = new Set(added.map(item => item.url));
+      candidate.evidence = [...candidate.evidence, ...officialResults.filter(item => !extractedUrls.has(item.url))
+        .map(item => ({ id: stableId("discovery", item.url), url: item.url, title: item.title, excerpt: item.content,
+          sourceType: "discovery" as const, provider: "tavily-search", capturedAt: new Date().toISOString() }))];
     }
-    const rawByUrl = new Map(extracted.results.map((item) => [item.url, item.rawContent]));
-    const added: LeadEvidenceItem[] = officialResults.map((result) => ({
-      id: stableId("evidence", result.url),
-      url: result.url,
-      title: result.title,
-      excerpt: (rawByUrl.get(result.url) || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
-      sourceType: "official-website",
-      provider: "tavily",
-      capturedAt: new Date().toISOString(),
-      evidenceRunId: candidate.evidenceSnapshotRunId,
-      freshnessStatus: "fresh",
-      contentHash: leadEvidenceContentHash(
-        (rawByUrl.get(result.url) || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
-      ),
-    }));
     if (options.persistEvidence) {
       await persistPublicEvidence({
         companyName: candidate.companyName,

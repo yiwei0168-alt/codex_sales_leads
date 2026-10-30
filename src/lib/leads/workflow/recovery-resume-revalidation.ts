@@ -62,6 +62,8 @@ export function revalidateSavedRecoveryResume(state:LeadWorkflowState,readiness:
       retries:0,usageBoundary:"checkpoint-revalidation-before-downstream-use"}});
   return {candidates,correctedCandidates:state.correctedCandidates.filter(item=>keep(item.candidateId)),
     assessments:state.assessments.filter(item=>keep(item.candidateId)),
+    primaryAssessments:state.primaryAssessments?.filter(item=>keep(item.candidateId)),
+    savedPathRepairs:state.savedPathRepairs?.filter(item=>keep(item.candidateId)),
     assessmentReviews:state.assessmentReviews.filter(item=>keep(item.candidateId)),
     handoffs:state.handoffs.filter(item=>keep(item.provenance.candidateId)),
     acceptedCandidateCount:0,targetCompletionReason:"processing-incomplete",targetShouldContinue:false,

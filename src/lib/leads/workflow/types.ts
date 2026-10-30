@@ -451,6 +451,7 @@ export interface LeadWorkflowState {
   scoreRecoveryCheckpointAt?: string;
   terminalRecoveryOnly?: boolean;
   savedProcessingRecovery?: {sourceActionId:string;sourceRunId:string;sourceFingerprint:string;refreshCandidateIds:string[];evidenceBlocked?:boolean};
+  savedPathRepairs?: Array<{candidateId:string;assessment:LeadCandidateAssessment}>;
   targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "no-qualified-progress" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];

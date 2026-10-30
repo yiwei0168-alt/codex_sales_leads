@@ -37,7 +37,18 @@ export async function proposeSearchContinuationInTransaction(client:PoolClient,u
       and r.status='completed' and r.id::text=$3 and r.country_code=$4`,[parentId,userId,String(parent.result.runId??''),parent.payload.countryCode]);
   const run=runs.rows[0];if(!run||runs.rows.length!==1)throw new Error('缺少唯一的原搜索证据关联，不能安全生成续搜排除列表。');
   const domains=await client.query<{domain:string}>("select distinct lower(domain) as domain from lead_candidate_assessment where run_id=$1 and user_id=$2 and scoring_status='completed'",[run.id,userId]);
-  const excluded=[...new Set([...(prior?.excluded_domains??[]),...domains.rows.map(row=>row.domain.trim().replace(/^www\./,''))].filter(Boolean))].sort();
+  // A processing-recovery child covers only the remaining gap. Its parent's saved/scored companies
+  // must stay excluded if fresh discovery is subsequently needed; no historical result is rewritten.
+  const ancestors=await client.query<{domain:string}>(`with recursive recovery_parents(action_id) as (
+    select parent_action_id from lead_processing_recovery where child_action_id=$1 and user_id=$2
+    union select p.parent_action_id from lead_processing_recovery p join recovery_parents a on p.child_action_id=a.action_id where p.user_id=$2
+  ) select distinct lower(c.domain) as domain from recovery_parents a
+    join lead_workflow_job j on j.action_id=a.action_id and j.user_id=$2 and j.status='completed'
+    join lead_search_run r on r.graph_thread_id=j.graph_thread_id and r.status='completed'
+    join market_workspace w on w.id=r.workspace_id and w.owner_id=$2
+    join lead_candidate_assessment c on c.run_id=r.id and c.user_id=$2 and c.scoring_status='completed'`,[parentId,userId]);
+  const excluded=[...new Set([...(prior?.excluded_domains??[]),...domains.rows.map(row=>row.domain.trim().replace(/^www\./,'')),
+    ...ancestors.rows.map(row=>row.domain.trim().replace(/^www\./,''))].filter(Boolean))].sort();
   if(excluded.length>5000)throw new Error('历史处理公司列表过大，请通过助手重新规划，不能静默丢弃去重信息。');
   const payload={...parent.payload,targetCount:gap};
   const child=await client.query<{id:string}>(`insert into assistant_action(user_id,conversation_id,action_type,payload)

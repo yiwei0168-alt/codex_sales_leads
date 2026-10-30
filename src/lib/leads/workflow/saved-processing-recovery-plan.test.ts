@@ -41,3 +41,13 @@ it("rejects mismatched history and distinguishes an exhausted task limit from no
   expect(planSavedProcessingRecovery({...input,taskBudget:null}).remainingTaskBudgetMicros).toBeNull();
   expect(planSavedProcessingRecovery({...input,taskBudget:{limitMicros:"7",occupiedMicros:"7"}}).remainingTaskBudgetMicros).toBe("0");
 });
+it('prepares path-only work from completed held scores without including delivered or other-gate candidates',()=>{
+  const held={...assessment,eligible:false,eligibilityStatus:'research-required' as const,cooperationPaths:[],selectedPathId:null,
+    warnings:['Cooperation paths with unsupported roles, disabled OEM/ODM, or invalid evidence were removed.']};
+  const recovery=planSavedProcessingRecovery({...input,state:{...state,assessments:[held]}});
+  expect(recovery.companies).toHaveLength(1);expect(recovery.companies[0].stage).toBe('path-repair');
+  expect(recovery.companies[0].pathAssessment).toEqual(held);
+  expect(()=>planSavedProcessingRecovery({...input,state:{...state,assessments:[{...held,gates:{...held.gates,targetCountryPresence:'unknown'}}]}})).toThrow('No uncompleted company');
+  expect(()=>planSavedProcessingRecovery({...input,state:{...state,assessments:[held]},selectedDomains:[candidate.domain]})).toThrow('No uncompleted company');
+  expect(held.cooperationPaths).toEqual([]);
+});
