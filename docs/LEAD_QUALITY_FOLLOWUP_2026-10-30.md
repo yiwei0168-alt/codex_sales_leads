@@ -29,3 +29,10 @@ Automated checks and live acceptance outcomes are recorded after execution. An i
 - TypeScript passed. Targeted ESLint completed with zero errors and two existing unused-variable warnings in the review serializer. Diff whitespace check passed.
 - Read-only verification against the actual completed checkpoint prepared five companies for a remaining target of two: two fresh path-only seeds and three evidence-refresh seeds. One originally scored company requires fresh evidence because some cited content lacks a retained snapshot; its old score is kept as history, not silently reused as a new result.
 - Live task creation was correctly blocked by unresolved historical paid-request state. No new action or paid request was submitted, and no historical fee/outcome was changed. The previous delivered count remains one of three. This is a pending live follow-up, not business acceptance or market exhaustion.
+
+
+### MA05 admission correction after explicit continuation
+
+The initial live hold exposed an implementation mismatch with the existing MA05 rule: unknown text-call bills must not freeze unrelated work. The deployment was already in observation mode; this stage does not change its policy or financial records. The saved-recovery entrance now allows only recognized text tasks or HTTP-200 completed read-only acquisition to continue with unknown bills. Reserved/bound-exceeded, ambiguous requests, unknown side effects and strict-policy deployments stay blocked.
+
+A recursive same-owner fingerprint check now spans processing-recovery ancestors, regardless of changed action/stage. It rejects both successful and unresolved old requests before transport, while distinct new work remains eligible under the existing policy. The source playbook, old scores, dates and history remain retained. 76 focused tests and TypeScript/lint passed. An actual rollback-only DB test blocked both ancestor success/unknown fingerprints and admitted a distinct synthetic request without any transport; every synthetic task/reservation was rolled back. Read-only real-source preparation now succeeds. Actual result counts and business acceptance remain pending.

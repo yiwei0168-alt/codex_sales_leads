@@ -86,9 +86,12 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
       if(!/^[a-f0-9]{64}$/.test(input.requestFingerprint))throw new BudgetDeniedError("request-out-of-bounds");
       // Same owner lock serializes different workers before either reserves or sends.
       // Known charged failures may use existing bounded retry; unknown work and HTTP success must not replay.
-      const previous=await client.query(`select id from paid_call_reservation where user_id=$1 and operation_id=$2
-        and stage=$3 and request_fingerprint=$4 and (status in ('reserved','bound-exceeded')
-          or ($5::boolean=false and status='unknown' and settled_micros is null)
+      const previous=await client.query(`with recursive operations(action_id) as (
+        select $2::text union select p.parent_action_id::text from lead_processing_recovery p
+          join operations a on p.child_action_id::text=a.action_id where p.user_id=$1
+      ) select id from paid_call_reservation where user_id=$1 and operation_id in (select action_id from operations)
+        and (operation_id<>$2 or stage=$3) and request_fingerprint=$4 and (status in ('reserved','bound-exceeded')
+          or ((operation_id<>$2 or $5::boolean=false) and status='unknown' and settled_micros is null)
           or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint,
           Boolean(admissionOverride?.allowUnknownReplay)]);
       if(previous.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
