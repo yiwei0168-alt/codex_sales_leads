@@ -1,3 +1,4 @@
+import{createHash}from'node:crypto';
 import{afterEach,expect,it,vi}from'vitest';import type{PoolClient}from'pg';
 import{assertSavedRecoveryRequestsSafe,isReadOnlyUnknownRecoveryRequest,type RecoveryRequestState}from'./recovery-request-safety';
 const text:RecoveryRequestState={status:'unknown',stage:'scoring',task:'lead-qualification',endpoint:'chat-completions',http_status:null,valid_outputs:'0'};
@@ -20,4 +21,12 @@ it('retains strict admission without changing deployment policy',async()=>{
  vi.stubEnv('PRODUCT_FINANCIAL_POLICY','strict');const query=vi.fn(async()=>({rows:[text]}));
  await expect(assertSavedRecoveryRequestsSafe({query}as unknown as PoolClient,'owner','parent')).rejects.toThrow('paid-request-already-recorded');
  expect(process.env.PRODUCT_FINANCIAL_POLICY).toBe('strict');
+});
+
+it('recognizes an exact trusted read-only Tavily route while preserving its unknown outcome',()=>{
+ const tariff_key=`a33-unbounded-${createHash('sha256').update('https://api.tavily.com\n/extract\n').digest('hex').slice(0,16)}`;
+ const row={...text,stage:'collecting-evidence',task:null,endpoint:null,tariff_key};
+ expect(isReadOnlyUnknownRecoveryRequest(row)).toBe(true);
+ expect(row.status).toBe('unknown');
+ expect(isReadOnlyUnknownRecoveryRequest({...row,tariff_key:'arbitrary-unknown-endpoint'})).toBe(false);
 });

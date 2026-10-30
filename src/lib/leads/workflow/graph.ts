@@ -242,8 +242,14 @@ export function buildLeadWorkflowGraph(
       if(!candidate)throw new Error("Saved path candidate is missing or requires evidence refresh");
       const result=await dependencies.qualificationAgent.repairSavedPathsWithUsage(candidate,item.assessment,state.playbook,
         state.plan.countryCode,state.plan.countryName,state.plan.objective);
-      return {phase:"scoring" as const,savedPathRepairs:pending.slice(1),
-        assessments:mergeByCandidateId(state.assessments,[result.assessment]),
+      const assessments=mergeByCandidateId(state.assessments,[result.assessment]);
+      const eligible=assessments.filter(item=>item.eligible&&item.eligibilityStatus==="eligible"&&item.scoringStatus==="completed");
+      const targetMet=eligible.length>=state.plan.targetCount;
+      const completedIds=new Set(assessments.map(item=>item.candidateId));
+      const deferred=targetMet?state.candidates.filter(item=>!completedIds.has(item.candidateId)).map(item=>item.candidateId):[];
+      return {phase:"scoring" as const,savedPathRepairs:targetMet?[]:pending.slice(1), assessments,
+        ...(targetMet?{savedProcessingRecovery:{...state.savedProcessingRecovery,refreshCandidateIds:[],deferredCandidateIds:deferred},
+          warnings:[...state.warnings,`The remaining target was met by retained-score path repairs; ${deferred.length} other candidates remain deferred, not rejected or exhausted.`]}:{}),
         primaryAssessments:mergeByCandidateId(state.primaryAssessments??[],[result.assessment]),
         modelUsage:[...(state.modelUsage??[]),...result.usage]};
     })
@@ -340,6 +346,7 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "correcting-evidence");
       const sources=state.savedProcessingRecovery?state.candidates.filter(candidate=>
+        !state.savedProcessingRecovery?.deferredCandidateIds?.includes(candidate.candidateId)&&
         !(state.primaryAssessments??[]).some(assessment=>assessment.candidateId===candidate.candidateId
           &&assessment.scoringStatus==="completed")):state.candidates;
       const corrected = sources.length ? await dependencies.correctionAgent.correct(sources, state.plan)
@@ -499,7 +506,8 @@ export function buildLeadWorkflowGraph(
       const unavailableCalls = metricsAvailable ? Number(discoveryMetric?.metadata.unavailableCalls ?? 0) : 0;
       const correctionIncomplete = state.correctedCandidates.filter(candidate =>
         correctionCompletion(candidate.correction) === "retry-required").length
-        + state.candidates.filter(candidate => !state.correctedCandidates.some(corrected =>
+        + state.candidates.filter(candidate => !state.savedProcessingRecovery?.deferredCandidateIds?.includes(candidate.candidateId)
+          && !state.correctedCandidates.some(corrected =>
           corrected.candidateId === candidate.candidateId || corrected.domain === candidate.domain
           || corrected.correction.originalDomain === candidate.domain)).length;
       const scoringIncomplete = inScopeCandidates.length - completed;
@@ -674,12 +682,13 @@ export function buildLeadWorkflowGraph(
     })
     .addEdge(START, "retrieve_knowledge")
     .addEdge("retrieve_knowledge", "build_playbook")
-    .addConditionalEdges("build_playbook",state=>state.savedProcessingRecovery?"prepare_recovery_evidence":"discover_candidates",{
-      prepare_recovery_evidence:"prepare_recovery_evidence",discover_candidates:"discover_candidates"})
-    .addConditionalEdges("prepare_recovery_evidence",state=>state.savedProcessingRecovery?.evidenceBlocked?"recover_saved_evidence":state.savedProcessingRecovery?.refreshCandidateIds.length?"prepare_recovery_evidence":"repair_saved_paths",{
-      prepare_recovery_evidence:"prepare_recovery_evidence",repair_saved_paths:"repair_saved_paths",recover_saved_evidence:"recover_saved_evidence"})
-    .addConditionalEdges("repair_saved_paths",state=>state.savedPathRepairs?.length?"repair_saved_paths":"correct_candidates",{
-      repair_saved_paths:"repair_saved_paths",correct_candidates:"correct_candidates"})
+    .addConditionalEdges("build_playbook",state=>state.savedProcessingRecovery
+      ?state.savedPathRepairs?.length?"repair_saved_paths":"prepare_recovery_evidence":"discover_candidates",{
+      repair_saved_paths:"repair_saved_paths",prepare_recovery_evidence:"prepare_recovery_evidence",discover_candidates:"discover_candidates"})
+    .addConditionalEdges("prepare_recovery_evidence",state=>state.savedProcessingRecovery?.evidenceBlocked?"recover_saved_evidence":state.savedProcessingRecovery?.refreshCandidateIds.length?"prepare_recovery_evidence":"correct_candidates",{
+      prepare_recovery_evidence:"prepare_recovery_evidence",correct_candidates:"correct_candidates",recover_saved_evidence:"recover_saved_evidence"})
+    .addConditionalEdges("repair_saved_paths",state=>state.savedPathRepairs?.length?"repair_saved_paths":"prepare_recovery_evidence",{
+      repair_saved_paths:"repair_saved_paths",prepare_recovery_evidence:"prepare_recovery_evidence"})
     .addEdge("recover_saved_evidence","prepare_recovery_evidence")
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")

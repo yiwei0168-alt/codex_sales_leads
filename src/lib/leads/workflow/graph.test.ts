@@ -825,12 +825,14 @@ it('runs a linked path-only child without discovery, evidence acquisition, corre
     warnings:['Cooperation path rejected: invalid (role-path-incompatible).']};
   deps.qualificationAgent.repairSavedPathsWithUsage=vi.fn(async()=>({assessment,usage:[]}));
   const result=await buildLeadWorkflowGraph(deps).invoke({userId:'u',actionId:'path-child',workspaceId:'w',graphThreadId:'path-child',
-    runId:'run-1',plan:{...plan,targetCount:1},phase:'queued',candidates:[candidate],correctedCandidates:[correctedCandidate],
+    runId:'run-1',plan:{...plan,targetCount:1},phase:'queued',candidates:[candidate,{...candidate,candidateId:'deferred-candidate',domain:'deferred.example'}],correctedCandidates:[correctedCandidate],
     assessments:[],creditsUsed:0,ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],
-    terminalRecoveryOnly:true,savedProcessingRecovery:{sourceActionId:'parent',sourceRunId:'parent-run',sourceFingerprint:'proof',refreshCandidateIds:[]},
+    terminalRecoveryOnly:true,savedProcessingRecovery:{sourceActionId:'parent',sourceRunId:'parent-run',sourceFingerprint:'proof',refreshCandidateIds:['deferred-candidate']},
     savedPathRepairs:[{candidateId:candidate.candidateId,assessment:held}]});
   expect(deps.qualificationAgent.repairSavedPathsWithUsage).toHaveBeenCalledOnce();
   expect(deps.discover).not.toHaveBeenCalled();expect(deps.collectEvidence).not.toHaveBeenCalled();
   expect(deps.correctionAgent.correct).not.toHaveBeenCalled();expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
   expect(result.assessments[0].dimensions).toEqual(held.dimensions);expect(result.savedPathRepairs).toEqual([]);
+  expect(result.savedProcessingRecovery?.deferredCandidateIds).toEqual(['deferred-candidate']);
+  expect(result.candidates).toHaveLength(2);
 });

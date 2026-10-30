@@ -90,9 +90,10 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
         select $2::text union select p.parent_action_id::text from lead_processing_recovery p
           join operations a on p.child_action_id::text=a.action_id where p.user_id=$1
       ) select id from paid_call_reservation where user_id=$1 and operation_id in (select action_id from operations)
-        and (operation_id<>$2 or stage=$3) and request_fingerprint=$4 and (status in ('reserved','bound-exceeded')
-          or ((operation_id<>$2 or $5::boolean=false) and status='unknown' and settled_micros is null)
-          or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint,
+        and request_fingerprint=$3 and (status in ('reserved','bound-exceeded')
+          or ((operation_id<>$2 or $4::boolean=false or metrics->'modelAttempt'->>'task' is null)
+            and status='unknown' and settled_micros is null)
+          or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.requestFingerprint,
           Boolean(admissionOverride?.allowUnknownReplay)]);
       if(previous.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
     }

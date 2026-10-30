@@ -32,7 +32,7 @@ it("blocks a duplicate guarded request under the owner lock before creating a se
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false}]}).mockResolvedValueOnce({rows:[{id:"existing"}]});
   await expect(reservePaidCall("owner",{...input,requestFingerprint:"a".repeat(64)})).rejects.toThrow("paid-request-already-recorded");
   expect(query).toHaveBeenCalledTimes(2);
-  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64),false]);
+  expect(query.mock.calls[1][1]).toEqual(["owner","operation","a".repeat(64),false]);
   expect(query.mock.calls.some(([sql])=>String(sql).includes("insert into"))).toBe(false);
 });
 it("audits A33 while allowing owner-scoped unknown replay and financial admission",async()=>{
@@ -43,7 +43,7 @@ it("audits A33 while allowing owner-scoped unknown replay and financial admissio
     .mockResolvedValueOnce({rows:[{id:"override-reserve"}]})
     .mockResolvedValueOnce({rows:[]});
   expect(await reservePaidCall("owner",{...input,requestFingerprint:"a".repeat(64)})).toBe("override-reserve");
-  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64),true]);
+  expect(query.mock.calls[1][1]).toEqual(["owner","operation","a".repeat(64),true]);
   expect(JSON.parse(query.mock.calls[2][1][7]).admissionOverride).toEqual({ruleId:"A33",allowBudgetOverage:true,
     allowUnknownReplay:true,allowFinancialAdmissionBypass:true});
 });
