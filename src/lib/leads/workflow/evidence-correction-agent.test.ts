@@ -11,7 +11,7 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/pr
 import type { TavilySearchResponse } from "@/providers/tavily";
 
 import { enforceCorrectedRoleBusinessModel, evidenceAffiliatedWithCandidate,
-  LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
+  LeadEvidenceCorrectionAgent,correctionRequestTimeoutMs } from "./evidence-correction-agent";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput } from "./schemas";
 import type { LeadWorkflowCandidate } from "./types";
 
@@ -82,6 +82,17 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("uses the Pro deadline even when Pro is configured as the routine model or gateway-prefixed",async()=>{
+    expect(correctionRequestTimeoutMs("deepseek-v4-flash","deepseek-v4-pro")).toBe(75_000);
+    expect(correctionRequestTimeoutMs("deepseek/deepseek-v4-pro","deepseek-v4-pro")).toBe(120_000);
+    const timeout=vi.spyOn(AbortSignal,"timeout");
+    await new LeadEvidenceCorrectionAgent(new FakeCorrectionProvider(),searchProvider,{
+      routineModel:"deepseek/deepseek-v4-pro",escalationModel:"deepseek-v4-pro",
+      supplementEvidence:false,allowReusableCorrections:false,persistCorrections:false}).correct([candidate],{
+        countryCode:"DE",countryName:"Germany",objective:"new-market",roles:["Distributor"],targetCount:1,queryLanguage:"en",userRequest:"Find prospects"});
+    expect(timeout.mock.calls.some(([ms])=>ms===120_000)).toBe(true);
+    expect(timeout.mock.calls.some(([ms])=>ms===75_000)).toBe(false);
+  });
   it("does not purchase supplemental search again after a completed receipt was recovered",async()=>{
     vi.spyOn(roleCache,"loadPublicRoleCorrection").mockResolvedValue(null);
     vi.spyOn(roleCache,"savePublicRoleCorrection").mockResolvedValue(undefined);

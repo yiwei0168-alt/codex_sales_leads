@@ -211,6 +211,13 @@ function needsSupplement(candidate: LeadWorkflowCandidate): boolean {
     || !assessNetworkingRelevanceEvidence(text).demonstrated || roles.length === 0;
 }
 
+export function correctionRequestTimeoutMs(model:string,escalationModel:string):number {
+  const canonical=(value:string)=>value.trim().replace(/^deepseek\//,"");
+  const selected=canonical(model);
+  // A Pro configured as the routine model still needs the existing Pro deadline.
+  return selected===canonical(escalationModel)||/(?:^|-)pro(?:$|-)/i.test(selected)?120_000:75_000;
+}
+
 export class LeadEvidenceCorrectionAgent {
   private readonly supplementEvidence: boolean;
   private readonly routineModel: string;
@@ -548,7 +555,7 @@ export class LeadEvidenceCorrectionAgent {
     try {
       const request=this.request([candidate],plan,this.routineModel);
       const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.provider.execute<CorrectionRequest, unknown>(
-        request, AbortSignal.timeout(75_000)));
+        request, AbortSignal.timeout(correctionRequestTimeoutMs(this.routineModel,this.escalationModel))));
       this.captureUsage(usageRecords, response, this.routineModel);
       usageRecords[usageRecords.length-1].requestPreparation=request.preparation;
       const envelope=typeof response.output==="object"&&response.output!==null&&"corrections" in response.output?response.output:{corrections:[response.output]};
@@ -581,7 +588,7 @@ export class LeadEvidenceCorrectionAgent {
     try {
       const request=this.request(candidates,plan,this.routineModel);
       const response = await withCompanyCostAttribution(candidates,plan.countryCode,()=>this.provider.execute<CorrectionRequest, unknown>(
-        request, AbortSignal.timeout(75_000)));
+        request, AbortSignal.timeout(correctionRequestTimeoutMs(this.routineModel,this.escalationModel))));
       this.captureUsage(usageRecords, response, this.routineModel);
       const validated=validateBatchItems(sanitizeLeadCorrectionOutput(response.output),"corrections",leadCorrectionModelSchema,candidates.map(candidate=>candidate.candidateId));
       usageRecords[usageRecords.length-1].requestPreparation=request.preparation;
