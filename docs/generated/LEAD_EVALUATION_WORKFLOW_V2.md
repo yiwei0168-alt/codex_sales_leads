@@ -757,7 +757,7 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `5be2d54e01ef39c5c1ce5e95f48f63610c548d1a35f3db6cf9673ac2c3972a6f` |
 | `src/lib/assistant/service.ts` | `6059cedefd26fe46758d2ddfbbc80803fb77c6a26cd433d57584f28b55ad06eb` |
 | `src/lib/assistant/repository.ts` | `131493d90fece7c35ecc04df309c08e8185e779b2c5bbb8360a49beb364e28e1` |
-| `src/lib/leads/workflow/graph.ts` | `143cd238db9f8723a20bf35eeab81734d076b1072c8614f78c895881e48409ba` |
+| `src/lib/leads/workflow/graph.ts` | `dac229194e4ec1b337ec6f5d1884bea7a5efc77615489705a9bdcdb466d4f165` |
 | `src/lib/leads/workflow/jobs.ts` | `03dbd544172f4096425db8636dcc04475c13001cc3d702f5f53c1377836a7de1` |
 | `src/lib/leads/workflow/rag-context.ts` | `5ede4be09e9ddcc537acbc7f2f726039e9fd77b2b71d655860456da0de3cdc7d` |
 | `src/lib/leads/workflow/playbook.ts` | `72c9a481ca887adaa4f701ac1c1bb8734fdd67fa0467edd17461c37858dc7734` |
@@ -770,10 +770,10 @@ flowchart TD
 | `src/lib/leads/global-search.ts` | `e203e2114b9b3d9121525eacda6053f2cdb4268885e11c0a60918bf0fbdb9f1f` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `e101562439c48374e6953c89f72cce3d421d1ff6a2f59dccedcaaf4f06c3c769` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `aaa53fa72b137d37a0c7c5142eabae82f12daa67d8c920af19a5a5f3e0653c17` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `5803e7771199d635374e8307b48329c4c670a357faf0c4faef751fa362963711` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `aea7e0f2a0d068f1e46a7b2cb5215319a3fbd9c6a5078e7ebc01706ebcae61e8` |
-| `src/providers/deepseek.ts` | `28f6cd1c950bc387697673e900679bf906a9eec8493c0bfa4b072f5b1f7a1c28` |
+| `src/providers/deepseek.ts` | `87e79d28a8c5bdf0e3a5e874fce19b5d9492c8ac804894440cf9c887d89b3650` |
 | `src/providers/discovery-contracts.ts` | `fa2f8b32bb6b7b2dae7a09835b4976810483ddbf789bcedd6968a0a646d88e2f` |
 | `src/providers/discovery.ts` | `9ee4a8a052127e8ab5539ac4d3fe8ecb9cc1d7cef1e697deb8b2d9509bb1d2e6` |
 | `src/providers/resilient-ai.ts` | `94a44e6434c62f36d1d319e1505e570fb99b1b611461feb31d419fb187b24118` |
