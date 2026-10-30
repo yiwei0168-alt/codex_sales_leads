@@ -118,7 +118,7 @@ function dualTracks(mode: NormalizedLeadSearchPlan["coverageMode"], targetCount:
   return [national, local];
 }
 
-function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSearchCategory, string[]]> {
+function selectedCategoryTracks(plan: NormalizedLeadSearchPlan, retailLocalGap = false): Array<[LeadSearchCategory, string[]]> {
   const roles = new Set(plan.roles);
   const selected: Array<[LeadSearchCategory, string[]]> = [];
   if (plan.opportunityTargets.includes("OEM/ODM")) {
@@ -134,7 +134,7 @@ function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSear
     if (roles.has("Retailer")) {
       if (plan.coverageMode === "local") tracks.push("retail-local");
       else if (plan.coverageMode === "national") tracks.push("retail-national");
-      else if (plan.coverageMode === "mixed" || plan.targetCount >= 50
+      else if (plan.coverageMode === "mixed" || (plan.coverageMode === "auto" && retailLocalGap) || plan.targetCount >= 50
         || ACTIVE_HYBRID_SEARCH_POLICY.earlyLocalMarketCountryCodes.includes(plan.countryCode.toUpperCase())) {
         tracks.push("retail-national", "retail-local");
       }
@@ -165,9 +165,9 @@ function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSear
   return selected;
 }
 
-export function buildHybridSearchRoute(input: LeadSearchPlan): HybridSearchRouteStep[] {
+export function buildHybridSearchRoute(input: LeadSearchPlan, context: {retailLocalGap?:boolean} = {}): HybridSearchRouteStep[] {
   const plan = normalizeLeadSearchPlan(input);
-  return selectedCategoryTracks(plan).flatMap(([category, tracks]) => tracks.flatMap((track) => {
+  return selectedCategoryTracks(plan,context.retailLocalGap).flatMap(([category, tracks]) => tracks.flatMap((track) => {
     const steps = ACTIVE_HYBRID_SEARCH_POLICY.categories[category].tracks[track];
     if (!steps) throw new Error(`Hybrid search policy is missing ${category}/${track}`);
     return steps.map((step, sequence) => ({

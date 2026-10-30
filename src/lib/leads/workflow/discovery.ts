@@ -37,6 +37,7 @@ export interface DiscoveryResult {
 export interface LeadDiscoveryInvocation {
   sessionSnapshot?: DiscoverySessionSnapshot;
   queryRound?: number;
+  retailLocalGap?: boolean;
   targetPoolOverride?: number;
   excludeDomains?: string[];
   existingRunId?: string;
@@ -170,7 +171,7 @@ export async function discoverLeadCandidates(
   try {
     const dependency = discoverySessionDependency(plan, graphThreadId);
     const owner = { userId, workspaceId, runId: run.id, countryCode: plan.countryCode, actionId, graphThreadId };
-    const contract = discoveryRoundContract(dependency, playbook, invocation.queryRound ?? 0, invocation.targetPoolOverride);
+    const contract = discoveryRoundContract(dependency, playbook, invocation.queryRound ?? 0, invocation.targetPoolOverride,invocation.retailLocalGap);
     const saved = await loadDiscoveryCheckpoint(owner, contract, invocation.queryRound ?? 0);
     const session = restoreDiscoverySession(saved?.session ?? invocation.sessionSnapshot, dependency);
     // Calls may have been checkpointed just before their telemetry transaction failed.
@@ -181,6 +182,7 @@ export async function discoverLeadCandidates(
       onCheckpoint: async round => saveDiscoveryCheckpoint(owner, { version: "discovery-call-checkpoint-v1",
         contract, session: snapshotDiscoverySession(session, dependency), round }),
       queryRound: invocation.queryRound,
+      retailLocalGap: invocation.retailLocalGap,
       targetPoolOverride: invocation.targetPoolOverride,
       initialExcludeDomains: invocation.excludeDomains,
       onCall: (call) => persistHybridSearchCall(run.id, plan, call),

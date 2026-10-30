@@ -1,10 +1,12 @@
 # Channel discovery acceptance
 
+Superseded on 2026-10-30 by [the original-design grouped strategy acceptance](LEAD_STRATEGY_ACCEPTANCE_2026-10-30.md). The former 13-role/39-slot interpretation below was an implementation error, not an additional user confirmation. Six merged regular search categories now govern preparation; role-specific quotas and forced mixed coverage are removed. Existing tasks and evidence stay historical and are not rewritten or automatically replayed.
+
 This procedure extends sales-lead acceptance; prior email/customer Q&A acceptance does not establish discovery quality.
 
 ## Scope and execution
 
-Keep each requested channel role in a separate search plan with its own target. The current taxonomy has 13 roles: Distributor, VAD, VAR, Dealer, Reseller, Retailer, E-tailer, SI, Installer, MSP, ISP, Agent and Brand Owner. OEM/ODM is a cooperation opportunity, not another role. Country and target values, action identities and actual business evidence are recorded in local acceptance records.
+Historical superseded procedure: each role was separately targeted across the 13-role taxonomy. This must no longer generate the active acceptance plan. OEM/ODM remains a cooperation opportunity, not another role. Country and target values, action identities and actual business evidence remain in local acceptance records.
 
 Start one case, verify the complete execution and review its companies before proceeding through the remaining roles. Do not equate a created plan, synthetic test, provider configuration or queued job with an executed search or accepted result.
 

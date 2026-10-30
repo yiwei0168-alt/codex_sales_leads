@@ -219,16 +219,11 @@ export function assessmentReviewTriggers(options: {
   const { candidate, assessment, randomAuditPercent } = options;
   const triggers: string[] = [];
   if (Object.values(assessment.gates).some((state) => state === "conflicting")) triggers.push("deterministic-conflict");
-  if (candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved") {
-    triggers.push("primary-role-unresolved");
-  }
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
-  const unresolvedScoringWarning = assessment.warnings.some((warning) =>
-    !/^Routine (?:assessment requested|batch failed):?/i.test(warning)
-    && /requires review|conflict/i.test(warning));
-  if (unresolvedScoringWarning) {
-    triggers.push("scoring-anomaly");
-  }
+  const proOrEscalated = assessment.escalated || /(?:^|[-/])pro(?:$|[-/])/i.test(assessment.model);
+  const unresolvedCriticalState = Object.values(assessment.gates).some(state => state === "unknown" || state === "conflicting")
+    || candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved";
+  if (proOrEscalated && unresolvedCriticalState) triggers.push("pro-unresolved-critical-state");
   if (randomAuditPercent > 0 && stableAuditBucket(candidate.candidateId) < randomAuditPercent) triggers.push("random-audit");
   return [...new Set(triggers)];
 }
@@ -334,7 +329,7 @@ export class LeadAssessmentReviewAgent {
     const judgeModel = options.judgeModel ?? process.env.LEAD_JUDGE_MODEL?.trim() ?? "gpt-5.6-sol";
     this.invoker = invoker ?? new OpenAiLeadReviewInvoker(secondaryModel, judgeModel);
     this.randomAuditPercent = Math.max(0, Math.min(100, options.randomAuditPercent
-      ?? Number(process.env.LEAD_REVIEW_RANDOM_PERCENT ?? 5)));
+      ?? ACTIVE_LEAD_COST_QUALITY_POLICY.reviewRouting.randomAuditPercent));
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
   }
 

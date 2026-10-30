@@ -61,6 +61,7 @@ interface ExecutorOptions {
   gate?: Pick<LeadDiscoveryGate, "evaluate">;
   concurrency?: number;
   queryRound?: number;
+  retailLocalGap?: boolean;
   targetPoolOverride?: number;
   initialExcludeDomains?: string[];
   session?: HybridDiscoverySession;
@@ -300,7 +301,7 @@ async function runProviderAware<T>(tasks: Array<{ provider: string; run: () => P
 export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearchPlan,
   playbook: LeadMarketPlaybook, options: ExecutorOptions = {}): Promise<HybridDiscoveryExecution> {
   const plan = normalizeLeadSearchPlan(inputPlan);
-  const route = buildHybridSearchRoute(plan);
+  const route = buildHybridSearchRoute(plan,{retailLocalGap:options.retailLocalGap});
   const registry = new RealtimeCandidateRegistry(runId, plan.countryCode);
   const gate = options.gate ?? new LeadDiscoveryGate();
   const providerFactory = options.providerFactory ?? ((step) => createDiscoveryProvider(step.provider));

@@ -709,6 +709,8 @@ describe("LangGraph lead workflow", () => {
       correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [], creditsUsed: 0,
       modelUsage: [], stageMetrics: [], warnings: [] }, { recursionLimit: 50 });
     expect(deps.discover).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(deps.discover).mock.calls[0][5]).toMatchObject({retailLocalGap:false});
+    expect(vi.mocked(deps.discover).mock.calls[1][5]).toMatchObject({retailLocalGap:true});
     expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(2);
     expect(reviewedInputs).toHaveLength(2);
     expect(reviewedInputs[1][0].eligible).toBe(true); // Reuse the original paid score, not the prior review decision.

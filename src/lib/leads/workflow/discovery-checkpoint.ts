@@ -12,8 +12,9 @@ export interface StoredDiscoveryCheckpoint {
 export interface DiscoveryCheckpointOwner {
   userId: string; workspaceId: string; runId: string; countryCode: string; actionId: string; graphThreadId: string;
 }
-export function discoveryRoundContract(dependency: string, playbook: unknown, round: number, targetPool: number | undefined): string {
-  return createHash("sha256").update(JSON.stringify({ dependency, playbook, round, targetPool })).digest("hex");
+export function discoveryRoundContract(dependency: string, playbook: unknown, round: number, targetPool: number | undefined, retailLocalGap = false): string {
+  return createHash("sha256").update(JSON.stringify({ dependency, playbook, round, targetPool,
+    ...(retailLocalGap?{routeContext:"retail-final-gap-v1"}:{}) })).digest("hex");
 }
 const ownership = `id=$1 and workspace_id=$2 and country_code=$3
   and metadata->>'assistantActionId'=$4 and metadata->>'graphThreadId'=$5

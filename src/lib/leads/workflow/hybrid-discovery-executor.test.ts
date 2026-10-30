@@ -34,6 +34,14 @@ const passGate = { evaluate: async (candidates: LeadWorkflowCandidate[]): Promis
 }) };
 
 describe("hybrid discovery executor", () => {
+  it("executes the local-retail route on a continued final-slot gap without adding it on round zero",async()=>{
+    const retail={...plan,countryCode:"GB",roles:["Retailer" as const],targetCount:3};
+    const options={gate:passGate,providerFactory:(step:HybridSearchRouteStep)=>new FakeProvider(step.provider,null),concurrency:1};
+    const initial=await executeHybridDiscovery("retail-initial",retail,playbook,options);
+    const continued=await executeHybridDiscovery("retail-continued",retail,playbook,{...options,queryRound:1,retailLocalGap:true});
+    expect(initial.calls.some(c=>c.route.track==="retail-local")).toBe(false);
+    expect(continued.calls.some(c=>c.route.track==="retail-local"&&c.route.provider==="brave"&&c.status==="completed")).toBe(true);
+  });
   it("deduplicates identical provider requests across lanes without conflating actual request differences", () => {
     const step: HybridSearchRouteStep = { category: "distribution", track: "strategic", sequence: 0,
       provider: "brave", engine: "brave", mechanism: "web-index", trigger: "core", invocationReason: "fixture" };

@@ -242,6 +242,8 @@ export function buildLeadWorkflowGraph(
         discoveredUniqueCount: state.discoveredUniqueCount ?? 0, round });
       const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan,
         state.playbook, state.graphThreadId, { queryRound: round, targetPoolOverride: targetPool,
+          retailLocalGap: round > 0 && (state.acceptedCandidateCount ?? 0) < state.plan.targetCount
+            && state.plan.roles.includes("Retailer") && (state.plan.coverageMode ?? "auto") === "auto",
           excludeDomains: state.searchExcludeDomains ?? [], existingRunId: state.runId,
           sessionSnapshot: state.discoverySession });
       const calls = discovered.callMetrics ?? [];

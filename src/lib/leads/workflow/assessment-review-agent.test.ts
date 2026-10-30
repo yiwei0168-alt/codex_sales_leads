@@ -112,6 +112,21 @@ function memoryReviewCheckpoint() {
 }
 
 describe("LeadAssessmentReviewAgent", () => {
+  it("uses the original zero-random-audit production policy even with a stale environment override",async()=>{
+    vi.stubEnv("LEAD_REVIEW_RANDOM_PERCENT","100");
+    const invoker:LeadReviewInvoker={assess:vi.fn(),judge:vi.fn()};
+    const result=await new LeadAssessmentReviewAgent(invoker).review([candidate],[assessment()],playbook,plan);
+    expect(result.reviews[0].status).toBe("not-required");
+    expect(invoker.assess).not.toHaveBeenCalled();expect(invoker.judge).not.toHaveBeenCalled();
+  });
+  it("retains critical conflict review without treating generic warnings as semantic conflicts",()=>{
+    const generic={...assessment(),warnings:["Requires review: add a longer explanation of competitive conflicts."]};
+    expect(assessmentReviewTriggers({candidate,assessment:generic,randomAuditPercent:0})).toEqual([]);
+    const unresolved={...assessment(),escalated:true,gates:{...assessment().gates,independentProspect:"unknown" as const}};
+    expect(assessmentReviewTriggers({candidate,assessment:unresolved,randomAuditPercent:0})).toContain("pro-unresolved-critical-state");
+    const conflicting={...assessment(),gates:{...assessment().gates,networkingRelevant:"conflicting" as const}};
+    expect(assessmentReviewTriggers({candidate,assessment:conflicting,randomAuditPercent:0})).toContain("deterministic-conflict");
+  });
   it.each(["broader-question","contradicted-relationship","other-gate","conflicting-fact"])(
     "does not use an owner declaration to clear %s",async(kind)=>{
       const proposed=modelOutput(20);proposed.gates.independentProspect="unknown";

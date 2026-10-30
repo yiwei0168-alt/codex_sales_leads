@@ -17,6 +17,13 @@ function plan(overrides: Partial<LeadSearchPlan> = {}): LeadSearchPlan {
 }
 
 describe("hybrid search policy", () => {
+  it("opens mature-market auto retail local recall only for a final-result gap and respects explicit national scope",()=>{
+    const retail=plan({countryCode:"GB",roles:["Retailer","E-tailer"],targetCount:3});
+    expect(buildHybridSearchRoute(retail).some(s=>s.track==="retail-local")).toBe(false);
+    expect(buildHybridSearchRoute(retail,{retailLocalGap:true}).some(s=>s.track==="retail-local")).toBe(true);
+    expect(buildHybridSearchRoute({...retail,coverageMode:"national"},{retailLocalGap:true}).some(s=>s.track==="retail-local")).toBe(false);
+    expect(buildHybridSearchRoute({...retail,roles:["E-tailer"]},{retailLocalGap:true}).some(s=>s.track==="retail-local")).toBe(false);
+  });
   it("keeps Tavily out of discovery and versions the confirmed strategy", () => {
     expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.7.0-task-marginal-conditional-routing");
     expect(JSON.stringify(ACTIVE_HYBRID_SEARCH_POLICY.categories)).not.toContain("tavily");
