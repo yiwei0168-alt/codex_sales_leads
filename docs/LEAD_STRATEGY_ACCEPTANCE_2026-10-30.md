@@ -50,3 +50,8 @@
 ## SG-02 follow-up - saved quantity met, quality pending
 
 A separately linked targeted follow-up saved two additional unique candidates while preserving their original scores and the original task checkpoint. The merged group now has three unique saved results including the prior one. This is quantity/workflow evidence, not user quality acceptance or proof that all provider routes were exercised. Three other candidates remain deferred; planner-schema quality and SG-03 through SG-06 remain pending. See [quality follow-up verification](LEAD_QUALITY_FOLLOWUP_2026-10-30.md).
+
+
+## User acceptance and SG-03 continuation
+
+The user explicitly accepted SG-02 business quality and instructed continuation. This acceptance covers its three delivered unique results; deferred candidates and unobserved provider conditions remain outside that verdict. SG-03 alone has now been started for UK Retailer/E-tailer combined, target three, using the unchanged original search and scoring policies. Initial auto tracks are etail and retail-national; later local-retail expansion requires a final-qualified shortfall. SG-03 quality acceptance and SG-04 through SG-06 remain pending. See [retail execution evidence](LEAD_RETAIL_ACCEPTANCE_2026-10-30.md).
