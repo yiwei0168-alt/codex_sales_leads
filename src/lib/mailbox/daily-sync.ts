@@ -9,8 +9,25 @@ export function nextDailySync(now=new Date()){
 }
 export async function readDailySync(userId:string){
  return tenantQuery(userId,`select d.connection_id,d.enabled,d.next_run_at::text,d.last_job_id,
-  j.status as last_status,j.error as last_error from mailbox_daily_sync d
-  left join mailbox_work_job j on j.id=d.last_job_id and j.user_id=d.user_id where d.user_id=$1`,[userId]);
+  j.status as last_status,j.error as last_error,
+  gaps.uncovered_failed_days,gaps.first_uncovered_day,gaps.last_uncovered_day
+  from mailbox_daily_sync d
+  left join mailbox_work_job j on j.id=d.last_job_id and j.user_id=d.user_id
+  cross join lateral (
+   select count(distinct f.payload->>'from')::int as uncovered_failed_days,
+    min(f.payload->>'from') as first_uncovered_day,max(f.payload->>'from') as last_uncovered_day
+   from mailbox_work_job f
+   where f.user_id=d.user_id and f.target_id=d.connection_id and f.kind='sync' and f.status='failed'
+    and f.payload->>'automatic'='true' and f.payload->>'timeZone'='Asia/Shanghai'
+    and f.payload->>'folderScope'='both' and f.payload->>'from'=f.payload->>'through'
+    and not exists (
+     select 1 from mailbox_work_job done
+     where done.user_id=f.user_id and done.target_id=f.target_id and done.kind='sync' and done.status='completed'
+      and done.updated_at>=f.created_at and done.payload->>'timeZone'='Asia/Shanghai'
+      and done.payload->>'folderScope'='both' and done.payload->>'from'<=f.payload->>'from'
+      and done.payload->>'through'>=f.payload->>'through'
+    )
+  ) gaps where d.user_id=$1`,[userId]);
 }
 export async function setDailySync(userId:string,connectionId:string,enabled:boolean){
  return tenantTransaction(userId,async client=>{

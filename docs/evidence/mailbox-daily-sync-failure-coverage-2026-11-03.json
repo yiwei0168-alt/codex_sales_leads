@@ -1,0 +1,93 @@
+{
+  "protocol": "mailbox-daily-failure-coverage-v1",
+  "checkedAt": "2026-11-03T02:56:30.107Z",
+  "observedAutomaticJobs": [
+    {
+      "day": "2026-10-30",
+      "status": "completed",
+      "jobs": 1,
+      "firstCreated": "2026-10-30 00:00:26.671599+00",
+      "frozenDailyScope": 1
+    },
+    {
+      "day": "2026-10-31",
+      "status": "failed",
+      "jobs": 1,
+      "firstCreated": "2026-10-31 00:00:19.450468+00",
+      "frozenDailyScope": 1
+    },
+    {
+      "day": "2026-11-01",
+      "status": "failed",
+      "jobs": 1,
+      "firstCreated": "2026-11-01 00:00:02.93075+00",
+      "frozenDailyScope": 1
+    },
+    {
+      "day": "2026-11-02",
+      "status": "failed",
+      "jobs": 1,
+      "firstCreated": "2026-11-02 00:00:11.331596+00",
+      "frozenDailyScope": 1
+    },
+    {
+      "day": "2026-11-03",
+      "status": "completed",
+      "jobs": 1,
+      "firstCreated": "2026-11-03 00:00:09.000179+00",
+      "frozenDailyScope": 1
+    }
+  ],
+  "failureClass": "DNS_ENOTFOUND",
+  "originalFailedJobsPreserved": 3,
+  "recovery": {
+    "from": "2026-10-30",
+    "through": "2026-11-01",
+    "timeZone": "Asia/Shanghai",
+    "folderScope": "both",
+    "status": "completed",
+    "result": {
+      "imported": 85,
+      "processed": 85,
+      "remaining": 0,
+      "discovered": 85
+    }
+  },
+  "after": {
+    "checkedAt": "2026-11-03T02:55:14.441Z",
+    "uncoveredFailedDays": 0,
+    "nextRunAt": "2026-11-04 00:00:00+00",
+    "lastAutomaticStatus": "completed",
+    "automaticEnabled": true
+  },
+  "temporaryDatabaseCount": 0,
+  "checks": {
+    "dateUnitTests": 2,
+    "databaseTest": {
+      "dailyGapDb": "passed",
+      "latestSuccessDoesNotHideFailures": true,
+      "duplicateDaysCountOnce": true,
+      "coverageRequiresMatchingOwnerZoneFoldersAndTime": true,
+      "queuedIsNotCoverage": true,
+      "partialAndFullRecoveryClearGaps": true,
+      "tenantIsolation": true,
+      "modelCalls": 0,
+      "mailNetworkCalls": 0
+    },
+    "typesPassed": true,
+    "lintPassed": true,
+    "productionBuildPassed": true,
+    "buildId": "b6lxLlnK4HxyBvfZf4kzs"
+  },
+  "sourceSha256": {
+    "src/lib/mailbox/daily-sync.ts": "744b68158cf65eded993a5404e3563e06bbd495649580ad8d8a41f0301b486e1",
+    "src/components/mailbox-daily-sync.tsx": "6026ba9f957a628b9c37d7161ac8bb9316acc2384dd82f0a1c935275cd391fe2",
+    "scripts/verify-mailbox-daily-gap-db.ts": "2df47ecd603c804794990695a46d7bf5a39b4e6ab0c377216a22e6864a6a608e"
+  },
+  "productDataChangedByRecovery": true,
+  "newModelCalls": 0,
+  "newUiActivated": false,
+  "browserVisualAccepted": false,
+  "dnsRootCauseResolved": false,
+  "overallG11Accepted": false
+}
