@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import {createHash,randomBytes,randomUUID} from 'node:crypto';
 import {mkdir,unlink,writeFile} from 'node:fs/promises';
-import {resolve,sep} from 'node:path';
+import {sep} from 'node:path';
 import type {Client} from 'pg';
 import {hashPassword} from '../../src/lib/auth/password';
+import {knowledgeStorageRoot,resolveKnowledgeStoragePath} from '../../src/lib/knowledge/storage-path';
 
 /** Real authenticated HTTP against the compiled candidate and restored clone.
  * All files/accounts/documents below are synthetic and owned by this fixture. */
@@ -11,8 +12,8 @@ export async function verifyMa24AssetDownloadClone(options:{admin:Client;base:st
  assert.equal(new URL(options.base).hostname,'127.0.0.1');
  assert.match((await options.admin.query('select current_database() name')).rows[0].name,/^ma24_restore_[a-f0-9]{12}$/);
  const documentId=randomUUID(),assetId=randomUUID(),peer=randomUUID();
- const key=`knowledge/ma24-http-download-${randomUUID()}.txt`,path=resolve(key);
- assert(path.startsWith(resolve('knowledge')+sep));let written=false;
+ const key=`knowledge/ma24-http-download-${randomUUID()}.txt`,path=resolveKnowledgeStoragePath(key);
+ assert(path.startsWith(knowledgeStorageRoot()+sep));let written=false;
  const bytes=Buffer.from('MA24 synthetic original bytes: 0123456789\n','utf8');
  const sha=createHash('sha256').update(bytes).digest('hex');
  const request=async(cookie=options.cookie,range?:string,id:string=assetId)=>{
@@ -21,7 +22,7 @@ export async function verifyMa24AssetDownloadClone(options:{admin:Client;base:st
  };
  const status=async(expected:number,cookie=options.cookie,range?:string,id:string=assetId)=>assert.equal((await request(cookie,range,id)).status,expected);
  try{
-  await mkdir(resolve('knowledge'),{recursive:true});await writeFile(path,bytes,{flag:'wx'});written=true;
+  await mkdir(knowledgeStorageRoot(),{recursive:true});await writeFile(path,bytes,{flag:'wx'});written=true;
   const collection=(await options.admin.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
   await options.admin.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
    values($1,$2,$1::uuid::text,'MA24 synthetic download','synthetic',$3,$4,'private')`,[documentId,collection,sha,options.userId]);

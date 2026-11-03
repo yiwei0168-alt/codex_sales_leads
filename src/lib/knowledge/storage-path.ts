@@ -6,7 +6,8 @@ export function knowledgeStorageRoot(): string {
   const configured = process.env.KNOWLEDGE_STORAGE_ROOT?.trim();
   if (configured && !isAbsolute(configured)) throw new Error("Knowledge storage root must be absolute");
   const root = configured || resolve("knowledge");
-  return existsSync(root) ? realpathSync(root) : root;
+  // Originals are runtime storage and must never be traced into application assets.
+  return existsSync(/* turbopackIgnore: true */ root) ? realpathSync(/* turbopackIgnore: true */ root) : root;
 }
 
 export function safeKnowledgeStorageKey(storageKey: string): string {
@@ -31,10 +32,10 @@ export function resolveKnowledgeStoragePath(storageKey: string): string {
   assertResolvedInsideKnowledgeRoot(requested);
   // Check the closest existing ancestor for both reads and new output files.
   // Readers still revalidate the opened file identity and expected digest.
-  if (existsSync(root)) {
+  if (existsSync(/* turbopackIgnore: true */ root)) {
     let ancestor = requested;
-    while (!existsSync(ancestor) && ancestor !== root) ancestor = dirname(ancestor);
-    assertResolvedInsideKnowledgeRoot(realpathSync(ancestor));
+    while (!existsSync(/* turbopackIgnore: true */ ancestor) && ancestor !== root) ancestor = dirname(ancestor);
+    assertResolvedInsideKnowledgeRoot(realpathSync(/* turbopackIgnore: true */ ancestor));
   }
   return requested;
 }
