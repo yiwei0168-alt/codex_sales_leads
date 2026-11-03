@@ -1,0 +1,39 @@
+{
+  "schema": "mailbox-daily-gap-browser-v1",
+  "checkedAt": "2026-11-03T03:04:12.732Z",
+  "testedProductCommit": "26fabd15",
+  "command": "node node_modules/@playwright/test/cli.js test tests/browser/mailbox-daily-gap.spec.ts --workers=1",
+  "passed": 4,
+  "failed": 0,
+  "testSha256": "e78c4022c5b7b660274c5b891e9f3d1e654f79287b4dfa5681734905d09ea49d",
+  "componentSha256": "6026ba9f957a628b9c37d7161ac8bb9316acc2384dd82f0a1c935275cd391fe2",
+  "screenshots": [
+    {
+      "viewport": "desktop",
+      "width": 1366,
+      "height": 900,
+      "sha256": "e762d7cc4fb03d401fbde9f0d86ef1f535221f836117555f1d7f0adaca055a88",
+      "visuallyReviewed": true
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "height": 844,
+      "sha256": "69f26ce3a24796e15046b933a4f1b6a23059699d124920da59342b80a45c4d44",
+      "visuallyReviewed": true
+    }
+  ],
+  "actualComponent": true,
+  "syntheticApiResponses": true,
+  "latestSuccessKeepsGaps": true,
+  "disablePreservesGaps": true,
+  "oneSettingsPost": true,
+  "completedCoverageRemovesRepeatWarning": true,
+  "horizontalOverflow": false,
+  "lintPassed": true,
+  "realAccountRequests": 0,
+  "productSettingsChanged": false,
+  "activeRuntimeSwitched": false,
+  "wholeMailboxPageAccepted": false,
+  "userQualityVerdictGranted": false
+}
