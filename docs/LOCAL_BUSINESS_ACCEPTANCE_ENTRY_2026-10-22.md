@@ -131,3 +131,6 @@ Q02 源码改进为新提示 v1.2.0，保留旧提示历史；19 项无模型回
 
 
 2026-11-03 current local Web: http://localhost:3001 ; business code 26fabd15; Build ID b6lxLlnK4HxyBvfZf4kzs. Refresh the page to load the daily-sync gap warning update. Other components remain pinned separately; live unauthenticated login/assets and startup reuse passed. Authenticated mailbox quality and actual rollback remain open. [Version and scope](MAILBOX_DAILY_GAP_LOCAL_UPDATE_2026-11-03.md).
+
+
+2026-11-03 main backend update: main API/Worker now use verified candidates whose source inputs match Web business commit 26fabd15; Web Build ID and localhost:3001 entry unchanged. API durable state copied and verified, all six processes adopted on repeat startup. No new question/model call. [Main runtime alignment](MA24_MAIN_RUNTIME_ALIGNMENT_2026-11-03.md).
