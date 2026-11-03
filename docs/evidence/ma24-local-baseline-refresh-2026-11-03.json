@@ -1,0 +1,124 @@
+{
+  "schema": "ma24-local-baseline-refresh-v1",
+  "runtime": {
+    "capturedAt": "2026-11-03T02:09:30.247Z",
+    "declaredCodeCommit": "0368e56e",
+    "buildId": "b4HxOtf6XatXcIIqBLdn3",
+    "manifestSha256": "c19ad8c3d58b99e41b7c1692b21098ff580178791f19b10080c8ad0dce6ac56a",
+    "artifactTreeSha256": "2d982c0664ba71229247791cf91abbc5949cb9dd2fdd7e0a849fe56e36e2b4a2",
+    "artifactFiles": 3305,
+    "components": [
+      {
+        "name": "bge",
+        "healthy": true
+      },
+      {
+        "name": "api",
+        "healthy": true
+      },
+      {
+        "name": "web",
+        "healthy": true
+      },
+      {
+        "name": "worker",
+        "healthy": true
+      },
+      {
+        "name": "mailbox",
+        "healthy": true
+      },
+      {
+        "name": "lead",
+        "healthy": true
+      }
+    ],
+    "sourceMaterialSnapshots": [
+      {
+        "component": "api",
+        "filesCompared": 1105,
+        "byteMatches": 857,
+        "lineEndingOnly": 247,
+        "missing": [],
+        "contentChanged": [
+          "tsconfig.json"
+        ],
+        "allSourceCodeMatches": true,
+        "binaryAttestation": false
+      },
+      {
+        "component": "web",
+        "filesCompared": 1105,
+        "byteMatches": 857,
+        "lineEndingOnly": 247,
+        "missing": [],
+        "contentChanged": [
+          "tsconfig.json"
+        ],
+        "allSourceCodeMatches": true,
+        "binaryAttestation": false
+      }
+    ],
+    "integratedReleaseVerified": false,
+    "newPaidCalls": 0
+  },
+  "boundaries": {
+    "checkedAt": "2026-11-03T02:10:32.104Z",
+    "mode": "read-only-metadata",
+    "responseStore": {
+      "rls": true,
+      "forced_rls": true,
+      "app_select": true,
+      "app_insert": true,
+      "app_update": false,
+      "app_delete": false
+    },
+    "applicationRole": {
+      "superuser": false,
+      "bypass_rls": false,
+      "create_db": false,
+      "create_role": false
+    },
+    "matchingTemporaryRestoreDatabases": 0
+  },
+  "checks": [
+    {
+      "script": "audit-ma24-runtime-queues.ts",
+      "scriptSha256": "8d6701d24c8a16b8ebac5a01a8615683063e837dfa7f534fee883e57f09b453a",
+      "exitCode": 0
+    },
+    {
+      "script": "verify-ma24-release-preflight.ts",
+      "scriptSha256": "861256c5a6c79c8c7064b0d564a65ce0e8fb629f9812ec6468826f6724ab4b4c",
+      "exitCode": 0
+    }
+  ],
+  "backup": {
+    "bytes": 271935911,
+    "sha256": "fc05193fcd95b761f349b906fa733ce37d5c8371a1f511d0ee5fe590877468c1",
+    "aclIncluded": true
+  },
+  "restore": {
+    "script": "verify-ma24-backup-restore.ts",
+    "scriptSha256": "7dc1daa8d8c1b964d6085b64632a175224affd496b4f424a9fa83550d2b2f153",
+    "exitCode": 0,
+    "evidenceKind": "observed-command-result",
+    "restored": true,
+    "fullIntegrityRestore": true,
+    "skippedConstraints": [],
+    "checkedStageRange": "127-135",
+    "stageAlreadyPresent": true,
+    "rollbackVerified": false,
+    "productionChanged": false,
+    "temporaryDatabaseRemaining": 0
+  },
+  "readyForRelease": false,
+  "goalComplete": false,
+  "newPaidCalls": 0,
+  "limitations": [
+    "Mixed component package origins; unified release not verified",
+    "Dependencies, model weights, mutable cache and business data excluded from artifact manifest",
+    "Database restore does not establish coordinated document backup or target-host recovery",
+    "Metadata checks do not replace runtime cross-tenant tests"
+  ]
+}

@@ -1,5 +1,7 @@
 # MA24 剩余任务收尾计划（2026-10-13）
 
+2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
+
 2026-10-22 当前输入与执行检查点：最新 `6dded268` 客户时间线原文及既有邮箱/公司往来回归已通过并归档至 `7c669fe7`；当前账号只读复查仍为 11 个已完成任务、边界后新增 0、时间线元数据候选 0，未读取正文或重复来源判定。接下来的真实任务、材料/日期范围、独立判断和适用调用授权见[当前检查点与门槛](MA24_G01_G13_REMAINING_GATES_2026-10-16.md)及[只读收据](evidence/ma24-g07-input-availability-recheck-2026-10-22.json)。G01–G13 尚未整体完成，G14–G20/部署继续暂缓；以下保留历史计划与阶段记录。
 
 2026-10-16 当前 G01–G13 收尾以[剩余门槛清单](MA24_G01_G13_REMAINING_GATES_2026-10-16.md)索引工程、真实质量与生产缺口。源码复核确认 G09 自动启用事务与可信运行来源、G10 前瞻影子到统一验收材料仍有实际实现断点；合成测试不关闭这些项。历史 G14–G20 记录保留，本阶段不推进。

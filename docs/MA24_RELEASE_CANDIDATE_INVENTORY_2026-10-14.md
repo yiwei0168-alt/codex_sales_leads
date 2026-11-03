@@ -1,5 +1,7 @@
 # MA24 候选发布范围与最小依赖（2026-10-14）
 
+2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
+
 **2026-10-16 迁移后备份补验。** 本机产品库的新归档已保留 ACL；一次性库恢复后 127–135 阶段标记、关键角色权限、强制 RLS 及旧版/候选版 Web 合成登录冒烟通过，未从源库复制权限。[收据](evidence/ma24-g01-postmigration-acl-backup-2026-10-16.json)。此前关于无 ACL 备份和从源库补拷授权的段落均为当时历史快照。新主机仍需准备数据库全局角色与凭据；这不等于实际流量或数据库回滚验收。
 
 **2026-10-16 本机产品库阶段更新。** 下方 `stage-absent`、候选未加载和 127–135 待执行的文字均是各自检查时间的历史快照。现已用 SHA-256 `a17bc616eee2f6875f7155cdc3a39695f905a37096fa6196b7e3650914343a2f` 的新备份完成隔离恢复验证，并在本机产品库提交九个迁移；只读复核为 `stage-present`。旧版 Web 在 3000、`18ff5906` 候选在 3021 本机运行，两版合成登录/退出通过。尚未部署到团队 HTTPS 入口，真实账号、业务路由和回切未验收。[执行收据](evidence/ma24-g01-product-db-stage-and-local-web-2026-10-16.json)。

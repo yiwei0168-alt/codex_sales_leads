@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
+
 ## 2026-10-26 当前检查点
 
 本机产品现为 `405ec008`、提示v1.3.0；用户已反馈邮件/公司匹配、连续追问、产品资料/版本/引用、资料不足、需求→推荐→草稿的限定范围结论，并明确可读性通过。暂时数据库轮询退出与长排队提示完成工程修复。正式本机启动入口及当前用户登录任务已安装，实际暖/冷/重复与Limited任务执行通过；真实电脑重启/重新登录仍待后续验证。[当前入口](LOCAL_BUSINESS_ACCEPTANCE_ENTRY_2026-10-22.md)、[登录恢复](LOCAL_LOGIN_STARTUP_2026-10-26.md)。

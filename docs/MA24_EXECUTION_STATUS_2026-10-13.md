@@ -1,4 +1,6 @@
 # MA24 执行状态台账（2026-10-13）
+
+2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
 2026-10-16 G01 新固定镜像 `99f51e5b` 已含连接池修复：896 个源码指纹输入与固定 Git archive 相同，终止 5 条 Web 专属 TLS 空闲后端后原容器 PID/启动时间/重启计数不变，原会话、旧记录、新写入及成员隔离通过；另通过自签 HTTPS Chrome 和十合成账号短时并发。[收据](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json)。镜像仅本机，目标云及可信公开 HTTPS 未验，不代表真实业务质量或生产签发完成。
 2026-10-16 G01 受控断线复现空闲池未处理 error 导致进程退出，修复后空闲、借出等待、查询执行中三类断线均存活并可重新连接；原始 57P01 保留、两笔未提交写入回滚、无自动重跑、后续明确新写入一次提交，角色及租户范围正确。5 项测试、类型/lint 与新库验证通过。[收据](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)。不将此唯一归因为此前截断的恢复事件；实际 HTTP 容器及目标云恢复仍未验，旧镜像不含修复。
 2026-10-16 G09 安全候选使用守卫已补：实际图重建必须证明读取固定 Skill，答案自报不算；基线不需读取候选。25 项测试、类型/lint 与新库实际正反例通过，未读取候选被审计/采集拒绝，正常候选可统一回读，Skill 停用。[收据](evidence/ma24-g09-safety-skill-usage-audit-2026-10-16.json)。一次前置恢复连接故障重试后未复现，根因未归因；不将重试通过记作底层恢复修复。真实质量、生产来源及最终启用仍未完成。
