@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-11-03 G01 候选恢复链补验：主 API/Worker 的候选源码输入与当前 Web 提交一致；实际编译候选在结构恢复库中完成合成已存模型回执的领取、一次提交及空跑不重放，84 项相关回归、类型/lint通过。当前后台尚未切换，首次实际模型执行、崩溃恢复、依赖等价和真实质量未据此完成。[候选恢复范围](MA24_NATIVE_MAIN_CANDIDATE_RECOVERY_2026-11-03.md)。
+
 2026-11-03 会话边界补验：当前发布包的独立副本在结构恢复库中通过实际登录/退出、两账号设置隔离、跨账号写入拒绝、停用及旧 Cookie 拒绝检查；产品账号和设置未改变。该证据不包含生成中撤权、缓存清理或真实来源撤权，G02 仍开放。[当前包会话证据](MA24_CURRENT_SESSION_BOUNDARY_2026-11-03.md)。
 
 2026-11-03 latest checkpoint: local Web code 26fabd15 is active; component packages remain mixed and G01 is open. Daily-sync gaps were recovered and existing-customer links audited; HTTPS DNS mitigation is active, with the next natural run still unverified. G07 now has one timeline metadata candidate among 38 completed tasks, but its source check rejects a changed decision-memory snapshot (14 unchanged records plus one addition). No source was admitted or replayed. The user selected registration before the next natural business question; the question/material scope and server freeze remain pending. See [source readiness and registration](MA24_NATURAL_SAMPLE_REGISTRATION_2026-11-03.md), [local version](MAILBOX_DAILY_GAP_LOCAL_UPDATE_2026-11-03.md), and [DNS limits](MAILBOX_DNS_MITIGATION_2026-11-03.md). G01-G13 remain open; G14-G20/deployment retain their deferred scope. Earlier entries describe historical check times.

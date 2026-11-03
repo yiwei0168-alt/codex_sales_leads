@@ -1,0 +1,54 @@
+{
+  "schema": "ma24-native-main-candidate-recovery-v1",
+  "checkedAt": "2026-11-03T04:05:57.752Z",
+  "inputs": {
+    "checkedAt": "2026-11-03T03:55:31.368Z",
+    "builtFromCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+    "inputComparisonCommit": "26fabd15",
+    "components": {
+      "business-main-server": {
+        "sourceInputsCompared": 379,
+        "inputsMatchCommit": true,
+        "artifactSha256": "0496fe08316367fbe0a3605ee20b37dc699a04209f97608820256bcca65774f3"
+      },
+      "business-worker": {
+        "sourceInputsCompared": 71,
+        "inputsMatchCommit": true,
+        "artifactSha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15"
+      }
+    },
+    "completeRuntimeEquivalence": false
+  },
+  "test": {
+    "nativeMainReceiptRecovery": "passed",
+    "workerHash": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+    "actualCompiledApiAndWorker": true,
+    "emptyCheckpointInitially": true,
+    "retainedReplyCommittedOnce": true,
+    "extractionQueuedOnce": true,
+    "savedModelRowUnchanged": true,
+    "newModelAttempts": 0,
+    "subsequentEmptyWorkerNoReplay": true,
+    "syntheticReceipt": true,
+    "actualModelCalls": 0,
+    "extractionWorkerExecuted": false,
+    "providerExecutionVerified": false,
+    "qualityAccepted": false
+  },
+  "productionApiInitializerAdaptedOnlyForPort": true,
+  "durablePersistencePatchApplied": true,
+  "schemaOnlyRestore": true,
+  "businessRowsRestored": 0,
+  "remainingTemporaryDatabases": 0,
+  "testProcessesStopped": true,
+  "focusedRegressionTests": 84,
+  "typesPassed": true,
+  "lintPassed": true,
+  "verifierSha256": "3c4ad5923ab83606e9a63fc97142d53fb4790c06909cc125921cb12a6400c577",
+  "driverSha256": "42470fa4915a8e03fe7a05e1d902b522a5da3265628fbc9f22b1bcd7ca72b10c",
+  "activeRuntimeSwitched": false,
+  "productDatabaseChanged": false,
+  "firstProviderExecutionVerified": false,
+  "apiCrashRecoveryVerified": false,
+  "overallG01Accepted": false
+}
