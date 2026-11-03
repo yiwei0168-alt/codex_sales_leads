@@ -1,0 +1,65 @@
+{
+  "schema": "mailbox-dns-mitigation-v1",
+  "appliedAt": "2026-11-03T03:24:17.213Z",
+  "scope": "application-mailbox-DNS-only",
+  "previousMode": "system",
+  "mode": "alidns-doh",
+  "reloadedComponents": [
+    "web",
+    "mailbox"
+  ],
+  "unrelatedComponentsUnchanged": true,
+  "windowsDnsChanged": false,
+  "firewallChanged": false,
+  "schedulesChanged": false,
+  "databaseChanged": false,
+  "codeChanged": false,
+  "modelCalls": 0,
+  "priorReadOnlyImapVerification": true,
+  "processStartupCredentialBoundary": {
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "historicalRootCauseResolved": false,
+  "futureScheduledRunAccepted": false,
+  "currentResolverProbes": [
+    {
+      "mode": "system",
+      "status": "resolved",
+      "publicAddressCount": 4
+    },
+    {
+      "mode": "alidns-doh",
+      "status": "resolved",
+      "publicAddressCount": 1
+    }
+  ],
+  "matchingHistoricalSystemDnsEvents": 0,
+  "historicalEventAbsenceConclusive": false,
+  "readOnlyImapVerification": {
+    "checkedAt": "2026-11-03T03:20:58.638Z",
+    "dnsMode": "alidns-doh",
+    "readOnlyCredentialVerification": "passed",
+    "tlsCertificateVerification": true,
+    "elapsedMs": 2017,
+    "mailBodiesRead": 0,
+    "messagesSent": 0,
+    "syncCreated": false,
+    "productSettingsChanged": false,
+    "modelCalls": 0
+  },
+  "persistedModeReadback": "alidns-doh",
+  "protectedDailySyncStatus": 401,
+  "startup": {
+    "ready": true,
+    "allSixAdopted": true,
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "verifierSha256": "8b567336b30f4816401089db63ed97b3900c4dc69b5cb25e159ead487ea7a90a",
+  "environmentFileCommitted": false,
+  "restorationExercised": false
+}
