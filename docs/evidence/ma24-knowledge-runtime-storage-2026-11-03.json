@@ -1,0 +1,115 @@
+{
+  "schema": "ma24-knowledge-runtime-storage-v1",
+  "recordedAt": "2026-11-03T06:08:03.440Z",
+  "sourceCommit": "01936b80948786b142009e20829fb8400abb146c",
+  "buildId": "uKUAbar6wmT1k625xsFz3",
+  "tests": {
+    "relatedPassed": 481,
+    "relatedSkipped": 1,
+    "pathAndRealFileRouteCases": 8,
+    "typesPassed": true,
+    "lintPassed": true
+  },
+  "build": {
+    "nodeArtifacts": {
+      "business-main-server": {
+        "sha256": "fa9ae764aa43befacdb64eea7202c9fd6f2d234d4c950624d13646e570967942",
+        "sourceInputs": 381
+      },
+      "business-legacy-server": {
+        "sha256": "a6e9f7cafb82e8220c919ac3eda2058134e82c04384f54a4f3d7ecb6b19a42a7",
+        "sourceInputs": 165
+      },
+      "business-worker": {
+        "sha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+        "sourceInputs": 71
+      },
+      "mailbox-worker": {
+        "sha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+        "sourceInputs": 68
+      },
+      "lead-worker": {
+        "sha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57",
+        "sourceInputs": 43
+      }
+    },
+    "webProductionBuildPassed": true,
+    "comparedSourceFiles": 1103,
+    "sealedApplicationFiles": 2841,
+    "manifestSha256": "16c43d4c172efcd933c0d47ec93ca5e19938cb980663a2099bb0477789db9a1d",
+    "runtimeStorageTracingWarningsAbsentInFinalBuild": true,
+    "nestedWorkspaceLockfileWarningRemains": true,
+    "lockfileContentComparedAfterLineEndingNormalization": true
+  },
+  "http": {
+    "checkedAt": "2026-11-03T05:55:29.153Z",
+    "buildId": "uKUAbar6wmT1k625xsFz3",
+    "sourceCommit": "01936b80",
+    "download": {
+      "actualCompiledHttp": true,
+      "authenticatedSessions": 2,
+      "completeDownloadMatches": true,
+      "threeRangeFormsVerified": true,
+      "invalidRangesRejected": true,
+      "anonymousAndPeerPrivateDenied": true,
+      "sameSizeTamperRejected": true,
+      "truncationRejected": true,
+      "missingOriginalRejected": true,
+      "storageTraversalRejectedByDatabase": true,
+      "withdrawnAssetRejected": true,
+      "archivedDocumentRejected": true,
+      "sharingThenWithdrawalVerified": true,
+      "currentDownloadTitleVerified": true,
+      "modelCalls": 0,
+      "externalCalls": 0,
+      "productionWrites": 0
+    },
+    "upload": {
+      "status": 202,
+      "queuedOnly": true,
+      "storedBytesMatched": true,
+      "extractorVersionRead": true
+    },
+    "differentWorkingDirectory": true,
+    "separateSyntheticStorage": true,
+    "modelCalls": 0,
+    "productWrites": 0
+  },
+  "live": {
+    "switchedAt": "2026-11-03T06:00:33.620Z",
+    "standardStartupVerifiedAt": "2026-11-03T06:06:21.403Z",
+    "allSixComponentsAdopted": true,
+    "apiStateFilesCopied": 3,
+    "apiStateBytes": 7971,
+    "apiThreadInventoryPreserved": true,
+    "legacyGraphBytesUnchanged": true,
+    "oldPackagesAndConfigRetained": true,
+    "newTasks": 0,
+    "newModelAttempts": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "currentOriginals": {
+    "checkedAt": "2026-11-03T06:05:44.929Z",
+    "scope": "active-registered-assets-filesystem-only",
+    "sourceCommit": "01936b80",
+    "assetsChecked": 281,
+    "matched": 281,
+    "missing": 0,
+    "changed": 0,
+    "rejected": 0,
+    "workingDirectory": "current-api-package",
+    "serverConfiguredRoot": true,
+    "bodyOrIdentitiesPersisted": false,
+    "productChanged": false,
+    "modelCalls": 0,
+    "authenticatedLiveDownloadVerified": false
+  },
+  "productDatabaseSchemaChanged": false,
+  "existingBusinessDocumentsMigrated": false,
+  "rollbackExecuted": false,
+  "completeRuntimeEquivalence": false,
+  "realBusinessSemanticQualityAcceptedByThisStage": false,
+  "g01Closed": false
+}

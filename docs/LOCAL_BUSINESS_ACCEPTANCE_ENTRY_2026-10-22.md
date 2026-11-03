@@ -134,3 +134,6 @@ Q02 源码改进为新提示 v1.2.0，保留旧提示历史；19 项无模型回
 
 
 2026-11-03 main backend update: main API/Worker now use verified candidates whose source inputs match Web business commit 26fabd15; Web Build ID and localhost:3001 entry unchanged. API durable state copied and verified, all six processes adopted on repeat startup. No new question/model call. [Main runtime alignment](MA24_MAIN_RUNTIME_ALIGNMENT_2026-11-03.md).
+
+
+2026-11-03 后续更新：资料路径修复已启用。当前入口仍为 `http://localhost:3001`；业务提交 `01936b80`，Build ID `uKUAbar6wmT1k625xsFz3`。标准启动器为组件配置工作区资料/抽取脚本目录，API 状态和线程保持；真实 HTTP 隔离验收及 281 条登记原件只读核对通过。下面历史版本号不代表当前版本；完整验收仍开放。[修复记录](KNOWLEDGE_RUNTIME_STORAGE_PATHS_2026-11-03.md)。
