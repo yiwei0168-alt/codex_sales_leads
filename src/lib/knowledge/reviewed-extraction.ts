@@ -1,6 +1,7 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
-import {resolve} from 'node:path';
+
 import {tenantQuery,withBoundTenantTransaction} from '@/lib/rag/db';
 import type {PoolClient} from 'pg';
 import {extractionReadiness} from './extraction-readiness';
@@ -46,7 +47,7 @@ export async function verifyReviewedExtraction(userId:string,jobId:string,bytes:
   const [receipt]=await tenantQuery<{id:string;source_sha256:string;original_artifact_key:string;original_artifact_sha256:string;reviewed_artifact_sha256:string;extractor_version:string}>(userId,
     `select * from knowledge_upload_review_completion where id=$1 and job_id=$2 and owner_id=$3`,[artifact.reviewReceiptId,jobId,userId]);
   if(!receipt||hash(bytes)!==receipt.reviewed_artifact_sha256)throw new Error('Invalid extraction review receipt');
-  const path=resolve(safeKnowledgeStorageKey(receipt.original_artifact_key));assertResolvedInsideKnowledgeRoot(path);
+  const path=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(receipt.original_artifact_key));assertResolvedInsideKnowledgeRoot(path);
   const original=await readFile(path);
   const judgments=await tenantQuery<ExtractionJudgment>(userId,`select distinct on(block_id) block_id,revision,decision,evidence_text,source_sha256,extractor_version
     from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,receipt.original_artifact_sha256]);

@@ -50,7 +50,8 @@ export function filterRuntimeEnvironment(source,inherited){
  for(const key of ['DATABASE_MIGRATION_URL','PAID_CALL_STAGE_OVERRIDE','PAID_CALL_STAGE_OVERRIDE_USER_ID','NODE_OPTIONS','LANGSMITH_API_KEY','LANGCHAIN_API_KEY'])delete env[key];
  Object.assign(env,{NODE_ENV:'production',NEXT_TELEMETRY_DISABLED:'1',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',LEAD_WORKFLOW_EXECUTION_MODE:env.LEAD_WORKFLOW_EXECUTION_MODE??'worker',LANGGRAPH_API_URL:'http://127.0.0.1:2024',ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH:'1',BGE_M3_SERVICE_URL:'http://127.0.0.1:8765',NO_PROXY:[env.NO_PROXY,'127.0.0.1','localhost','::1'].filter(Boolean).join(',')});return env;
 }
-export async function runtimeEnvironment(root){const {default:nextEnv}=await import('@next/env');nextEnv.loadEnvConfig(root);return filterRuntimeEnvironment(await readFile(resolve(root,'.env.local'),'utf8'),process.env);}
+export function localKnowledgeEnvironment(root){return {KNOWLEDGE_STORAGE_ROOT:resolve(root,'knowledge'),KNOWLEDGE_SCRIPTS_ROOT:resolve(root,'scripts')};}
+export async function runtimeEnvironment(root){const {default:nextEnv}=await import('@next/env');nextEnv.loadEnvConfig(root);return {...filterRuntimeEnvironment(await readFile(resolve(root,'.env.local'),'utf8'),process.env),...localKnowledgeEnvironment(root)};}
 export async function launch(component,root,env){
  const directory=resolve(root,'.local-runtime/logs');await mkdir(directory,{recursive:true});const stdout=await open(resolve(directory,component.name+'.stdout.log'),'a'),stderr=await open(resolve(directory,component.name+'.stderr.log'),'a');
  try{const child=spawn(component.executable,component.args,{cwd:component.cwd,env:{...env,...component.env},windowsHide:true,detached:true,stdio:['ignore',stdout.fd,stderr.fd]});await new Promise((done,reject)=>{child.once('spawn',done);child.once('error',reject);});child.unref();return child.pid;}finally{await stdout.close();await stderr.close();}

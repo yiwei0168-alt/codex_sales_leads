@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
+import {resolveKnowledgeStoragePath} from "../src/lib/knowledge/storage-path";
 import nextEnv from "@next/env";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {getPool,tenantQuery,tenantTransaction} from "../src/lib/rag/db";
@@ -28,7 +29,7 @@ try{
     order by d.id limit $1`,[limit],"admin");
   if(apply)for(const source of sources){
     try{
-      const path=resolve(safeKnowledgeStorageKey(source.storageKey));assertResolvedInsideKnowledgeRoot(path);
+      const path=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(source.storageKey));assertResolvedInsideKnowledgeRoot(path);
       const sourceBytes=await readFile(path);
       if(sourceBytes.length!==Number(source.byteSize)||digest(sourceBytes)!==source.sourceSha256)throw new Error("Source bytes differ from registered hash");
       const artifactBytes=await readFile(resolve("tmp","rag-v3-full",`${source.sourceSha256}.json`));

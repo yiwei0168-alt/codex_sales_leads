@@ -12,6 +12,7 @@ export function inventory(root:string):Promise<LocalInventory>;
 export function healthy(url:string,expected?:Record<string,unknown>):Promise<boolean>;
 export function validateConfig(config:unknown,root:string):Promise<void>;
 export function runtimeEnvironment(root:string):Promise<Record<string,string>>;
+export function localKnowledgeEnvironment(root:string):{KNOWLEDGE_STORAGE_ROOT:string;KNOWLEDGE_SCRIPTS_ROOT:string};
 export function filterRuntimeEnvironment(source:string,inherited:Record<string,string|undefined>):Record<string,string>;
 export function launch(component:unknown,root:string,env:Record<string,string>):Promise<number|undefined>;
 export function ensureDocker(config:unknown,root:string):Promise<void>;

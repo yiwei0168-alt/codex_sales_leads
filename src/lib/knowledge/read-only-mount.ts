@@ -1,5 +1,6 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {open,readFile,realpath,stat} from 'node:fs/promises';
-import {resolve} from 'node:path';
+
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 
 /** Bind to the descriptor's mount ID, not a path-prefix guess. A read-only bind
@@ -24,7 +25,7 @@ export function descriptorHasReadOnlyMount(mountInfo:string,fdInfo:string):boole
 export async function knowledgeAssetHasReadOnlyMount(key:string):Promise<boolean>{
   if(process.platform!=='linux')return false;
   try{
-    const requested=resolve(safeKnowledgeStorageKey(key)),path=await realpath(requested);
+    const requested=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(key)),path=await realpath(requested);
     assertResolvedInsideKnowledgeRoot(path);
     const file=await open(path,'r');
     try{

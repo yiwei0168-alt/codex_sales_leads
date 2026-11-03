@@ -1,15 +1,11 @@
 import { createHash } from "node:crypto";
 import { open, realpath, stat } from "node:fs/promises";
-import { extname, resolve, relative, isAbsolute } from "node:path";
+import { extname } from "node:path";
 import { tenantQuery } from "@/lib/rag/db";
+import { assertResolvedInsideKnowledgeRoot, resolveKnowledgeStoragePath, safeKnowledgeStorageKey } from "./storage-path";
+export { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "./storage-path";
 
 const MIME: Record<string,string>={".pdf":"application/pdf",".pptx":"application/vnd.openxmlformats-officedocument.presentationml.presentation",".xlsx":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",".txt":"text/plain",".md":"text/markdown"};
-
-export function safeKnowledgeStorageKey(storageKey:string):string{
-  const normalized=storageKey.replaceAll("\\","/");
-  if(!normalized.startsWith("knowledge/")||isAbsolute(storageKey)||normalized.split("/").includes("..")||/^[a-z]:/i.test(normalized))throw new Error("Invalid knowledge asset storage key");
-  return normalized;
-}
 
 /** A stable read for registration, not an immutable-storage lease. Later readers
  * still verify the registered digest and current access before using the file. */
@@ -24,7 +20,7 @@ export async function readKnowledgeAssetSnapshot(key:string,expectedSha256:strin
 
 async function readAssetBytes(key:string,expectedSha256:string|undefined,capture:boolean){
   if(expectedSha256!==undefined&&!/^[a-f0-9]{64}$/.test(expectedSha256))throw new Error("Invalid expected knowledge asset hash");
-  const storageKey=safeKnowledgeStorageKey(key),requested=resolve(storageKey),path=await realpath(requested);
+  const storageKey=safeKnowledgeStorageKey(key),requested=resolveKnowledgeStoragePath(storageKey),path=await realpath(requested);
   assertResolvedInsideKnowledgeRoot(path);
   const file=await open(path,"r");let hash:string,byteSize:number;
   const chunks:Buffer[]=[];
@@ -58,8 +54,4 @@ export async function registerKnowledgeAsset(userId:string,input:{documentId:str
     values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) on conflict(document_id,storage_key,source_sha256) do update set document_type=excluded.document_type,document_version=excluded.document_version,market=excluded.market,language=excluded.language,source_nature=excluded.source_nature,externally_disclosable=excluded.externally_disclosable,registration_status='registered',updated_at=now() returning id`,
     [input.documentId,storageKey,hash,MIME[extname(storageKey).toLowerCase()]??"application/octet-stream",byteSize,input.documentType,input.version??null,input.market??null,input.language??null,input.sourceNature,input.externallyDisclosable??false],"admin");
   return {id:rows[0].id,sha256:hash,byteSize};
-}
-
-export function assertResolvedInsideKnowledgeRoot(path:string):void{
-  const root=resolve("knowledge");const rel=relative(root,path);if(rel.startsWith("..")||isAbsolute(rel))throw new Error("Knowledge asset escaped storage root");
 }

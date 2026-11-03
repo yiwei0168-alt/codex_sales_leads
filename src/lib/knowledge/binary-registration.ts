@@ -1,7 +1,8 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {verifyReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
-import {extname,resolve} from "node:path";
+import { extname } from "node:path";
 import {tenantQuery} from "@/lib/rag/db";
 import {upsertKnowledgeDocument} from "@/lib/rag/repository";
 import {assertResolvedInsideKnowledgeRoot,registerKnowledgeAsset,safeKnowledgeStorageKey} from "./document-repository";
@@ -31,10 +32,10 @@ export async function registerExtractedSharedBinary(userId:string,input:{jobId:s
     return {status:"registered" as const,documentId:job.published_document_id,assetId:job.published_asset_id,sourceSha256:job.source_sha256,ragV3:"pending-release" as const,reused:true};
   if(job.status!=="extracted"||!job.extraction_artifact_key)return {status:"missing_input" as const,missing:[`Locally extracted upload job; current status: ${job.status}`]};
   if(job.collection_slug==="product"&&!job.entity_key)return {status:"missing_input" as const,missing:["Product model/SKU entity key"]};
-  const source=resolve(safeKnowledgeStorageKey(job.storage_key));assertResolvedInsideKnowledgeRoot(source);
+  const source=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.storage_key));assertResolvedInsideKnowledgeRoot(source);
   const sourceBytes=await readFile(source);
   if(sha(sourceBytes)!==job.source_sha256)throw new Error("Original binary hash changed after upload");
-  const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
+  const artifactPath=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
   const artifactBytes=await readFile(artifactPath);
   if(!job.metrics.artifactSha256||sha(artifactBytes)!==job.metrics.artifactSha256)throw new Error("Extraction artifact hash mismatch");
   await verifyReviewedExtraction(userId,job.id,artifactBytes);

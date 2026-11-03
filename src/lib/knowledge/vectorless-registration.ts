@@ -1,7 +1,8 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {verifyReviewedExtraction,revalidateReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
-import {extname,resolve} from "node:path";
+import { extname } from "node:path";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey,inspectKnowledgeAssetBytes} from "./document-repository";
 import {evidenceText,indexExtractedDocument} from "./vectorless";
@@ -25,7 +26,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(options.expectedSourceSha256&&options.expectedSourceSha256!==job.source_sha256)throw new Error("Observed source hash changed");
   if(job.visibility==="shared"&&actor.role!=="admin")throw new Error("Shared publication requires administrator");
   if(job.collection_slug==="product"&&!job.entity_key)throw new Error("Product model/SKU required");
-  const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
+  const artifactPath=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
   const [source,artifactBytes]=await Promise.all([inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256),readFile(artifactPath)]);
   if(source.byteSize!==Number(job.byte_size))throw new Error("Source bytes changed after upload");
   if(!job.metrics.artifactSha256||sha(artifactBytes)!==job.metrics.artifactSha256)throw new Error("Extraction artifact hash mismatch");

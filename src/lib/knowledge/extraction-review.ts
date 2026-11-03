@@ -1,6 +1,6 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {createHash,randomUUID} from 'node:crypto';
 import {readFile,writeFile} from 'node:fs/promises';
-import {resolve} from 'node:path';
 import {z} from 'zod';
 import type {PoolClient} from 'pg';
 import {tenantTransaction} from '@/lib/rag/db';
@@ -25,7 +25,7 @@ async function load(client:PoolClient,userId:string,jobId:string){
      where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required'
        and j.lease_token is null for update of j`,[jobId,userId]);
   const job=result.rows[0];if(!job)throw new ExtractionReviewConflict('待审核作业不存在或状态已变化');
-  const source=resolve(safeKnowledgeStorageKey(job.storage_key)),artifact=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));
+  const source=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.storage_key)),artifact=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.extraction_artifact_key));
   assertResolvedInsideKnowledgeRoot(source);assertResolvedInsideKnowledgeRoot(artifact);
   const [original,bytes]=await Promise.all([readFile(source),readFile(artifact)]);
   if(original.length!==Number(job.byte_size)||createHash('sha256').update(original).digest('hex')!==job.source_sha256)
@@ -54,7 +54,7 @@ export async function completeExtractionReview(userId:string,jobId:string,artifa
       const judgments=await client.query<ExtractionJudgment>(`select distinct on(block_id) block_id,revision,decision,evidence_text,source_sha256,extractor_version
         from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,artifactSha256]);
       if(reviewDecisionHash(judgments.rows)!==decisionSha256)throw new ExtractionReviewConflict('审核记录已变化，请重新加载后完成');
-      const paths=[current.storage_key,receipt.original_artifact_key,receipt.reviewed_artifact_key].map(key=>{const path=resolve(safeKnowledgeStorageKey(key));assertResolvedInsideKnowledgeRoot(path);return path;});
+      const paths=[current.storage_key,receipt.original_artifact_key,receipt.reviewed_artifact_key].map(key=>{const path=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(key));assertResolvedInsideKnowledgeRoot(path);return path;});
       const [source,original,reviewed]=await Promise.all(paths.map(path=>readFile(path)));
       const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
       if(hash(source)!==receipt.source_sha256||hash(reviewed)!==receipt.reviewed_artifact_sha256)throw new ExtractionReviewConflict('审核原件或派生产物已变化');
@@ -71,7 +71,7 @@ export async function completeExtractionReview(userId:string,jobId:string,artifa
     let reviewed:Buffer;
     try{reviewed=deriveReviewedExtraction(artifactBytes,{receiptId,sourceSha256:job.source_sha256,artifactSha256,extractorVersion:job.extractor_version},rows.rows);}
     catch{throw new ExtractionReviewConflict('仍有未解决或不匹配的对象，不能恢复索引');}
-    const key=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.reviewed.${receiptId}.json`),path=resolve(key);assertResolvedInsideKnowledgeRoot(path);
+    const key=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.reviewed.${receiptId}.json`),path=resolveKnowledgeStoragePath(key);assertResolvedInsideKnowledgeRoot(path);
     await writeFile(path,reviewed,{flag:'wx'});
     const reviewedSha=createHash('sha256').update(reviewed).digest('hex');
     await client.query(`insert into knowledge_upload_review_completion(id,owner_id,job_id,source_sha256,original_artifact_key,original_artifact_sha256,reviewed_artifact_key,reviewed_artifact_sha256,extractor_version)

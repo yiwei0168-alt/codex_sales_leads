@@ -1,6 +1,7 @@
+import { resolveKnowledgeStoragePath } from "@/lib/knowledge/storage-path";
 import { readFile, realpath } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { resolve } from "node:path";
+
 import { z } from "zod";
 import { tenantQuery } from "@/lib/rag/db";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "@/lib/knowledge/document-repository";
@@ -16,7 +17,7 @@ export async function loadMailAttachments(userId: string, items: z.infer<typeof 
     if (!asset || asset.source_sha256 !== item.sha256) throw new Error("Attachment changed or inaccessible");
     total += Number(asset.byte_size);
     if (total > 20 * 1024 * 1024) throw new Error("Attachments exceed 20 MB transport limit");
-    const path = await realpath(resolve(safeKnowledgeStorageKey(asset.storage_key)));
+    const path = await realpath(resolveKnowledgeStoragePath(safeKnowledgeStorageKey(asset.storage_key)));
     assertResolvedInsideKnowledgeRoot(path);
     const content = await readFile(path);
     if (content.length !== Number(asset.byte_size) || createHash("sha256").update(content).digest("hex") !== item.sha256) throw new Error("Attachment bytes changed; review again");

@@ -1,6 +1,7 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
-import {dirname,resolve} from 'node:path';
+import {posix} from 'node:path';
 import {z} from 'zod';
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 import type {Block} from './extracted-tree';
@@ -61,7 +62,7 @@ export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256
 }
 export async function readVisualCandidateImage(packageKey:string,record:Pick<VisualCandidate,'imageFile'|'reviewImageSha256'>){
   if(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`)throw new Error('No candidate image');
-  const path=resolve(dirname(safeKnowledgeStorageKey(packageKey)),record.imageFile);assertResolvedInsideKnowledgeRoot(path);
+  const path=resolveKnowledgeStoragePath(`${posix.dirname(safeKnowledgeStorageKey(packageKey))}/${record.imageFile}`);assertResolvedInsideKnowledgeRoot(path);
   const bytes=await readFile(path);
   if(hash(bytes)!==record.reviewImageSha256||bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw new Error('Candidate image changed');
   return bytes;
@@ -69,7 +70,7 @@ export async function readVisualCandidateImage(packageKey:string,record:Pick<Vis
 export async function loadVisualCandidates(metrics:{visualReviewKey?:string;visualReviewSha256?:string},sourceSha256:string,artifactSha256:string,blocks:Block[]){
   if(!metrics.visualReviewKey&&!metrics.visualReviewSha256)return null;
   if(!metrics.visualReviewKey||!metrics.visualReviewSha256)throw new Error('Incomplete visual package binding');
-  const path=resolve(safeKnowledgeStorageKey(metrics.visualReviewKey));assertResolvedInsideKnowledgeRoot(path);
+  const path=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(metrics.visualReviewKey));assertResolvedInsideKnowledgeRoot(path);
   return validateVisualCandidates(await readFile(path),{sourceSha256,artifactSha256,packageSha256:metrics.visualReviewSha256},blocks);
 }
 export async function verifyVisualCandidateImages(packageKey:string,records:VisualCandidate[]){

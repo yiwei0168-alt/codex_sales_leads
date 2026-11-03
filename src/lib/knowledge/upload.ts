@@ -1,6 +1,7 @@
+import { knowledgeExtractorScript, resolveKnowledgeStoragePath } from "./storage-path";
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
-import { basename, extname, resolve } from "node:path";
+import { basename, dirname, extname } from "node:path";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type { KnowledgeBaseType } from "@/lib/rag/types";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "./document-repository";
@@ -38,10 +39,10 @@ export function validateKnowledgeBinary(input:Pick<KnowledgeUploadInput,"origina
 export async function createKnowledgeUploadJob(userId:string,input:KnowledgeUploadInput){
   const format=validateKnowledgeBinary(input);const id=randomUUID();
   const storageKey=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${id}${format.extension}`);
-  const absolute=resolve(storageKey);assertResolvedInsideKnowledgeRoot(absolute);
+  const absolute=resolveKnowledgeStoragePath(storageKey);assertResolvedInsideKnowledgeRoot(absolute);
   const sourceSha256=createHash("sha256").update(input.bytes).digest("hex");
   // Use the installed local extractor's declaration; never merge work across upgrades.
-  const extractorSource=await readFile(resolve('scripts/knowledge_extraction_v2.py'),'utf8');
+  const extractorSource=await readFile(knowledgeExtractorScript('knowledge_extraction_v2.py'),'utf8');
   const requestedExtractorVersion=extractorSource.match(/^EXTRACTOR_VERSION = "([A-Za-z0-9._-]+)"$/m)?.[1];
   if(!requestedExtractorVersion)throw new Error("Local extractor version unavailable");
   const sourceUrl=input.sourceUrl?.trim()||null,entityKey=input.entityKey?.trim()||null;
@@ -77,13 +78,13 @@ export async function createKnowledgeUploadJob(userId:string,input:KnowledgeUplo
           and a.registration_status='registered' and a.source_sha256=$6))
       order by j.created_at limit 1`,[userId,input.collection,input.visibility,entityKey,sourceUrl,sourceSha256,requestedExtractorVersion,input.revisionDocumentId??null,input.revisionBaseVersionId??null]);
     if(existing.rows[0]){
-      const prior=existing.rows[0],source=resolve(safeKnowledgeStorageKey(prior.storage_key));assertResolvedInsideKnowledgeRoot(source);
+      const prior=existing.rows[0],source=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(prior.storage_key));assertResolvedInsideKnowledgeRoot(source);
       const bytes=await readFile(source);
       if(bytes.length!==input.bytes.byteLength||createHash('sha256').update(bytes).digest('hex')!==sourceSha256)
         throw new Error('Previously uploaded original changed; repair the source before retrying');
       return {id:prior.id,status:prior.status,documentType:format.documentType,byteSize:input.bytes.byteLength,sourceSha256,reused:true};
     }
-    await mkdir(resolve("knowledge","uploads",userId),{recursive:true});
+    await mkdir(dirname(absolute),{recursive:true});
     await writeFile(absolute,input.bytes,{flag:"wx"});written=true;
     await client.query(`insert into knowledge_upload_job(id,user_id,collection_slug,title,original_filename,storage_key,mime_type,byte_size,source_sha256,source_url,visibility,entity_key,metrics,revision_target_document_id,revision_base_version_id)
       values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,[id,userId,input.collection,input.title,format.name,storageKey,format.mimeType,input.bytes.byteLength,sourceSha256,sourceUrl,input.visibility,entityKey,JSON.stringify({requestedExtractorVersion,inputItems:1,inputBytes:input.bytes.byteLength,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,retries:0,discardedReasonCounts:{},usageBoundary:"raw-private-upload-pending-local-extraction",optimizationOpportunity:"Extract locally before any indexing or external disclosure"}),input.revisionDocumentId??null,input.revisionBaseVersionId??null]);

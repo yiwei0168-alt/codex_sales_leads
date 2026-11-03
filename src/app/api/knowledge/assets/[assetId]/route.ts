@@ -1,6 +1,7 @@
+import { resolveKnowledgeStoragePath } from "@/lib/knowledge/storage-path";
 import { readFile, realpath, stat } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { extname, resolve } from "node:path";
+import { extname } from "node:path";
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import {readAvailableImmutableKnowledgeAsset} from '@/lib/knowledge/immutable-asset-snapshot';
@@ -21,7 +22,7 @@ export async function GET(request:Request,{params}:{params:Promise<{assetId:stri
     let bytes:Buffer;
     if(snapshot){bytes=snapshot.bytes;}
     else{
-      const path=await realpath(resolve(key));assertResolvedInsideKnowledgeRoot(path);const info=await stat(path);
+      const path=await realpath(resolveKnowledgeStoragePath(key));assertResolvedInsideKnowledgeRoot(path);const info=await stat(path);
       if(!info.isFile()||info.size!==Number(asset.byteSize))return Response.json({error:"原始资料已变更，请管理员重新登记"},{status:410});
       bytes=await readFile(path);
     }

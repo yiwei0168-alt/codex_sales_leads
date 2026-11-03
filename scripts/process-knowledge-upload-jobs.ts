@@ -1,7 +1,8 @@
+import { knowledgeExtractorScript, resolveKnowledgeStoragePath } from "../src/lib/knowledge/storage-path";
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { dirname } from "node:path";
 import nextEnv from "@next/env";
 import { getPool, query, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "../src/lib/knowledge/document-repository";
@@ -15,7 +16,7 @@ if(onlyJobId&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
 
 function runPython(source:string,artifact:string):Promise<Record<string,unknown>>{
   return new Promise((resolveRun,reject)=>{
-    const child=spawn(process.env.PYTHON_BINARY?.trim()||"python",["scripts/extract-uploaded-knowledge.py",source,artifact],{cwd:process.cwd(),windowsHide:true,stdio:["ignore","pipe","pipe"]});
+    const child=spawn(process.env.PYTHON_BINARY?.trim()||"python",[knowledgeExtractorScript("extract-uploaded-knowledge.py"),source,artifact],{cwd:process.cwd(),windowsHide:true,stdio:["ignore","pipe","pipe"]});
     let stdout="";let stderr="";const timer=setTimeout(()=>child.kill(),120_000);
     child.stdout.on("data",chunk=>{stdout+=String(chunk);});child.stderr.on("data",chunk=>{stderr+=String(chunk);});
     child.once("error",reject);child.once("exit",code=>{clearTimeout(timer);if(code!==0)return reject(new Error(stderr.slice(-500)||`extractor-exit-${code}`));
@@ -47,9 +48,9 @@ try{
       if(job)break;
     }
     if(!job)break;
-    const storageKey=safeKnowledgeStorageKey(job.storageKey);const source=resolve(storageKey);assertResolvedInsideKnowledgeRoot(source);
+    const storageKey=safeKnowledgeStorageKey(job.storageKey);const source=resolveKnowledgeStoragePath(storageKey);assertResolvedInsideKnowledgeRoot(source);
     const artifactKey=safeKnowledgeStorageKey(`knowledge/uploads/${job.userId}/${job.id}.${job.leaseToken}.extraction.json`);
-    const artifact=resolve(artifactKey);assertResolvedInsideKnowledgeRoot(artifact);await mkdir(resolve("knowledge","uploads",job.userId),{recursive:true});
+    const artifact=resolveKnowledgeStoragePath(artifactKey);assertResolvedInsideKnowledgeRoot(artifact);await mkdir(dirname(artifact),{recursive:true});
     const started=Date.now();
     try{
       if(job.status==='pending'||job.status==='running'){
@@ -65,7 +66,7 @@ try{
           `select extraction_artifact_key as "artifactKey",metrics->>'artifactSha256' as "artifactSha256",source_sha256 as "sourceSha256",extractor_version as "extractorVersion"
             from knowledge_upload_job where id=$1 and user_id=$2 and status='extracted' and lease_token=$3 and lease_until>now()`,[job.id,job.userId,job.leaseToken]);
         if(!stored)throw new Error('Upload lease expired or changed');
-        const storedPath=resolve(safeKnowledgeStorageKey(stored.artifactKey));assertResolvedInsideKnowledgeRoot(storedPath);
+        const storedPath=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(stored.artifactKey));assertResolvedInsideKnowledgeRoot(storedPath);
         const readiness=extractionReadiness(await readFile(storedPath),stored);
         if(readiness.reviewRequired){
           const held=await tenantQuery<{id:string}>(job.userId,`update knowledge_upload_job set error_code='extraction-review-required',

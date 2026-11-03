@@ -1,10 +1,16 @@
 import {afterEach,expect,it,vi} from 'vitest';
-import {commandHasPath,ownsProcess,selectExisting,ensureComponent,sha,filterRuntimeEnvironment} from '../../../scripts/lib/local-runtime.mjs';
+import {commandHasPath,ownsProcess,selectExisting,ensureComponent,sha,filterRuntimeEnvironment,localKnowledgeEnvironment} from '../../../scripts/lib/local-runtime.mjs';
+import {resolve} from 'node:path';
 const entry='F:\\workspace\\api.mjs',root='F:\\workspace\\release';
 const component={name:'api',identityPaths:[entry,root],port:2024,health:'http://127.0.0.1:2024/ok',startupMs:3000};
 const process={pid:11,createdAt:'2026-10-26',commandLine:`node "${entry}" "${root}"`};
 const empty={processes:[],listeners:[]},running={processes:[process],listeners:[{port:2024,address:'127.0.0.1',pid:11}]};
 afterEach(()=>vi.useRealTimers());
+it('derives shared storage and extractor paths from the workspace rather than a component cwd',()=>{
+ const env=localKnowledgeEnvironment(resolve('fixture-workspace'));
+ expect(env.KNOWLEDGE_STORAGE_ROOT).toBe(resolve('fixture-workspace/knowledge'));
+ expect(env.KNOWLEDGE_SCRIPTS_ROOT).toBe(resolve('fixture-workspace/scripts'));
+});
 it('keeps application configuration while removing migration, override and trace credentials',()=>{
  const denied=['DATABASE_MIGRATION_URL','PAID_CALL_STAGE_OVERRIDE','PAID_CALL_STAGE_OVERRIDE_USER_ID','NODE_OPTIONS','LANGSMITH_API_KEY','LANGCHAIN_API_KEY'];
  const source=['DATABASE_URL',...denied].map(key=>key+'=synthetic').join('\n');

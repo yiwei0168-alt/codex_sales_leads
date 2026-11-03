@@ -1,10 +1,11 @@
+import { resolveKnowledgeStoragePath } from "./storage-path";
 import {verifyReviewedExtraction,revalidateReviewedExtraction} from './reviewed-extraction';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
 import {assertCurrentUploadLease} from './publication-lease';
 import {publicationJobColumns,samePublicationJobBinding,type BinaryPublicationJob} from './publication-job';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
-import {resolve} from "node:path";
+
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey,inspectKnowledgeAssetBytes} from "./document-repository";
 
@@ -24,7 +25,7 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
   if(!job||job.status!=="registered"||!job.published_document_id||!job.published_asset_id||!job.extraction_artifact_key)throw new Error("Registered extracted document required");
   const documentId=job.published_document_id,assetId=job.published_asset_id;
   if(job.visibility==="shared"&&actor.role!=="admin")throw new Error("Shared tree requires administrator");
-  const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
+  const artifactPath=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
   const [source,artifactBytes]=await Promise.all([inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256),readFile(artifactPath)]);
   const artifactHash=digest(artifactBytes);
   if(!job.metrics.artifactSha256||artifactHash!==job.metrics.artifactSha256)throw new Error("Artifact hash mismatch");

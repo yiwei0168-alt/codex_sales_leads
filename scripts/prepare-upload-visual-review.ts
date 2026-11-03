@@ -1,3 +1,4 @@
+import {resolveKnowledgeStoragePath} from "../src/lib/knowledge/storage-path";
 import {runBoundedLocalProcess} from './lib/run-bounded-local-process';
 import {createHash,randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
@@ -22,24 +23,24 @@ try{
  if(!job||! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key))throw new Error('Owned pending binary review required');
  if(job.metrics.visualReviewKey){console.log(JSON.stringify({alreadyPrepared:true}));}
  else{
- const source=resolve(safeKnowledgeStorageKey(job.storage_key)),artifact=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));
+ const source=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.storage_key)),artifact=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(job.extraction_artifact_key));
  assertResolvedInsideKnowledgeRoot(source);assertResolvedInsideKnowledgeRoot(artifact);
  const bytes=await readFile(artifact);extractionReadiness(bytes,{artifactSha256:job.metrics.artifactSha256,sourceSha256:job.source_sha256,extractorVersion:job.extractor_version});
  if(hash(await readFile(source))!==job.source_sha256)throw new Error('Source changed');
  const blocks=JSON.parse(bytes.toString('utf8')).documents[0].blocks as Block[];
  const folder=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual.${randomUUID()}`),key=`${folder}/review.json`;
  const python=resolve('.venv-docling-v3/Scripts/python.exe');
- const checkpoints=resolve(safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual-checkpoints`));assertResolvedInsideKnowledgeRoot(checkpoints);
+ const checkpoints=resolveKnowledgeStoragePath(safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual-checkpoints`));assertResolvedInsideKnowledgeRoot(checkpoints);
  if(job.storage_key.toLowerCase().endsWith('.pdf')){
-  await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_pdf_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
-  await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolve(key),'--checkpoint-dir',checkpoints],20*60*1000);
+  await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_pdf_visual_review.py','--input',source,'--artifact',artifact,'--output',resolveKnowledgeStoragePath(folder)],20*60*1000);
+  await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolveKnowledgeStoragePath(key),'--checkpoint-dir',checkpoints],20*60*1000);
  }
  else if(job.storage_key.toLowerCase().endsWith('.xlsx')){
-  await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_xlsx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
-  await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolve(key),'--checkpoint-dir',checkpoints],20*60*1000);
+  await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_xlsx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolveKnowledgeStoragePath(folder)],20*60*1000);
+  await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolveKnowledgeStoragePath(key),'--checkpoint-dir',checkpoints],20*60*1000);
  }
- else await runBoundedLocalProcess(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],20*60*1000);
- const review=await readFile(resolve(key)),packageSha256=hash(review);
+ else await runBoundedLocalProcess(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolveKnowledgeStoragePath(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],20*60*1000);
+ const review=await readFile(resolveKnowledgeStoragePath(key)),packageSha256=hash(review);
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);
  if(candidates.some(record=>record.reason==='local-image-budget-exhausted'))throw new Error('Incomplete image batches');
  for(const record of candidates)if(record.imageFile)await readVisualCandidateImage(key,record);
