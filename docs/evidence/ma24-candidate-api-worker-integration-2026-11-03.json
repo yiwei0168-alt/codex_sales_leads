@@ -1,0 +1,59 @@
+{
+  "protocol": "candidate-api-worker-integration-v1",
+  "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+  "schemaOnlyRestore": true,
+  "businessRowsRestored": 0,
+  "productDatabaseModified": false,
+  "workers": [
+    {
+      "name": "business-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "4816f5bc009bfcb03e5db43a2d262ffe859ae3f5729c73c631efc29df47ec7d5",
+      "blockedExternalAttempts": 0
+    },
+    {
+      "name": "mailbox-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "4816f5bc009bfcb03e5db43a2d262ffe859ae3f5729c73c631efc29df47ec7d5",
+      "blockedExternalAttempts": 0
+    },
+    {
+      "name": "lead-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "b919ec206c563ecb86d2797535f498a8e9cb1bd23b89c051a408f465e1cf035c",
+      "blockedExternalAttempts": 7
+    }
+  ],
+  "api": {
+    "ready": true,
+    "healthGraphExecuted": true,
+    "status": 200
+  },
+  "cleanup": true,
+  "before": {
+    "app_user": 0,
+    "agent_run": 0,
+    "mailbox_work_job": 0,
+    "mailbox_message": 0,
+    "lead_workflow_job": 0
+  },
+  "after": {
+    "app_user": 0,
+    "agent_run": 0,
+    "mailbox_work_job": 0,
+    "mailbox_message": 0,
+    "lead_workflow_job": 0
+  },
+  "temporaryDatabaseCount": 0,
+  "apiPortReleased": true,
+  "checkedAt": "2026-11-03T02:26:25.489Z",
+  "verifierSha256": "e35a62d1a59b22841518970bbceaf7cf077308cde66fa6d004f60923b4e7ad8f",
+  "networkGuardSha256": "00877a581e4e2a89469125e0a61277db5cf037e1dabdb0bc190d13de3503aba3",
+  "networkBoundary": "process-preload-http-fetch-socket-interception-not-os-isolation",
+  "newProviderCalls": 0,
+  "actualBusinessExecutionVerified": false,
+  "integratedReleaseAccepted": false
+}
