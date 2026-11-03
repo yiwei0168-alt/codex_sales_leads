@@ -128,3 +128,6 @@ Q02 源码改进为新提示 v1.2.0，保留旧提示历史；19 项无模型回
 确认无重复主 Worker、无启用定时任务、无待轮询模型批次后恢复同版主 Worker，不新建或重排用户问题。复查该原任务转 running，Worker 存活，出现一条 started 调用记录；这只是开始执行，不代表调用成功、问答完成或质量通过。验收缺陷 BA-01-Q01：后台退出后任务持续排队且页面未明确提示服务不可用；当前以恢复进程解除阻塞，长期轮询故障恢复、后台监控及界面提示仍待修复验证。
 
 本人真实业务验收遵循 `MA24-SELFTEST-01`，不扩展为团队账号试用或公网部署。G01–G13 真实质量仍未整体通过；G14–G20 和 LAN/公网部署保持暂缓。用户关于域名/备案的询问仅是咨询，不构成采购、备案提交或公网发布授权。
+
+
+2026-11-03 current local Web: http://localhost:3001 ; business code 26fabd15; Build ID b6lxLlnK4HxyBvfZf4kzs. Refresh the page to load the daily-sync gap warning update. Other components remain pinned separately; live unauthenticated login/assets and startup reuse passed. Authenticated mailbox quality and actual rollback remain open. [Version and scope](MAILBOX_DAILY_GAP_LOCAL_UPDATE_2026-11-03.md).

@@ -1,0 +1,67 @@
+{
+  "schema": "mailbox-daily-gap-local-update-v1",
+  "switchedAt": "2026-11-03T03:10:05.440Z",
+  "scope": "local-Web-only",
+  "sourceCommit": "26fabd15",
+  "oldBuildId": "b4HxOtf6XatXcIIqBLdn3",
+  "buildId": "b6lxLlnK4HxyBvfZf4kzs",
+  "otherComponentsUnchanged": true,
+  "unauthenticatedSessionStatus": 200,
+  "protectedDailySyncStatus": 401,
+  "oldPackageRetained": true,
+  "oldConfigRetained": true,
+  "databaseSchemaChanged": false,
+  "modelCalls": 0,
+  "formalDeployment": false,
+  "rollbackExecuted": false,
+  "sourceFilesCompared": 1101,
+  "sealedApplicationFiles": 2191,
+  "manifestSha256": "44d53ed77f0280227e140e836f8da1be9f7acf7c9212cff2cc7e49cff5a72b39",
+  "dependenciesCopiedAsFiles": true,
+  "dependenciesIncludedInApplicationManifest": false,
+  "browser": {
+    "checkedAt": "2026-11-03T03:10:54.943Z",
+    "scope": "live-unauthenticated-login-only",
+    "buildId": "b6lxLlnK4HxyBvfZf4kzs",
+    "checks": [
+      {
+        "viewport": "desktop",
+        "width": 1366,
+        "height": 900,
+        "status": 200,
+        "buildIdMatched": true,
+        "assetsRequested": 10,
+        "allAssets200": true,
+        "pageErrors": 0,
+        "horizontalOverflow": false,
+        "screenshotSha256": "67302af373dbdde888a695f266bf82bc93b1c57ef94432b7617e46ad77d7f42c"
+      },
+      {
+        "viewport": "mobile",
+        "width": 390,
+        "height": 844,
+        "status": 200,
+        "buildIdMatched": true,
+        "assetsRequested": 10,
+        "allAssets200": true,
+        "pageErrors": 0,
+        "horizontalOverflow": false,
+        "screenshotSha256": "9f829821976c71ddaea628328123ddbb322b179cba5832d50712099713ce50b9"
+      }
+    ],
+    "loginSubmitted": false,
+    "authenticatedBusinessPageAccepted": false,
+    "screenshotsVisuallyReviewed": true
+  },
+  "startup": {
+    "ready": true,
+    "allSixComponentsAdopted": true,
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "businessPageAccepted": false,
+  "integratedRuntimeAccepted": false,
+  "overallGoalComplete": false
+}
