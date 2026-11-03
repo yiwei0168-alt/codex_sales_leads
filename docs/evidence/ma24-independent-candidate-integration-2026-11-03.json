@@ -1,0 +1,175 @@
+{
+  "protocol": "independent-candidate-integration-v1",
+  "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+  "schemaOnlyRestore": true,
+  "businessRowsRestored": 0,
+  "productDatabaseModified": false,
+  "workers": [
+    {
+      "name": "business-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "4816f5bc009bfcb03e5db43a2d262ffe859ae3f5729c73c631efc29df47ec7d5",
+      "blockedExternalAttempts": 0
+    },
+    {
+      "name": "mailbox-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "4816f5bc009bfcb03e5db43a2d262ffe859ae3f5729c73c631efc29df47ec7d5",
+      "blockedExternalAttempts": 0
+    },
+    {
+      "name": "lead-worker",
+      "exitCode": 0,
+      "once": true,
+      "logSha256": "b919ec206c563ecb86d2797535f498a8e9cb1bd23b89c051a408f465e1cf035c",
+      "blockedExternalAttempts": 7
+    }
+  ],
+  "api": {
+    "ready": true,
+    "healthGraphExecuted": true,
+    "status": 200
+  },
+  "cleanup": true,
+  "crossAccountMailboxTask": {
+    "actualWorkerEntry": true,
+    "claimedWithLease": true,
+    "terminalStatus": "failed",
+    "foreignConnectionDenied": true,
+    "peerCredentialUnchanged": true,
+    "syncRunsCreated": 0,
+    "messagesCreated": 0,
+    "blockedExternalAttempts": 0
+  },
+  "independentDependencyDirectory": true,
+  "temporaryDatabaseCount": 0,
+  "apiPortReleased": true,
+  "checkedAt": "2026-11-03T02:37:07.873Z",
+  "verifierSha256": "20d3f69fd63620db5cc2beedcf07bb885c86533cd7f9fd6a08aefbcaf34b6254",
+  "networkGuardSha256": "00877a581e4e2a89469125e0a61277db5cf037e1dabdb0bc190d13de3503aba3",
+  "networkBoundary": "process-preload-http-fetch-socket-interception-not-os-isolation",
+  "newProviderCalls": 0,
+  "actualBusinessExecutionVerified": false,
+  "integratedReleaseAccepted": false,
+  "emptyQueueBefore": {
+    "app_user": 0,
+    "agent_run": 0,
+    "mailbox_work_job": 0,
+    "mailbox_message": 0,
+    "lead_workflow_job": 0
+  },
+  "emptyQueueAfter": {
+    "app_user": 0,
+    "agent_run": 0,
+    "mailbox_work_job": 0,
+    "mailbox_message": 0,
+    "lead_workflow_job": 0
+  },
+  "emptyQueueCountsMeasuredBeforeSyntheticTask": true,
+  "independentBuild": {
+    "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+    "lockfileSha256": "e5d9da189f80706b3cb537e435851f79270dfcdb764286c487f70632f3d49f02",
+    "nodeVersion": "v24.18.1",
+    "esbuildVersion": "0.28.2",
+    "independentDependencyDirectory": true,
+    "installScriptsExecuted": false,
+    "artifactCount": 5,
+    "artifacts": {
+      "business-main-server": {
+        "sha256": "0496fe08316367fbe0a3605ee20b37dc699a04209f97608820256bcca65774f3",
+        "matchesOriginalCandidate": true,
+        "syntaxChecked": true
+      },
+      "business-legacy-server": {
+        "sha256": "a6e9f7cafb82e8220c919ac3eda2058134e82c04384f54a4f3d7ecb6b19a42a7",
+        "matchesOriginalCandidate": true,
+        "syntaxChecked": true
+      },
+      "business-worker": {
+        "sha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+        "matchesOriginalCandidate": true,
+        "syntaxChecked": true
+      },
+      "mailbox-worker": {
+        "sha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+        "matchesOriginalCandidate": true,
+        "syntaxChecked": true
+      },
+      "lead-worker": {
+        "sha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57",
+        "matchesOriginalCandidate": true,
+        "syntaxChecked": true
+      }
+    }
+  },
+  "independentWeb": {
+    "protocol": "unified-local-candidate-check-v1",
+    "checkedAt": "2026-11-03T02:36:49.797Z",
+    "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+    "nodeArtifacts": {
+      "business-main-server": {
+        "sha256": "0496fe08316367fbe0a3605ee20b37dc699a04209f97608820256bcca65774f3",
+        "inputCount": 380,
+        "syntaxChecked": true
+      },
+      "business-legacy-server": {
+        "sha256": "a6e9f7cafb82e8220c919ac3eda2058134e82c04384f54a4f3d7ecb6b19a42a7",
+        "inputCount": 165,
+        "syntaxChecked": true
+      },
+      "business-worker": {
+        "sha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+        "inputCount": 71,
+        "syntaxChecked": true
+      },
+      "mailbox-worker": {
+        "sha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+        "inputCount": 68,
+        "syntaxChecked": true
+      },
+      "lead-worker": {
+        "sha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57",
+        "inputCount": 43,
+        "syntaxChecked": true
+      }
+    },
+    "webBuildPassed": true,
+    "buildId": "o5Uk1xz8bCspJrXAQBgxm",
+    "packagedFileCount": 2195,
+    "packagedManifestSha256": "b74aa7f478a267088e53fad20c990c57bd7b3919d78dd8a23c5872dab147340b",
+    "environmentFilesFound": 0,
+    "smoke": [
+      {
+        "path": "/api/auth/session",
+        "status": 200,
+        "unauthenticated": true
+      },
+      {
+        "kind": "packaged-stylesheet",
+        "status": 200,
+        "hashMatched": true
+      }
+    ],
+    "temporaryProcessStopped": true,
+    "workerExecuted": false,
+    "activated": false,
+    "productionQualified": false,
+    "dependencyInstallVerified": true,
+    "installScriptsExecuted": false,
+    "dependenciesExcludedFromFileManifest": true
+  },
+  "dependencies": {
+    "npmCiExitCode": 0,
+    "installedPackages": 563,
+    "ignoreScripts": true,
+    "audit": false,
+    "offlineAttempt": "ENOTCACHED",
+    "dependencyTreeValid": true,
+    "nativeEsbuildTransformPassed": true,
+    "treeSha256": "7973601239013df3fceb0397b5ee9effbdbdd6d3f36d63162ed7697ac5954f7e"
+  },
+  "successfulBusinessTaskVerified": false,
+  "portableReleaseVerified": false
+}
