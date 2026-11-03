@@ -1889,3 +1889,8 @@ Status: implemented; focused automated verification and live follow-up are recor
 
 
 2026-11-03 / MA24 G01 application source alignment (no new product rule): mailbox/lead workers now use the verified candidates, with 68/43 source inputs matching Web business commit 26fabd15. All five active Node artifact inputs and the retrieval script were checked against that commit; original Node build archive remains b77a54c4. Other four processes unchanged during this step, all six adopted by standard startup. No new mail/lead jobs, paid reservations, model attempts or failed-task requeue. HTTPS DNS mode retained. Complete dependency/weight/process equivalence, next natural daily run, real model/lead quality, exercised rollback and formal release remain open. [Current source map](MA24_APPLICATION_SOURCE_ALIGNMENT_2026-11-03.md).
+
+
+### 2026-11-03 当前恢复材料补齐（工程记录）
+
+最新数据库归档已覆盖本轮补回的 85 封邮件；工作区资料、当前 API 状态及启动配置另存本机副本并逐文件核对。此为既有 G01 工程证据，不新增产品规则，也不代表原子快照、实际产品库回滚或异机灾难恢复。当前运行目录的资料路径仍待核对和修复；G01–G13 未整体关闭，G07/G08 继续等待下次自然业务提问前登记具体范围。见 [恢复材料与边界](MA24_RECOVERY_MATERIALS_REFRESH_2026-11-03.md)。

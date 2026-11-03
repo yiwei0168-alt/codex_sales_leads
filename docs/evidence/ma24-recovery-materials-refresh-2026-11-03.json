@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-recovery-materials-refresh-v1",
+  "date": "2026-11-03",
+  "databaseArchive": {
+    "file": "network_copilot_2026-11-03T05-24-32Z.dump",
+    "bytes": 272968183,
+    "sha256": "38e38f1dc48c638dc4220fb3c6cc24ebacf34ad81cb35e280c6f9e212fe1c581",
+    "aclIncluded": true,
+    "fullIntegrityRestore": true,
+    "skippedConstraints": [],
+    "stageMarkersChecked": "127-135",
+    "selectedAclAndForcedRlsPassed": true,
+    "recoveredMessagesCompared": 85,
+    "encryptedPayloadsAndContentHashesMatched": true,
+    "plaintextSubjectAndBodyEmpty": true,
+    "rollbackVerified": false
+  },
+  "materials": [
+    {"name":"knowledge","files":525,"bytes":653079240,"inventorySha256":"da49ed4486e4c802d3b8045fd681f97708ddcf71226684a7160073b86e0245d4","copyMatched":true,"sourceStableDuringCopy":true},
+    {"name":"api-state","files":3,"bytes":7971,"inventorySha256":"4abd07ef593e92ad9968f1fef8e47509a31454219087a0b5646d5fd9bc4ba2ca","copyMatched":true,"sourceStableDuringCopy":true},
+    {"name":"startup-config","files":1,"bytes":841914,"inventorySha256":"a35a3d72712e149309cc9db464525383f0d15b742796fa590217c4ab3c580ca2","copyMatched":true,"sourceStableDuringCopy":true}
+  ],
+  "initialPrivateVerifierOrderingErrorCorrected": true,
+  "abandonedStageClonesRemoved": 3,
+  "finalVerifierExitCode": 0,
+  "productChanged": false,
+  "modelCalls": 0,
+  "credentialsCopied": false,
+  "atomicCoordinatedSnapshot": false,
+  "offMachineRecoveryVerified": false,
+  "runtimeKnowledgeRootAbsent": true,
+  "runtimeOriginalAccessRequestVerified": false,
+  "g01Closed": false
+}
