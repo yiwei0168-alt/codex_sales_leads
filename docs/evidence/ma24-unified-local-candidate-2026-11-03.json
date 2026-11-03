@@ -1,0 +1,68 @@
+{
+  "protocol": "unified-local-candidate-check-v1",
+  "checkedAt": "2026-11-03T02:20:41.659Z",
+  "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+  "nodeArtifacts": {
+    "business-main-server": {
+      "sha256": "0496fe08316367fbe0a3605ee20b37dc699a04209f97608820256bcca65774f3",
+      "inputCount": 380,
+      "syntaxChecked": true
+    },
+    "business-legacy-server": {
+      "sha256": "a6e9f7cafb82e8220c919ac3eda2058134e82c04384f54a4f3d7ecb6b19a42a7",
+      "inputCount": 165,
+      "syntaxChecked": true
+    },
+    "business-worker": {
+      "sha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+      "inputCount": 71,
+      "syntaxChecked": true
+    },
+    "mailbox-worker": {
+      "sha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+      "inputCount": 68,
+      "syntaxChecked": true
+    },
+    "lead-worker": {
+      "sha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57",
+      "inputCount": 43,
+      "syntaxChecked": true
+    }
+  },
+  "webBuildPassed": true,
+  "buildId": "JUwf2rOOTgjqqyAw-XGZF",
+  "packagedFileCount": 2195,
+  "packagedManifestSha256": "6c76c15c30cac30556c379f0b8041b7a9d9696d6ab18697f12a8de520a9d2bc1",
+  "environmentFilesFound": 0,
+  "smoke": [
+    {
+      "path": "/api/auth/session",
+      "status": 200,
+      "unauthenticated": true
+    },
+    {
+      "kind": "packaged-stylesheet",
+      "status": 200,
+      "hashMatched": true
+    }
+  ],
+  "temporaryProcessStopped": true,
+  "workerExecuted": false,
+  "activated": false,
+  "productionQualified": false,
+  "dependencyInstallVerified": false,
+  "dependenciesExcludedFromFileManifest": true,
+  "sourceArchiveSha256": "281116975a84f6c95c970082489934932ffe2013557044ae7f3f067883189d1b",
+  "lockfileSha256": "e5d9da189f80706b3cb537e435851f79270dfcdb764286c487f70632f3d49f02",
+  "builderSha256": "6e0bb6e25704b7ca9498ae48e307f99b75d1b491157e4fcfcd6fd275ac371852",
+  "nodeVersion": "v24.18.1",
+  "esbuildVersion": "0.28.2",
+  "builderLintPassed": true,
+  "webTypesPassed": true,
+  "staticPagesGenerated": 27,
+  "parentWorkspaceRootInferred": true,
+  "newProviderCalls": 0,
+  "apiGraphExecutionVerified": false,
+  "workerIntegrationVerified": false,
+  "portableReleaseVerified": false
+}

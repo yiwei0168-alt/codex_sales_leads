@@ -1847,3 +1847,6 @@ Status: implemented; focused automated verification and live follow-up are recor
 
 
 2026-11-03 / MA24 execution evidence refresh (no new product rule): database backup and disposable restore passed; selected ACL/RLS metadata and six local component health checks passed. The current artifact manifest seals 3,305 release-related files, with dependencies and mutable data excluded. Mixed component packages remain; integrated release, production rollback and overall G01-G13 acceptance are not established. No new model call or retail delivery was made. Existing confirmed scope and retry limits remain in force. [Evidence and limitations](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md).
+
+
+2026-11-03 / MA24 same-commit candidate follow-up (no new product rule): five Node components and the Web were built from the fixed b77a54c4 Git archive. Node syntax, builder lint, Web build/types and isolated unauthenticated session/static-asset smoke passed. No worker or provider call was executed and the active product was not switched. Installed dependencies remain shared through a directory link; independent dependency installation, API/worker integration, portable release and rollback remain unverified. [Candidate evidence](MA24_UNIFIED_LOCAL_CANDIDATE_2026-11-03.md).
