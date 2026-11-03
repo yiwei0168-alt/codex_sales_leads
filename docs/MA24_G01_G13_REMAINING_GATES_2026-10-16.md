@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
+2026-11-03 latest checkpoint: local Web code 26fabd15 is active; component packages remain mixed and G01 is open. Daily-sync gaps were recovered and existing-customer links audited; HTTPS DNS mitigation is active, with the next natural run still unverified. G07 now has one timeline metadata candidate among 38 completed tasks, but its source check rejects a changed decision-memory snapshot (14 unchanged records plus one addition). No source was admitted or replayed. The user selected registration before the next natural business question; the question/material scope and server freeze remain pending. See [source readiness and registration](MA24_NATURAL_SAMPLE_REGISTRATION_2026-11-03.md), [local version](MAILBOX_DAILY_GAP_LOCAL_UPDATE_2026-11-03.md), and [DNS limits](MAILBOX_DNS_MITIGATION_2026-11-03.md). G01-G13 remain open; G14-G20/deployment retain their deferred scope. Earlier entries describe historical check times.
 
 ## 2026-10-26 当前检查点
 

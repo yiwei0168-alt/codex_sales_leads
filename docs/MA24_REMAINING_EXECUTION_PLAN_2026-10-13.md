@@ -1,5 +1,7 @@
 # MA24 剩余任务收尾计划（2026-10-13）
 
+2026-11-03 执行更新：G07 当前已有一条时间线元数据候选，但来源预检因决策记忆新增一条而拒绝；不是可直接执行的回放。用户选择在下一次自然业务提问前登记，按[新样本登记清单](MA24_NATURAL_SAMPLE_REGISTRATION_2026-11-03.md)先确定问题及材料/日期范围，再完成现有服务端前置协议。本次选择不授权额外回放、影子执行或模型调用，未创建冻结。继续推进其他独立门槛；G01–G13 未整体关闭，G14–G20/部署仍暂缓。
+
 2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
 
 2026-10-22 当前输入与执行检查点：最新 `6dded268` 客户时间线原文及既有邮箱/公司往来回归已通过并归档至 `7c669fe7`；当前账号只读复查仍为 11 个已完成任务、边界后新增 0、时间线元数据候选 0，未读取正文或重复来源判定。接下来的真实任务、材料/日期范围、独立判断和适用调用授权见[当前检查点与门槛](MA24_G01_G13_REMAINING_GATES_2026-10-16.md)及[只读收据](evidence/ma24-g07-input-availability-recheck-2026-10-22.json)。G01–G13 尚未整体完成，G14–G20/部署继续暂缓；以下保留历史计划与阶段记录。
