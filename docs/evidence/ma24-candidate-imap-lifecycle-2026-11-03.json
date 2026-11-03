@@ -1,0 +1,50 @@
+{
+  "protocol": "candidate-imap-lifecycle-v1",
+  "sourceCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+  "schemaOnlyRestore": true,
+  "businessRowsRestored": 0,
+  "productDatabaseModified": false,
+  "cleanup": true,
+  "before": {
+    "app_user": 0,
+    "agent_run": 0,
+    "mailbox_work_job": 0,
+    "mailbox_message": 0,
+    "lead_workflow_job": 0
+  },
+  "lifecycle": {
+    "unmodifiedCandidateArtifact": true,
+    "artifactSha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+    "independentDependencies": true,
+    "actualImapFlowAndMailparser": true,
+    "syntheticDnsAndSocketRoutingOnly": true,
+    "tlsVerificationEnabled": true,
+    "processKilledAtPartialPage": true,
+    "originalLeaseUnchanged": true,
+    "naturalLeaseExpiry": true,
+    "recoveredWithNewLease": true,
+    "jobStatus": "completed",
+    "jobResult": {
+      "imported": 4,
+      "processed": 4,
+      "remaining": 0,
+      "discovered": 4
+    },
+    "uniqueEncryptedMessages": 4,
+    "wrongOwnerDecryptionRejected": true,
+    "dateScopePreserved": true,
+    "customRangeGlobalCursorUnchanged": true,
+    "heldBatchCancelled": true,
+    "emptyPollRowsUnchanged": true,
+    "readOnlyImapCommands": true,
+    "realMailboxConnections": 0,
+    "modelCalls": 0
+  },
+  "temporaryDatabaseCount": 0,
+  "checkedAt": "2026-11-03T02:43:10.167Z",
+  "verifierSha256": "d4278621354dde67afc8c2fff57e2f52ce35f37e288496c3065bf1261e5cfbef",
+  "networkFixtureSha256": "8947d96a6d803b2b3fe26ddf661cf32eceee423bb9016774003b704e663062fc",
+  "wireServerSha256": "b9f2d47a42bc9286532904377d21f80af8d1a70767c9629b67e45286415ee28c",
+  "realProviderQualityAccepted": false,
+  "productionReleaseAccepted": false
+}
