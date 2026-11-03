@@ -1,5 +1,7 @@
 # MA24 候选发布范围与最小依赖（2026-10-14）
 
+2026-11-03 最新本机清单：Web 业务提交为 `26fabd15`，五个 Node 编译组件已逐项证明源码输入与其一致并在本机对齐，BGE 服务脚本匹配该提交；六组件标准启动复用通过。Node 产物的原构建归档仍为 `b77a54c4`，不是整包重新构建的声明；依赖/权重/进程完整等价及正式发布、回滚尚未通过。[来源映射与边界](MA24_APPLICATION_SOURCE_ALIGNMENT_2026-11-03.md)。以下版号和目录为各历史阶段记录。
+
 2026-11-03 checkpoint: fresh database backup and disposable full restore passed; selected ACL/RLS checks passed. Six local components were healthy and 3,305 release-related files were hashed. Declared code: `0368e56e`; component packages remain mixed and release preflight is not approved. No production rollback or new model call. G01-G13 remain open; G14-G20 and deployment retain their deferred scope. See [current evidence](MA24_LOCAL_BASELINE_REFRESH_2026-11-03.md). Earlier entries describe their historical check times.
 
 **2026-10-16 迁移后备份补验。** 本机产品库的新归档已保留 ACL；一次性库恢复后 127–135 阶段标记、关键角色权限、强制 RLS 及旧版/候选版 Web 合成登录冒烟通过，未从源库复制权限。[收据](evidence/ma24-g01-postmigration-acl-backup-2026-10-16.json)。此前关于无 ACL 备份和从源库补拷授权的段落均为当时历史快照。新主机仍需准备数据库全局角色与凭据；这不等于实际流量或数据库回滚验收。

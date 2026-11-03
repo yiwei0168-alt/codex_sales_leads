@@ -1,0 +1,93 @@
+{
+  "schema": "ma24-application-source-alignment-v1",
+  "alignment": {
+    "alignedAt": "2026-11-03T04:23:22.820Z",
+    "scope": "local-mailbox-and-lead-worker",
+    "inputProof": {
+      "checkedAt": "2026-11-03T04:20:55.240Z",
+      "builtFromCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+      "inputComparisonCommit": "26fabd15",
+      "components": {
+        "mailbox-worker": {
+          "sourceInputsCompared": 68,
+          "inputsMatchCommit": true,
+          "artifactSha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264"
+        },
+        "lead-worker": {
+          "sourceInputsCompared": 43,
+          "inputsMatchCommit": true,
+          "artifactSha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57"
+        }
+      },
+      "completeRuntimeEquivalence": false
+    },
+    "artifactRootSharedWithMainApi": true,
+    "oldWorkersAndConfigRetained": true,
+    "unrelatedFourProcessesUnchanged": true,
+    "mailboxDnsMode": "alidns-doh",
+    "newMailJobs": 0,
+    "newLeadJobs": 0,
+    "newPaidReservations": 0,
+    "newModelAttempts": 0,
+    "failedTasksRequeued": false,
+    "schemaChanged": false,
+    "rollbackExecuted": false,
+    "completeDependencyOrProcessEquivalence": false
+  },
+  "sourceMap": {
+    "checkedAt": "2026-11-03T04:24:44.688Z",
+    "inputComparisonCommit": "26fabd15",
+    "nodeArtifactBuildCommit": "b77a54c4421ea0c71b015ac242407511e4e973fd",
+    "webBuildId": "b6lxLlnK4HxyBvfZf4kzs",
+    "nodeComponents": [
+      {
+        "component": "business-main-server",
+        "artifactSha256": "0496fe08316367fbe0a3605ee20b37dc699a04209f97608820256bcca65774f3",
+        "sourceInputsCompared": 379,
+        "inputsMatchCommit": true
+      },
+      {
+        "component": "business-legacy-server",
+        "artifactSha256": "a6e9f7cafb82e8220c919ac3eda2058134e82c04384f54a4f3d7ecb6b19a42a7",
+        "sourceInputsCompared": 165,
+        "inputsMatchCommit": true
+      },
+      {
+        "component": "business-worker",
+        "artifactSha256": "1af3722b8b14874d18d36fceebe3471ddc86d1adbe3248122d728b58d6b03a15",
+        "sourceInputsCompared": 71,
+        "inputsMatchCommit": true
+      },
+      {
+        "component": "mailbox-worker",
+        "artifactSha256": "e5c8361fe32fe31d96f02cda98c8518e1f6b9d9c9c43d7dbe143a1605fb0e264",
+        "sourceInputsCompared": 68,
+        "inputsMatchCommit": true
+      },
+      {
+        "component": "lead-worker",
+        "artifactSha256": "e8bae2a973cc8c5c1980912fcffc34cec7daced32665d488f4dbcf9916ec2b57",
+        "sourceInputsCompared": 43,
+        "inputsMatchCommit": true
+      }
+    ],
+    "retrievalScriptMatchesCommit": true,
+    "nodeVersion": "v24.18.1",
+    "dependenciesOrModelWeightsAttested": false,
+    "completeProcessEquivalence": false
+  },
+  "startup": {
+    "verifiedAt": "2026-11-03T04:25:03.506Z",
+    "allSixAdopted": true,
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "switchScriptSha256": "515e73ca21decc80cda60a2731fb9969553d7b0e84ae44a4b833e2435cc522cf",
+  "actualLeadDiscoveryRerun": false,
+  "naturalDailyRunAccepted": false,
+  "newQualityVerdict": false,
+  "formalDeployment": false,
+  "overallGoalComplete": false
+}
