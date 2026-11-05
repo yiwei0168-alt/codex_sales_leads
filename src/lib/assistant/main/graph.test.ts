@@ -4,10 +4,33 @@ import { buildMainAgentGraph } from "./graph";
 import { assertOpenRouterResponse, OpenRouterRequestError } from "@/providers/openrouter-batch";
 import { result, type ModelMessage, type ModelToolCall } from "./contracts";
 import { InstructionsChangedError } from "./repository";
+import {hybridFirstAction} from './hybrid-routing';
 
 const call = (id: string, tool: string): ModelToolCall => ({ id, type: "function", function: { name: "execute_tool", arguments: JSON.stringify({ tool, arguments: {} }) } });
 const initial = () => ({ messages: [{ role: "user" as const, content: "先查现有资料，再对照保存的公司决定，指出差异" }], pending: [], steps: 0, status: "running" as const, reply: "", seen: {}, instructionIds: [] });
 describe("open main Agent graph", () => {
+  it('runs an exact read recipe without a planning model and then uses one answer turn',async()=>{
+    const model=vi.fn(async(messages:ModelMessage[]):Promise<ModelMessage>=>{
+      expect(messages.some(m=>m.role==='user'&&m.content==='查看 Atlas 最新进展')).toBe(true);
+      expect(messages.some(m=>m.role==='tool')).toBe(true);
+      return {role:'assistant',content:'Answer with original evidence'};
+    });
+    const tool=vi.fn(async(_call:ModelToolCall)=>{void _call;return result({original:'mail'});});
+    const out=await buildMainAgentGraph({firstAction:hybridFirstAction,boundary:async()=>({control:null,instructions:[]}),model,tool},false)
+      .invoke({...initial(),messages:[{role:'system',content:'[hybrid-v1:eligible]'},{role:'user',content:'查看 Atlas 最新进展'}]});
+    expect(out.status).toBe('completed');expect(model).toHaveBeenCalledOnce();expect(tool).toHaveBeenCalledOnce();
+    expect(JSON.parse(tool.mock.calls[0][0].function.arguments).tool).toBe('workflow_read');
+  });
+  it('falls back to dynamic planning with the original request and partial recipe result',async()=>{
+    const replies:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[call('follow-up','company_search')]},{role:'assistant',content:'Needs clarification'}];
+    const model=vi.fn(async(messages:ModelMessage[])=>{
+      expect(messages.some(m=>m.content==='查看 Atlas 最新进展')).toBe(true);return replies.shift()!;
+    });
+    const tool=vi.fn(async()=>result({candidates:['one','two']},{status:'partial',missing:['ambiguous']}));
+    const out=await buildMainAgentGraph({firstAction:hybridFirstAction,boundary:async()=>({control:null,instructions:[]}),model,tool},false)
+      .invoke({...initial(),messages:[{role:'system',content:'[hybrid-v1:eligible]'},{role:'user',content:'查看 Atlas 最新进展'}]});
+    expect(out.status).toBe('completed');expect(model).toHaveBeenCalledTimes(2);expect(tool).toHaveBeenCalledTimes(2);
+  });
   it('preserves the 80-decision boundary while retaining the last permitted read result',async()=>{
     const model=vi.fn(async():Promise<ModelMessage>=>({role:'assistant',content:null,tool_calls:[call('last-read','knowledge_search')]}));
     const tool=vi.fn(async()=>result({evidence:'Synthetic final permitted read'}));

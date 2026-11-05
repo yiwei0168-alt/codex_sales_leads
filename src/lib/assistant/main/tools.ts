@@ -42,9 +42,13 @@ import { mailSendTool, mailBatchTool } from "./mail-tools";
 import {vectorlessTools} from "./vectorless-tools";
 import {knowledgeOriginalsTool} from './knowledge-originals-tool';
 import {knowledgeCompareTool} from './knowledge-compare-tool';
+import {hybridTools} from './hybrid-tools';
+import {hybridEnabled} from './hybrid-routing';
+import {HYBRID_TOOLS} from './hybrid-contracts';
 export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
+  ...hybridTools,
   ...businessTools,
   ...researchTools,
   ...vectorlessTools,
@@ -224,11 +228,13 @@ export function availableTools(context: Pick<ExecutionContext, "role" | "knowled
   if (context.evaluationArm && (!context.userId || (!context.knowledgeScope?.length&&!context.skillTaskSpecHash))) return [];
   const scopedShadow=Boolean(context.userId&&(process.env.VECTORLESS_AGENT_SHADOW_USER_IDS??'').split(',').map(id=>id.trim()).includes(context.userId));
   return tools.filter(t => (t.role === "member" || context.role === "admin")
+    && (!HYBRID_TOOLS.some(id=>id===t.id) || (hybridEnabled()&&!context.evaluationArm))
     && (!context.evaluationArm || t.effect === "read")
     && modeAllowsTool(context.mode,t.id)
     && (!t.id.startsWith("vectorless_") || (context.evaluationArm!=="baseline" && process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && (!context.knowledgeScope?.length||scopedShadow)))
     && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"
+      || HYBRID_TOOLS.some(id=>id===t.id)
       || t.id === "knowledge_originals" || (t.id === "knowledge_compare" && context.knowledgeScope.includes("product"))
       || (scopedShadow&&t.id.startsWith('vectorless_'))));
 }

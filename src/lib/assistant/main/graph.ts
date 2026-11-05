@@ -21,6 +21,8 @@ import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
 import {OpenRouterRequestError} from "@/providers/openrouter-batch";
 import {recordConsumedToolOutputs} from "./consumption";
 import {toolModelView} from './tool-model-view';
+import {hybridFirstAction,hybridEnabled} from './hybrid-routing';
+import {hybridDataSchema} from './hybrid-contracts';
 import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
 import {assertCurrentMemoryMessages,withCurrentDecisionMemory,MemoryContextChangedError,MEMORY_CHANGED_REPLY} from './memory-message-guard';
@@ -38,6 +40,7 @@ export interface MainGraphDependencies {
   validateEvidence?: (messages:ModelMessage[])=>Promise<void>;
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
+  firstAction?: (messages: ModelMessage[]) => ModelMessage|null;
   tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
 }
 const PLACEHOLDER_UUIDS = new Set([
@@ -81,7 +84,8 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       if (state.steps >= MAIN_AGENT_EXECUTION_LIMITS.modelSteps) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
         await deps.validateEvidence?.(state.messages);
-        const response = await deps.model(toolModelView(state.messages), state.steps,state.decisionRevision??0);
+        const prepared=state.steps===0&&!(state.decisionRevision??0)?deps.firstAction?.(state.messages):null;
+        const response = prepared??await deps.model(toolModelView(state.messages), state.steps,state.decisionRevision??0);
         await deps.validateEvidence?.(state.messages);
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
@@ -135,7 +139,9 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       if (output.status === "waiting_approval") return { status: "waiting_user" as RunStatus, reply: "请核对下方操作的实际内容并确认。确认前任务会保留在当前步骤。" };
       const content = JSON.stringify(output);
       // Do not silently truncate evidence into apparently complete results.
-      const projected = content.length <= 100_000 ? content : JSON.stringify(result(null, { status: "partial", missing: ["Result too large for this turn; narrow the query or retrieve a specific document"], artifacts: output.artifacts, sources: output.sources }));
+      // Hybrid raw evidence stays in the checkpoint for final source validation;
+      // only its separately bounded model view is compacted.
+      const projected = content.length <= 100_000 || hybridDataSchema.safeParse(output.data).success ? content : JSON.stringify(result(null, { status: "partial", missing: ["Result too large for this turn; narrow the query or retrieve a specific document"], artifacts: output.artifacts, sources: output.sources }));
       return { messages: [...state.messages, { role: "tool" as const, tool_call_id: call.id, content: projected }],
         pending: state.pending.slice(1), seen: { ...state.seen, [key]: count } };
     }))
@@ -236,9 +242,17 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     await assertCurrentKnowledgeMessages(userId,messages,context.knowledgeScope);
   };
   const checkpointer = new AgentRunCheckpointer(context);
+  // Deterministic prefetch cannot interpret arbitrary saved business policies.
+  // Let the model read them first whenever any decision memory is active.
+  let allowPreparedRead=false;
   const graph = buildMainAgentGraph({
+    firstAction:messages=>hybridEnabled()&&allowPreparedRead?hybridFirstAction(messages):null,
     validateEvidence:validateContext,
-    boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
+    boundary: async () => {
+      const current=await boundary(context),memories=await loadDecisionMemory(userId);
+      allowPreparedRead=memories.length===0;
+      return {...current,policyRevision:digest(memories)};
+    },
     model: (messages, step,revision) => withCurrentDecisionMemory(userId,()=>durableModel(context, messages, step, revision,run.model_config)),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);

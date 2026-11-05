@@ -1941,3 +1941,12 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 
 
 2026-10-21 / MA15-02 G13 responsive navigation accepted within scope: fixed product db1d1054, host fixture 8613434d, actual **16283 exited 0** through Chrome/HTTPS/compiled Web on a fresh disposable database. Five viewport sizes (1366, 960, 959, 390, 320 widths), initial mobile, first-resize closed labels, open/Escape/backdrop/close/navigation controls, mobile focus containment, desktop dialog/footer/scroll-lock cleanup, content focus and retained desktop collapse preference passed. Eight closed-state samples each verify six hidden label elements; browser non-read requests 0 and actual model calls 0. Closed/open screenshots visually inspected; all five frozen files matched, product CSS/component match the fixed image, and temporary containers/database were removed. Three earlier fixture failures remain retained; route continuation waits for committed URL and new library pane. All five package checks passed; main/collector entry artifacts/Node/dependencies match earlier accepted bytes, without claiming a new full runtime composition. This resolves the navigation visual follow-up from memory run 78901, not other memory entrypoints, real business/model quality, full G13 or deployment. G14-G20 remain deferred. [Scope/evidence](RESPONSIVE_NAVIGATION_2026-10-21.md).
+
+
+## HYBRID-01 — 完整性约束下的混合执行策略（2026-11-05）
+
+- 用户明确确认：“好的，推进混合策略”。此前明确目标：提升效率、节省成本，在结果完整性与效率／成本之间寻求最优解；高频简单任务使用固有工具组合，同时保留动态规划；复杂任务可采用 programmatic tool calling 与 interpreter；路由考虑极速模型或只决策的 SLM。
+- 范围：产品业务问答／任务规划与工具编排。不得把用户确认记为效果验收；不改变已确认的搜索、评分、账户隔离、审批及原始引用要求。
+- 实施：第一版加入固定只读流程、原动态规划、受控程序化读取三条可续接路径；完整保留用户问题，原权限、模式、逐工具收据和来源守卫继续生效。限额为工程初值，不作为用户确认的固定业务数值。
+- 路由现状：保守规则建议＋原模型自主决策；符合全部条件的简单请求可跳过初始规划。独立极速模型／SLM 路由尚未接入，训练与模型替换未执行。
+- 验收状态：本地定向回归与类型／lint 已验证，候选构建另记；尚未切换当前运行产品，未做真实业务质量／时延／成本对照，不宣称节省比例。详见 [设计与边界](HYBRID_EXECUTION_V1_2026-11-05.md) 和 [工程证据](evidence/hybrid-execution-v1-2026-11-05.json)。

@@ -3,6 +3,7 @@ import {tenantQuery} from '@/lib/rag/db';
 import {currentKnowledgeChunkEvidence} from '@/lib/rag/repository';
 import {readEvidence,type KnowledgeCollections} from '@/lib/knowledge/vectorless';
 import {digest,type ModelMessage} from './contracts';
+import {expandHybridEvidence} from './hybrid-contracts';
 
 export const SOURCE_CHANGED_REPLY='资料的权限、范围、版本或核验状态已变化，或暂时无法复核。本次未返回受影响的回答，也未继续执行后续操作。请重新发起查询以读取当前资料。';
 export class KnowledgeSourceChangedError extends Error {constructor(){super('Knowledge source validation failed');}}
@@ -14,6 +15,7 @@ const guardedTools=new Set(['knowledge_search','knowledge_facts','knowledge_comp
 /** Only server tool messages paired to actual tool calls count as evidence, never user text. */
 export async function assertCurrentKnowledgeMessages(userId:string,messages:ModelMessage[],collections?:KnowledgeCollections){
  try{
+  messages=expandHybridEvidence(messages);
   const calls=new Map<string,{tool:string;arguments:unknown}>();
   for(const message of messages)if(message.role==='assistant')for(const call of message.tool_calls??[]){
     if(call.function.name!=='execute_tool')continue;

@@ -1,0 +1,61 @@
+{
+  "schema": "hybrid-execution-engineering-v1",
+  "date": "2026-11-05",
+  "confirmedRule": "HYBRID-01",
+  "implemented": [
+    "advisory workflow/dynamic/interpreter routing with original input retained",
+    "conservative deterministic first action only without history/attachments/scope/instructions/decision memory",
+    "customer_recent and knowledge_evidence reusable read recipes",
+    "isolated QuickJS WASM synchronous JavaScript with async host bridge",
+    "explicit local read allowlist and unchanged account/mode/schema execution gates",
+    "durable parent and leaf call identities; unknown receipts do not replay",
+    "separate host-authored raw evidence and bounded model projection",
+    "knowledge/memory/private-mail source guards expand composite evidence",
+    "rollback flag ENABLE_HYBRID_EXECUTION=0",
+    "independent evaluation capability inventory unchanged"
+  ],
+  "verification": {
+    "targetedTests": {
+      "files": 14,
+      "passed": 148,
+      "failed": 0
+    },
+    "typecheck": "passed including final production build",
+    "targetedLint": "passed",
+    "nodeBundleSmoke": {
+      "status": "passed",
+      "syntheticToolBridge": true,
+      "mainSha256": "a836ca74a6399c754107dc2d1fdda2a1a8e480790a3019a6e1b1f3d76b1a92cc",
+      "interpreterSha256": "d1e1d16e68b61412c0b1cb7a7e4f0797890db61cb0ce66be3f6898fecaeac970"
+    },
+    "nextBuild": {
+      "status": "passed",
+      "directory": ".local-runtime/hybrid-next-final-20261105",
+      "buildId": "jCCi0D_K9EX4TchpfBfWM",
+      "standaloneQuickjsWasmSmoke": "passed; resolved within standalone package, real WASM 20+22=42",
+      "activated": false,
+      "sourceBoundary": "current worktree candidate, not an independent Git-archive release attestation"
+    },
+    "database": "mock journal only; no new real-database recovery claim",
+    "quality": "not accepted on real business questions",
+    "latencyAndCost": "not measured on live model/provider traffic"
+  },
+  "notImplemented": [
+    "separate fast-model or local-SLM router",
+    "programmatic paid search or side effects"
+  ],
+  "notPerformed": [
+    "production runtime cutover",
+    "paid model calls",
+    "new real-business mail test",
+    "G07/G08 natural-sample acceptance"
+  ],
+  "sources": [
+    "https://github.com/justjake/quickjs-emscripten"
+  ],
+  "dependency": {
+    "name": "quickjs-emscripten",
+    "version": "0.32.0",
+    "installScripts": false
+  }
+}

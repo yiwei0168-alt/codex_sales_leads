@@ -15,6 +15,13 @@ it('allows only exact current chunks including comparison evidence',async()=>{
  await check('owner',messages('knowledge_compare',{entities:[{evidence:[{id,content:'exact original'}],verifiedFacts:[]}]}));
  expect(mocks.current).toHaveBeenCalledWith('owner',[id]);
 });
+it('revalidates hidden hybrid leaf originals even when program output omits them',async()=>{
+ const input=messages('programmatic_read',{kind:'hybrid-v1',route:'interpreter',value:'summary without evidence',coverage:[],
+  leaves:[{key:'leaf',tool:'knowledge_search',arguments:{query:'synthetic'},output:{status:'success',data:[{id,content:'exact original'}]}}]});
+ await check('owner',input);
+ mocks.current.mockResolvedValueOnce([]);
+ await expect(check('owner',input)).rejects.toThrow(KnowledgeSourceChangedError);
+});
 it('rejects withdrawn sources, updated text, and database errors without returning source details',async()=>{
  const input=messages('knowledge_search',[{id,content:'exact original'}]);
  mocks.current.mockResolvedValueOnce([]).mockResolvedValueOnce([{id,content:'changed'}]).mockRejectedValueOnce(Error('internal database detail'));

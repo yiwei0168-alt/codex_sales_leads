@@ -3,6 +3,7 @@ import {tenantQuery} from '@/lib/rag/db';
 import {getMailboxMessageForReview} from '@/lib/mailbox/repository';
 import {listMailboxCustomers,readCustomerTimeline} from '@/lib/mailbox/customer-timeline';
 import {digest,type ModelMessage} from './contracts';
+import {expandHybridEvidence} from './hybrid-contracts';
 
 export const PRIVATE_REPLAY_TOOLS=['mail_read','customer_timeline'] as const;
 const mailInput=z.object({messageId:z.uuid()}).strict();
@@ -11,6 +12,7 @@ const wireHash=(value:unknown)=>digest(JSON.parse(JSON.stringify(value)));
 
 /** Deterministic local rereads only. Never invokes a product dispatcher, IMAP or a model. */
 export async function assertCurrentPrivateReplayMessages(userId:string,messages:ModelMessage[]){
+  messages=expandHybridEvidence(messages);
   const calls=new Map<string,{tool:string;arguments:unknown}>();
   for(const message of messages)if(message.role==='assistant')for(const call of message.tool_calls??[]){
     if(call.function.name!=='execute_tool')continue;

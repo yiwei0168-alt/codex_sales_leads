@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {digest,type ModelMessage} from './contracts';
 import {loadDecisionMemory,searchHistoricalMemory,historicalMemoryInput} from './memory-context';
 import {searchMemoryWithGraph} from '@/lib/knowledge/memory-graph-search';
+import {expandHybridEvidence} from './hybrid-contracts';
 
 export const MEMORY_CHANGED_REPLY='本任务使用的记忆或政策已更正、撤销、超出当前范围，或暂时无法复核。已停止使用旧内容和执行后续操作，请重新发起任务读取当前记录。';
 export class MemoryContextChangedError extends Error {constructor(){super('Memory context validation failed');}}
@@ -30,6 +31,7 @@ export async function withCurrentDecisionMemory<T>(userId:string,model:()=>Promi
 /** Re-read only deterministic local stores; graph and model services are never called here. */
 export async function assertCurrentMemoryMessages(userId:string,messages:ModelMessage[],validationTime?:string){
   try{
+    messages=expandHybridEvidence(messages);
     // Acceptance callers can supply their database wall clock. Explicit as-of
     // arguments retain their meaning; this only replaces omitted times.
     const observationTime=validationTime===undefined?undefined:z.iso.datetime().parse(validationTime);

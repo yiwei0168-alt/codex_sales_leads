@@ -7,7 +7,12 @@ export async function recordConsumedToolOutputs(context:ExecutionContext,message
   for(const message of messages) {
     if(message.role!=="tool")continue;
     if(message.tool_call_id)protocolIds.push(message.tool_call_id);
-    try {const body=JSON.parse(message.content??"null");if(z.uuid().safeParse(body?.callId).success)callIds.push(body.callId);}catch{}
+    try {const body=JSON.parse(message.content??"null");if(z.uuid().safeParse(body?.callId).success)callIds.push(body.callId);
+      // A projected hybrid view contains receipt references, not raw evidence.
+      if(body?.data?.kind==='hybrid-v1')for(const leaf of body.data.reads??body.data.leaves??[]){
+        const id=leaf.callId??leaf.output?.callId;if(z.uuid().safeParse(id).success)callIds.push(id);
+      }
+    }catch{}
   }
   if(!protocolIds.length&&!callIds.length)return;
   await tenantQuery(context.userId,`update agent_tool_call set metrics=metrics||jsonb_build_object('downstreamUsedItems',1,'utilizationEfficiency',1,'usageBoundary','consumed-by-main-model')
