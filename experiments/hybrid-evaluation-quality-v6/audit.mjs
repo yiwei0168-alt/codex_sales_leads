@@ -2,6 +2,9 @@ import {readFile,writeFile} from 'node:fs/promises';
 const read=async p=>JSON.parse(await readFile(p,'utf8'));
 const root='experiments/hybrid-evaluation-quality-v6';
 const reviewed=await read(`${root}/results/review.json`),progress=await read('experiments/hybrid-evaluation-v6/results/progress.json');
+const adjudication=await read('experiments/hybrid-quality-adjudication-v6/results/review.json');
+if(adjudication.answers!==2||adjudication.rows.some(r=>r.taskId!=='P02'||!['A','B'].includes(r.arm)))throw Error('Unexpected coverage adjudication');
+const accepted=reviewed.rows.map(r=>adjudication.rows.find(a=>a.runId===r.runId)??r);
 const pagination=[];
 for(const arm of ['A','B','C']){
  const trace=await read(`.local-runtime/hybrid-evaluation-v6/performance/P10-${arm}-1.trace.json`);
@@ -33,13 +36,14 @@ const comparison=matchedEligible?{taskId:'P10',latencyMetric:'enqueue-to-termina
 const trace=await read('.local-runtime/hybrid-evaluation-v6/performance/P10-C-1.trace.json');
 const router=trace.calls.find(c=>c.tool_id==='decision_router');
 const report={version:'v6-mechanical-and-review-audit',rawModelReviewPassed:reviewed.passed,rawModelReviewTotal:reviewed.answers,
+ adjudicatedModelReviewPassed:accepted.filter(r=>r.passed).length,adjudicationRef:'experiments/hybrid-quality-adjudication-v6/results/review.json',
  pagination,bodyCoverage,
  disputedReviewItems:[{taskId:'P02',arm:'A',reason:'Reviewer assumed three read bodies, but actual receipts contain four. The answer truthfully says all imported records. Raw score is retained; this grade cannot establish a product defect or acceptance.'},
- {taskId:'P02',arm:'B',reason:'Reviewer deducted for not stating literal hasMore=false and omitting oldest event; latest-progress task does not require literal API fields or exhaustive history, and answer explicitly discloses 4 events / 3 bodies. Raw score retained, adjudication unresolved; do not mark passed.'}],
+ {taskId:'P02',arm:'B',reason:'Reviewer deducted for not stating literal hasMore=false and omitting oldest event; latest-progress task does not require literal API fields or exhaustive history, and answer explicitly discloses 4 events / 3 bodies. Original dispute retained; later adjudication is separately linked above.'}],
  comparison,
  autoProgramTask:{taskId:'P10',arm:'C',contextReadyProbability:router?.output?.data?.response?.answers?.context_ready?.probabilities?.yes,
   actualMainModels:matched.C.models,note:'Conservative initial routing used the dynamic profile, which then chose programmatic_tools. Actual interpreter use does not prove selection of the cheaper interpreter profile.'},
  knownTaskCostUsd:progress.knownCostUsd,unknownTaskCharges:progress.unknownCharges,historicalUnknownCharges:22,
- knownReviewCostUsd:reviewed.knownReviewCostUsd,overallAcceptancePassed:false,productionChanged:false};
+ knownReviewCostUsd:reviewed.knownReviewCostUsd,knownAdjudicationCostUsd:adjudication.knownReviewCostUsd,overallAcceptancePassed:false,productionChanged:false};
 await writeFile(`${root}/results/audit.json`,JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report,null,2));
