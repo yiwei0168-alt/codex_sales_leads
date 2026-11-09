@@ -10,8 +10,40 @@
       "modelFailures": []
     },
     {
+      "task": "P01-A-2",
+      "traceHash": "c421506c0f7f1603793b9247c07269e0f970961ca5bbd1c870c1ea7604847c1e",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-A-3",
+      "traceHash": "fc93873a29b70386f51108daecd18d2565f2a35077b5ddef999a2e3b1b21d237",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P01-B-1",
       "traceHash": "f98205d1d90acee7ed54c0adad55c35c87af3cf39549c533308041496335a85d",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-B-2",
+      "traceHash": "0c94eb6063917e21a4d82fe1ada679d3dbb7f02e24c6990a4e0185744272c91f",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-B-3",
+      "traceHash": "a4a12dc6a287b77f3ede7be8856a405250bc4fc17e2314d57c3088348a20af83",
       "httpAttempts": 1,
       "headersReceived": 1,
       "preResponseFailures": [],
@@ -26,8 +58,40 @@
       "modelFailures": []
     },
     {
+      "task": "P01-C-2",
+      "traceHash": "f00901042b3e296f09af16dc5a76c7e24a8c5b99c4f581871f1c4baee4a10b4a",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-C-3",
+      "traceHash": "65b7e42c5fba66c3251e1ba6ebea3bd24d7f53b248eb8a9cd1d02f2ef1ffd104",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P02-A-1",
       "traceHash": "bde0d49414e708da9f4952599b8739333e2037884a8d18571f4d659c11b2c89d",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P02-A-2",
+      "traceHash": "ba854baa3f1337e72ee8dac56481762596a37297865f535763edc558abf8eac8",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P02-A-3",
+      "traceHash": "18691ad50f1e4c73efbc52ff46c068c09858dd1bea1ee608cf914b0c34ce4171",
       "httpAttempts": 7,
       "headersReceived": 7,
       "preResponseFailures": [],
@@ -42,8 +106,40 @@
       "modelFailures": []
     },
     {
+      "task": "P02-B-2",
+      "traceHash": "f012fd5279485dd2e544f3c678f987571ccc24084c0997b5a8b219292996a8ab",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P02-B-3",
+      "traceHash": "ef24f299c5b27dafbab998a6b8405c1ca009b9993c641b3e22ccc4228c46280c",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P02-C-1",
       "traceHash": "5880a287824c980a9317397cdd69448d78cd837a5dd30594434db2fd7bc4cf78",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P02-C-2",
+      "traceHash": "93dbec9c6a74cfe0f1e996fc83421076d71912859b333f0aad07639d10fe1784",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P02-C-3",
+      "traceHash": "b505731d3e5374a57df684962be26591b9760f5b05dc697607074e148f6b8064",
       "httpAttempts": 1,
       "headersReceived": 1,
       "preResponseFailures": [],
@@ -58,8 +154,40 @@
       "modelFailures": []
     },
     {
+      "task": "P09-A-2",
+      "traceHash": "4a21773582863eee659e8f83483e6e4f0e05668b98095b81e94ac95620c474c7",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P09-A-3",
+      "traceHash": "2e9406467eef216b6bae82a1c3a85b3e4d0552bd635d197aeb93bfddfa0d078b",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P09-B-1",
       "traceHash": "d0b37ad44bf6234a6940d7b109572269e9587566ab16448a2a6dfdf76805fa0b",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P09-B-2",
+      "traceHash": "ef7c5a5e51af62c93ad58dd09a68d7c9fb862e8a98beebd229279319f650167c",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P09-B-3",
+      "traceHash": "94236fc3dde46c4ea97f00d4452bb8d8f379727b35e8ca3cf0b183c7dec3d64d",
       "httpAttempts": 6,
       "headersReceived": 6,
       "preResponseFailures": [],
@@ -74,6 +202,22 @@
       "modelFailures": []
     },
     {
+      "task": "P09-C-2",
+      "traceHash": "ac5d1c1fb4c1112a95e8593ec558cad297d0955ba956ddbb53af698011dfb9c5",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P09-C-3",
+      "traceHash": "9ea4c641b0db1327569bfc0a27e22906525a07c20a564ad4ed8308539a399b5e",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P10-A-1",
       "traceHash": "6dbcadabad3e88378aab2465eaceede04a891e89e58b0199bc2c48d929b6009b",
       "httpAttempts": 6,
@@ -82,8 +226,40 @@
       "modelFailures": []
     },
     {
+      "task": "P10-A-2",
+      "traceHash": "61ff6616d8f2b842001040d94cc05b8900df63f963fa00ac33297c519ce8467e",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P10-A-3",
+      "traceHash": "fe004510a614e6273952abccdec39a74f959a5f1b967d9037724ebffe9521ede",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P10-B-1",
       "traceHash": "6c9214dd5d0d5575c319f93172b0bf2526641f499858805141375246311c4cc4",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P10-B-2",
+      "traceHash": "b419f659180524b9ba7af5fcae3b15c7c4cecd3ad1837ae2b66db6a9c1df051d",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P10-B-3",
+      "traceHash": "417bc24f3ea6522e74c07ed7217210ec3283cbdd078dd0320236c0b641bd4407",
       "httpAttempts": 4,
       "headersReceived": 4,
       "preResponseFailures": [],
@@ -98,8 +274,69 @@
       "modelFailures": []
     },
     {
+      "task": "P10-C-2",
+      "traceHash": "50d1d79aa60af05d69aee011999c9e899ff5efb7325b9ee693253bf2644bc21f",
+      "httpAttempts": 4,
+      "headersReceived": 3,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 2490
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P10-C-3",
+      "traceHash": "13eb00067f776c395ddf69051b8179ab25665cc6ebb29c49ccc4020377d22d91",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P23-A-1",
       "traceHash": "a89d2f937ab122c478770d62e9ebb1e2163312abf940770aea16762f792e1508",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P23-A-2",
+      "traceHash": "db08562d40aeeac0ecb9a76c885ac73249e18c9b1e990f7cecfc4f20bbe7398e",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P23-A-3",
+      "traceHash": "9e37fe26535055114115e4d93e0b8d935b80cf1517d62f26b48462549d3834b4",
       "httpAttempts": 7,
       "headersReceived": 7,
       "preResponseFailures": [],
@@ -114,6 +351,91 @@
       "modelFailures": []
     },
     {
+      "task": "P23-B-2",
+      "traceHash": "b19c926726986eb20bdbf7c2bb695be9419363b1e8a1c7e0287d13c9726832a2",
+      "httpAttempts": 2,
+      "headersReceived": 0,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 2478
+            }
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TypeError",
+                "code": null
+              },
+              {
+                "name": "Error",
+                "code": "ECONNRESET"
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 5012
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "ECONNRESET",
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 5012
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P23-B-3",
+      "traceHash": "209985ffbb70a68945e56624814bf4af847d04829988d27ab9e29dd842c70ea8",
+      "httpAttempts": 3,
+      "headersReceived": 3,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P23-C-1",
       "traceHash": "f9a1eb4d56b5434cc56f98b6aeabf88b4402a46870618ae7966ab5835c3f59aa",
       "httpAttempts": 4,
@@ -122,8 +444,40 @@
       "modelFailures": []
     },
     {
+      "task": "P23-C-2",
+      "traceHash": "1570e003678a77626fa54492eae6f883e1c04c11afeb81355c9171b83ac74765",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P23-C-3",
+      "traceHash": "369cfec2f8dde2f4833d3a40d8412abdfd7d7e59bf8bff846c10b0fc4ce2d2c5",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P24-A-1",
       "traceHash": "abc46c06586ecd5f02e427031d590a1fa221a7158851f23f3eae2f334847fc0d",
+      "httpAttempts": 3,
+      "headersReceived": 3,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-A-2",
+      "traceHash": "05a307e53d9e9be1098b92894ba55c3d93f7047193b278f4df07f65372340c21",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-A-3",
+      "traceHash": "ac7d04d132879fe9d4453137bae2603a63f16d357e9f91294f9571ccc42156a8",
       "httpAttempts": 3,
       "headersReceived": 3,
       "preResponseFailures": [],
@@ -138,12 +492,82 @@
       "modelFailures": []
     },
     {
+      "task": "P24-B-2",
+      "traceHash": "75f056836bd4ec37d58c00cdc836c33cec2f30d2d759fe8e3060664dd5870493",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 1329
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24-B-3",
+      "traceHash": "c66ad22abe15474d91997e81fb9bf96cc16a5d53e8ce2724a995f922d2e89c00",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
       "task": "P24-C-1",
       "traceHash": "9f340f32fa3b2c42c7572f119f1d725b5f99cd6fdec60175c68aa8e4084515bb",
       "httpAttempts": 4,
       "headersReceived": 4,
       "preResponseFailures": [],
       "modelFailures": []
+    },
+    {
+      "task": "P24-C-2",
+      "traceHash": "95744570ebab4b61950e74e5fd05841d2227056c2449a5aebf60d97e1589e513",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-C-3",
+      "traceHash": "6e2266e69cdc1c6b680537c1f1b6e701d6ec17d16f48f26be4ed46f2eea4fb9e",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "UND_ERR_SOCKET",
+                "name": "SocketError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 38614
+            }
+          }
+        }
+      ]
     }
   ],
   "paidCalls": 0,

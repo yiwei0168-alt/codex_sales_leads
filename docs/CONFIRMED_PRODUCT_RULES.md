@@ -3616,3 +3616,8 @@ Status: implemented; focused automated verification and live follow-up are recor
 
 - One-shot independent-context coverage adjudication passed P02-A under the unchanged rubric; review cost USD 0.047591. Original 83-point grade remains in smoke-review.json and smoke-gate.raw.json. The corrected gate links the adjudication and original gate hash, and mechanically verifies both originals in each partial knowledge_compare output. No original task or unknown request was repeated.
 - Effective first-repeat quality is 18/18 after these declared corrections; raw blind review remains 17/18. Current complete-receipt C/A cost reduction 56.85%, paired median backend latency reduction 42.93%, P95 reduction 23.00%, all from six tasks/one repeat only. This opens the preregistered remaining 36 tasks; it is not final local-read qualification or full benchmark acceptance. No browser-visible latency claim, no production change, 26 historical unknown charges retained.
+
+### HYBRID-10 / V10 repetition review preparation (2026-11-10)
+- All 54 registered local-read executions finished: 51 answered, 3 partial, 5 unknown charges. These are execution statuses, not quality acceptance; raw failures remain in the denominator.
+- Before grading repetitions 2/3, freeze an explicit evidence index distinguishing timeline records from mail bodies. Same blind reviewer, rubric, thresholds and six requests; no first-repeat scores, model/arm/cost or preferred result supplied. See experiments/hybrid-evaluation-quality-v10/REPEAT_REVIEW.md. Original first-repeat grades and one-shot adjudication remain unchanged.
+- User authorization remains execution/optimization until acceptance; no production deployment, weakened gate or model preference is inferred.
