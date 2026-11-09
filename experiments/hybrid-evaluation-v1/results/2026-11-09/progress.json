@@ -1,0 +1,222 @@
+{
+  "version": "hybrid-evaluation-progress-2026-11-09",
+  "routeDevelopment": {
+    "version": "hybrid-route-development-observation-v1",
+    "split": "development",
+    "designHash": "824db0b9813aab81fba5a1769ac804ad74c62653f8147a4123e48c6ba4ba82f5",
+    "runtimeHash": "9307c0a6ed9b4be8fc0900ef4baec0cd9057a34db56b073f40da70e39ff0ff42",
+    "independentQualification": false,
+    "cases": 32,
+    "providerAttempts": 20,
+    "providerCompleted": 20,
+    "availability": 1,
+    "accuracyIncludingFallback": 0.95,
+    "initialPipelineCorrect": 31,
+    "confusion": {
+      "fixed_workflow": {
+        "fixed_workflow": 4,
+        "interpreter": 0,
+        "dynamic_agent": 0
+      },
+      "interpreter": {
+        "fixed_workflow": 0,
+        "interpreter": 7,
+        "dynamic_agent": 1
+      },
+      "dynamic_agent": {
+        "fixed_workflow": 0,
+        "interpreter": 0,
+        "dynamic_agent": 8
+      }
+    },
+    "perClass": {
+      "fixed_workflow": {
+        "tp": 4,
+        "predicted": 4,
+        "expected": 4,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "interpreter": {
+        "tp": 7,
+        "predicted": 7,
+        "expected": 8,
+        "precision": 1,
+        "recall": 0.875,
+        "f1": 0.9333333333333333
+      },
+      "dynamic_agent": {
+        "tp": 8,
+        "predicted": 9,
+        "expected": 8,
+        "precision": 0.8888888888888888,
+        "recall": 1,
+        "f1": 0.9411764705882353
+      }
+    },
+    "macroF1": 0.9581699346405229,
+    "successfulP95Ms": 1538.3297999999995,
+    "knownCostUsd": 0.00161784,
+    "unknownChargeCount": 0,
+    "wrongFast": [],
+    "policyChanged": false,
+    "holdoutOpened": false,
+    "performanceClaims": false
+  },
+  "performance": {
+    "totals": {
+      "submittedTasks": 4,
+      "plannedSmokeTasks": 18,
+      "answered": 3,
+      "partial": 1,
+      "unstarted": 14,
+      "knownTaskCostUsd": 0.16422182200000002,
+      "unknownTaskChargeCount": 3
+    },
+    "rows": [
+      {
+        "taskId": "P09",
+        "arm": "B",
+        "repetition": 1,
+        "status": "partial",
+        "backendEnqueueToTerminalMs": 99161,
+        "userVisibleMs": null,
+        "modelAttempts": 6,
+        "programAttempts": 1,
+        "successfulPrograms": 0,
+        "knownCostUsd": 0.097766922,
+        "unknownCharges": [
+          {
+            "stage": "main",
+            "status": "unknown",
+            "eventId": "3e5dbd7c-8cc2-450c-8e72-71678355b952"
+          }
+        ],
+        "qualityReview": null,
+        "implementationAuthorInspection": null,
+        "traceSha256": "58e30ab4fd42d95d100d93c411825a19496ceedc088d48a1c0b550aceb9af39b",
+        "observationSha256": "0c292d800f0e44ff68bf6cce140b1a23f584e78858438e4e051d7cf6c71711a3",
+        "runtimeFreezeHash": "4cc51d19719a38e9e4ec07885ab23e0a3ba44afee4f60de2c4e75efe5991e5d9"
+      },
+      {
+        "taskId": "P23",
+        "arm": "A",
+        "repetition": 1,
+        "status": "answered",
+        "backendEnqueueToTerminalMs": 28127,
+        "userVisibleMs": null,
+        "modelAttempts": 7,
+        "programAttempts": 0,
+        "successfulPrograms": 0,
+        "knownCostUsd": 0.029303400000000004,
+        "unknownCharges": [],
+        "qualityReview": null,
+        "implementationAuthorInspection": "Answer says no explicit deadline, cites the correct synthetic quote-request mail, no invented deadline; not blind independent acceptance.",
+        "traceSha256": "7b1c11d579907378508836e865b1ed4631bcc1e90f86964a27d57640de2cc36e",
+        "observationSha256": "b2c1057954a021d4b2012fed806d66bd45f2857a694073dbbdfae4eb7eebf4ca",
+        "runtimeFreezeHash": "4cc51d19719a38e9e4ec07885ab23e0a3ba44afee4f60de2c4e75efe5991e5d9"
+      },
+      {
+        "taskId": "P23",
+        "arm": "B",
+        "repetition": 1,
+        "status": "answered",
+        "backendEnqueueToTerminalMs": 19665,
+        "userVisibleMs": null,
+        "modelAttempts": 2,
+        "programAttempts": 0,
+        "successfulPrograms": 0,
+        "knownCostUsd": 0.009717,
+        "unknownCharges": [
+          {
+            "stage": "router",
+            "status": "unknown",
+            "eventId": "fd75a607-cd77-42cb-b3e7-85c6816167b3"
+          }
+        ],
+        "qualityReview": null,
+        "implementationAuthorInspection": "Answer says no explicit deadline, cites the correct synthetic quote-request mail, no invented deadline; not blind independent acceptance.",
+        "traceSha256": "d0991434b6e9d5d6ad74534cee864e2a046c2ef034a846e0f98ef50145fc72eb",
+        "observationSha256": "dad3d29bdbbc26d6eef25081613676bdc3530a7bee2a75ae88ea119d630c5773",
+        "runtimeFreezeHash": "4cc51d19719a38e9e4ec07885ab23e0a3ba44afee4f60de2c4e75efe5991e5d9"
+      },
+      {
+        "taskId": "P23",
+        "arm": "C",
+        "repetition": 1,
+        "status": "answered",
+        "backendEnqueueToTerminalMs": 13605,
+        "userVisibleMs": null,
+        "modelAttempts": 2,
+        "programAttempts": 0,
+        "successfulPrograms": 0,
+        "knownCostUsd": 0.0274345,
+        "unknownCharges": [
+          {
+            "stage": "router",
+            "status": "unknown",
+            "eventId": "42444110-697c-4058-80fc-29eb5009742b"
+          }
+        ],
+        "qualityReview": null,
+        "implementationAuthorInspection": "Answer says no explicit deadline, cites the correct synthetic quote-request mail, no invented deadline; not blind independent acceptance.",
+        "traceSha256": "df7c6465f2009fc6a69020a13b95f55d19f2addde6d05b844676e18c39b1fa48",
+        "observationSha256": "62c388101c6c90c96636fdc51f912702f8e09f185b92aad270d4313306b14af9",
+        "runtimeFreezeHash": "4cc51d19719a38e9e4ec07885ab23e0a3ba44afee4f60de2c4e75efe5991e5d9"
+      }
+    ],
+    "gatePassed": false,
+    "comparisonConclusion": "No overall efficiency/cost claim: only one task has a complete A/B/C block, three charges unknown, independent quality review pending, batch stopped on P09-B partial outcome.",
+    "remaining": "14 smoke tasks, holdout semantic review and 64 holdout cases, remaining controlled repeats, pagination/sales/external bindings and 27 live-search trials."
+  },
+  "diagnosis": {
+    "version": "hybrid-program-failure-replay-v1",
+    "traceHash": "58e30ab4fd42d95d100d93c411825a19496ceedc088d48a1c0b550aceb9af39b",
+    "sandboxProbe": {
+      "dateType": "undefined",
+      "clockType": "undefined"
+    },
+    "original": {
+      "status": "partial",
+      "reads": 11,
+      "missing": [
+        "Program syntax, runtime or resource limit failure; reuse saved reads and continue dynamically."
+      ]
+    },
+    "correctedDiagnostic": {
+      "status": "success",
+      "reads": 11,
+      "rows": 12,
+      "sorted": true,
+      "codeHash": "e77a019377cc8374c44282548237d22c04c36deb4ce4827ba2e43d6a01c35e51"
+    },
+    "conclusion": "The original program calls Date.parse/new Date, but this WASM contract removes Date. Same 11 saved reads plus the prior one produce 12 sorted rows with explicit UTC string handling.",
+    "databaseCalls": 0,
+    "modelCalls": 0,
+    "productionCodeChanged": false,
+    "generalTimezoneSupportProven": false
+  },
+  "labelReview": {
+    "status": "unknown",
+    "latencyMs": 5285.2269,
+    "error": {
+      "name": "TypeError"
+    },
+    "receiptSha256": "520cfacbb81ff917eb9b9eb624b395dcea7efd233c69ce89aa43433985aefd4e",
+    "paidAttempts": 1,
+    "knownCostUsd": null,
+    "labelReviewCompleted": false,
+    "holdoutRouterCalls": 0,
+    "retried": false
+  },
+  "productionChanged": false,
+  "costs": {
+    "routingKnownUsd": 0.00161784,
+    "taskKnownUsd": 0.16422182200000002,
+    "combinedKnownUsd": 0.16583966200000003,
+    "qualityReviewKnownUsd": null,
+    "unknownCharges": 4,
+    "definition": "Provider-reported usage.cost, not invoice reconciliation; unknown charges excluded from known subtotal, never treated as zero. No price estimate."
+  }
+}

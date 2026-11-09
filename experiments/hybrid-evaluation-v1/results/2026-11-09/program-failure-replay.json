@@ -1,0 +1,27 @@
+{
+  "version": "hybrid-program-failure-replay-v1",
+  "traceHash": "58e30ab4fd42d95d100d93c411825a19496ceedc088d48a1c0b550aceb9af39b",
+  "sandboxProbe": {
+    "dateType": "undefined",
+    "clockType": "undefined"
+  },
+  "original": {
+    "status": "partial",
+    "reads": 11,
+    "missing": [
+      "Program syntax, runtime or resource limit failure; reuse saved reads and continue dynamically."
+    ]
+  },
+  "correctedDiagnostic": {
+    "status": "success",
+    "reads": 11,
+    "rows": 12,
+    "sorted": true,
+    "codeHash": "e77a019377cc8374c44282548237d22c04c36deb4ce4827ba2e43d6a01c35e51"
+  },
+  "conclusion": "The original program calls Date.parse/new Date, but this WASM contract removes Date. Same 11 saved reads plus the prior one produce 12 sorted rows with explicit UTC string handling.",
+  "databaseCalls": 0,
+  "modelCalls": 0,
+  "productionCodeChanged": false,
+  "generalTimezoneSupportProven": false
+}

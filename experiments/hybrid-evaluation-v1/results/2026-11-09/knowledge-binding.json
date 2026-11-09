@@ -1,0 +1,57 @@
+{
+  "designHash": "824db0b9813aab81fba5a1769ac804ad74c62653f8147a4123e48c6ba4ba82f5",
+  "documents": [
+    {
+      "model": "NX410",
+      "version": "v1",
+      "documentId": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+      "contentHash": "4d1ef13ecf801e814f309f74835e523af8e989db679b917f48d0b3067983fb89"
+    },
+    {
+      "model": "NX410",
+      "version": "v2",
+      "documentId": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+      "contentHash": "954e16c2c036cc4324e0b8e2c2c7cd22cc9abd145795d063cf520eb92fb4d8a0"
+    },
+    {
+      "model": "NX420",
+      "version": "v1",
+      "documentId": "545e7307-beb4-413a-b57a-d5c3bbcfde93",
+      "contentHash": "060cb013d775f27fa1bd1ac04901574ad9169feeac1482ce2363cf0244ed3671"
+    },
+    {
+      "model": "NX420",
+      "version": "v2",
+      "documentId": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+      "contentHash": "df0e80144cde7084ed81749e4e974a726530a5075a2b66bf0cada264721adfa2"
+    },
+    {
+      "model": "NX430",
+      "version": "v1",
+      "documentId": "aaa50aa2-dc70-452c-8035-da66c24f291f",
+      "contentHash": "9d5c35f54b84a2db28b65342ede48b66b480a2bc5481f7e90c92517d9f86681c"
+    },
+    {
+      "model": "NX430",
+      "version": "v2",
+      "documentId": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+      "contentHash": "9f50de40c22f109a53f2c42927d629f661c7a22d694da42b1ce0679dec736336"
+    },
+    {
+      "model": "NX440",
+      "version": "v1",
+      "documentId": "5b620d2c-ff32-4e77-8282-a543965faf16",
+      "contentHash": "16be5bd6aa8dd72fe7729debbe845d7d5be106709943b911be67750097412374"
+    },
+    {
+      "model": "NX440",
+      "version": "v2",
+      "documentId": "ee652e6b-c4ca-4690-ab19-03e84e2dab69",
+      "contentHash": "0ef796c7ec0576ad6acf31ff18ac9789da0e08b0811b9bd1e496003a33155b84"
+    }
+  ],
+  "realSearchSources": 2,
+  "paidCalls": 0,
+  "productionDataAccess": false,
+  "sourceScope": "Private synthetic text revisions using real save/index/search; no shared production index copied."
+}
