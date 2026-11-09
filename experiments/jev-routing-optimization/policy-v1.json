@@ -1,0 +1,16 @@
+{
+  "version": "jev-atomic-policy-v1",
+  "contractVersion": "jev-atomic-routing-v1",
+  "routes": {
+    "fixed_workflow": {
+      "enabled": true,
+      "probability": 0.5,
+      "margin": 0.05
+    },
+    "interpreter": {
+      "enabled": true,
+      "probability": 0.9,
+      "margin": 0.5
+    }
+  }
+}

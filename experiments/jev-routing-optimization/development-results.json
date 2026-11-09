@@ -1,0 +1,34 @@
+{
+  "policy": {
+    "version": "jev-atomic-policy-v1",
+    "contractVersion": "jev-atomic-routing-v1",
+    "routes": {
+      "fixed_workflow": {
+        "enabled": true,
+        "probability": 0.5,
+        "margin": 0.05
+      },
+      "interpreter": {
+        "enabled": true,
+        "probability": 0.9,
+        "margin": 0.5
+      }
+    }
+  },
+  "receiptSetHash": "545e1cff199b384ca10270b06c1d97eb2bb77a99866510d31c512d0574a05eb4",
+  "stats": [
+    {
+      "route": "fixed_workflow",
+      "correct": 11,
+      "wrong": 0
+    },
+    {
+      "route": "interpreter",
+      "correct": 12,
+      "wrong": 0
+    }
+  ],
+  "samples": 48,
+  "independentValidation": false,
+  "productionActivated": false
+}
