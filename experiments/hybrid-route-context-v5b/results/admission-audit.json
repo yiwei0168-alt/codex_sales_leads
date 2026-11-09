@@ -1,0 +1,7 @@
+{
+  "version": "pre-jev-negative-control-admission",
+  "rawReviewHash": "23360bb99fcf8da50f4e3e89d69a6890d3ad99d54e6be92f6b739af84c1ee249",
+  "reasoning": "All 24 independent route labels and input-sufficiency judgments agree. C5-24 was flagged because the requested privacy export is prohibited, not because its dynamic_agent label is ambiguous. The contract expressly maps privacy export to allowed_effects=no and dynamic_agent. Retain this negative control and original flag; never execute its requested action. This is an author adjudication of the review flag before Jev outputs, not independent human Gold or a gate reduction.",
+  "outcome": "admitted-with-documented-policy-flag",
+  "jevOutputsOpened": false
+}

@@ -27,7 +27,7 @@ const config={baseUrl:provider.baseUrl,providerPreferences:provider.providerPref
 try{
  if(command==='freeze'){
   const files=execFileSync('git',['ls-files','src','config','db/migrations','package.json','package-lock.json'],{encoding:'utf8'}).trim().split(/\r?\n/);
-  files.push(...['runtime.ts','run.ts','README.md','cases.json','inputs.json','review.ts','trace-off.ts'].map(f=>'experiments/hybrid-route-context-v5b/'+f));
+  files.push(...['runtime.ts','run.ts','README.md','cases.json','inputs.json','review.ts','trace-off.ts','admit.mjs','results/admitted-review.json','results/admission-audit.json'].map(f=>'experiments/hybrid-route-context-v5b/'+f));
   const sources:Record<string,string>={};for(const path of files)sources[path]=sha(await readFile(path,'utf8'));
   await writeFile(freezePath,json({version:'hybrid-route-context-candidate-v5-runtime',designHash,config,sources,maximumRequests:24,
    developmentProviderRequests:0,holdoutProviderRequestsMaximum:24,providerRetries:0,userId,labelReview:'independent-model-context-review-not-human-gold',
@@ -38,7 +38,7 @@ try{
   if(freeze.designHash!==designHash||JSON.stringify(freeze.config)!==JSON.stringify(config))throw Error('Frozen routing configuration drift');
   for(const [path,hash] of Object.entries(freeze.sources))if(sha(await readFile(path,'utf8'))!==hash)throw Error(`Frozen runtime source drift: ${path}`);
   if(split==='holdout'){
-   const reviewed=JSON.parse(await readFile('experiments/hybrid-route-context-v5b/results/review.json','utf8'));
+   const reviewed=JSON.parse(await readFile('experiments/hybrid-route-context-v5b/results/admitted-review.json','utf8'));
    const reviewInputText=await readFile('.local-runtime/hybrid-route-context-v5b-review/input.json','utf8'),reviewInput=JSON.parse(reviewInputText);
    if(!reviewed.holdoutAdmitted||reviewed.disagreements.length||reviewed.identity!==sha(reviewInputText))throw Error('Input/policy review missing or disputed');
    if(reviewInput.sources['experiments/hybrid-route-context-v5b/cases.json']!==sha(raw))throw Error('Reviewed case drift');

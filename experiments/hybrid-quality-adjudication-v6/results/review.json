@@ -1,0 +1,54 @@
+{
+  "version": "model-assisted-coverage-adjudication-v6",
+  "identity": "dd006d8f883234e248a4bc63746068c2e381ed0911b27a9bbb1738413faa5008",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794244793-rv91AcQuiyd3yuuBWbaE",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 2,
+  "passed": 2,
+  "knownReviewCostUsd": 0.049028,
+  "rows": [
+    {
+      "reviewId": "328d3a4f5b2181d7a58a",
+      "facts": 38,
+      "completeness": 23,
+      "citations": 18,
+      "scope": 8,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The answer links the Nov 5 and Nov 4 mails correctly, but it says \"已查看该客户当前账号下全部已导入往来记录\". The coverage is accurate because 4 bodies were read, and the answer does not separate bodies from pages. It never says that the timeline has 4 events and hasMore=false.",
+        "\"目前查到的邮件未显示样品报价已经发出\" is a reasonable inference, not a fabrication.",
+        "The owner is labeled as inferred, not explicit, which is acceptable."
+      ],
+      "total": 92,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P02",
+      "arm": "A",
+      "runId": "86b3d5de-ef20-4cc4-abbe-87e0469f808f"
+    },
+    {
+      "reviewId": "6b146e72761a531aacec",
+      "facts": 38,
+      "completeness": 23,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The scope note separates 4 records from 3 bodies read, and it says the older mail was seen only as a summary. This matches the actual coverage of 3 bodies.",
+        "It does not state hasMore=false explicitly, but it also does not claim any unseen pages.",
+        "The c2-m1 mail is not cited. The answer mentions the NX410 spec sheet only as sent on Nov 3, which is acceptable.",
+        "The owner is labeled as inferred, and no deadline is invented."
+      ],
+      "total": 93,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P02",
+      "arm": "B",
+      "runId": "cdc6bb89-9365-4296-ac44-3134e38dc22c"
+    }
+  ]
+}
