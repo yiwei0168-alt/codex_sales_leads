@@ -1,0 +1,17 @@
+{
+  "version": "post-run-task-validity-audit-v4b",
+  "originalPromptsAndAssertionsModified": false,
+  "stage": "after observing task outputs",
+  "disputedTask": {
+    "taskId": "P10",
+    "issue": "Question supplies November 2-5 and Beijing timezone but no year. Fixture clock is 2026-11-09, yet initialTaskMessages and the frozen user request did not bind that clock to the model. A/B explicitly ask for a year; this is not evidence of incorrect refusal or inability to count.",
+    "originalAssertion": "40 messages across 2026-11-02 through 2026-11-05",
+    "qualificationEligible": false,
+    "nextRequired": "New preregistered question with explicit year or a properly frozen model-visible as-of context; preserve all original costs and answers."
+  },
+  "separateFinding": {
+    "taskId": "P24",
+    "issue": "B/C ask for version identifiers without reading available product documents; investigate whether product can first discover the registered versions. Treat this as a completeness/usability finding, not a fabrication. Do not change the old prompt or substitute a new result."
+  },
+  "scope": "Audit annotations are post-hoc and do not create corrected held-out scores. Report per-task source/context limitations before interpreting speed or quality."
+}

@@ -3497,3 +3497,11 @@ Status: implemented; focused automated verification and live follow-up are recor
 - v4 性能 P23 三组全部回答完成；B 的可选 Jev 超时形成 1 笔未知费用，原批次依冻结规则停止，其余 12 项尚未提交。旧 6 笔加该笔共 7 笔未对账。
 - 事先登记独立 v4b 续测：只执行未运行的 P24/P02/P10/P01 × A/B/C 共 12 个新任务；产品代码、模型、环境、预算与 v4 相同。终态任务逐项保存，费用未知或未答对也不重试，只继续下一个不同题目；费用不全不参与成本比较，失败仍计入质量/可用性分母。未终态任务、脚本/配置/来源错误或非允许端点/效果仍硬停止。该变更是评测批次调度策略，不修改产品重试规则或预算，不追溯改变旧批次。
 - 审核脚本测试、TypeScript/ESLint 通过；生产不切换。依据见 experiments/hybrid-evaluation-v4/results/routing-summary.json、label-quality-audit.json 与 experiments/hybrid-evaluation-v4b/README.md。v4b 运行结果另记，不预先认定通过。
+
+### HYBRID-10 — 2026-11-09: broader paired diagnostics and frozen answer review
+
+- Continuation of the user-requested routing accuracy and actual task latency/cost evaluation; no new user-confirmed thresholds or production deployment.
+- v4b completed all 12 prospectively registered, previously unattempted task/arm records: 8 answered, 4 partial; known task cost USD 0.13474961 plus 5 unknown charges. No failed/unknown request replayed. Answered is a runtime terminal status, not quality acceptance.
+- Post-run task-validity audit preserves original P10 wording/assertions: year was omitted and fixture clock was not model-visible. Exclude P10 from qualification; retain clarifications, costs, and original artifacts. P24 version-discovery completeness remains under review.
+- Frozen a blinded model-assisted review of 18 saved synthetic answers from v3/v4/v4b using the original 40/25/20/10/5 rubric, score >=85 plus hard gates. Reviewer sees neither arm/model nor latency/cost; P10 validity limitation is disclosed. No human Gold or overall speed/cost gate is claimed. Protocol/input frozen before one review request; no task replay or retry.
+- Validation: quality-review parser test passed; TypeScript and scoped ESLint passed. Evidence: experiments/hybrid-evaluation-v4b/results and experiments/hybrid-evaluation-quality-v1. Review execution/results remain pending at this stage.
