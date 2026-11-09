@@ -16,6 +16,7 @@ import {recordBudgetDenial} from "./denial-metrics";
 import {withModelAttempt} from "./model-attempt-context";
 import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context";
 import {OPENROUTER_COST_REPORT_SOURCE} from "./openrouter-cost-report";
+import {collectModelStream} from '@/lib/assistant/main/model-stream';
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
 const modeInit={method:'POST',body:JSON.stringify({model:'openai/gpt-6-luna',stream:true,max_tokens:100,provider:{data_collection:'deny',require_parameters:true,allow_fallbacks:false}})};
@@ -34,6 +35,14 @@ it('awaits recording an uncertain streaming attempt before surfacing failure',as
 it('blocks mode fallback when failed-attempt accounting cannot be saved',async()=>{
   mocks.settle.mockRejectedValue(new Error('storage unavailable'));
   await expect(withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(async()=>{throw new ModelWaitError('total');})('https://openrouter.ai/api/v1/chat/completions',modeInit)))).rejects.toBeInstanceOf(ModelReceiptError);
+});
+it.each(['openai/gpt-6-luna','openai/wrong-model'])('persists only bound incomplete-stream identity for %s, never estimated partial cost',async model=>{
+ const transport=async()=>collectModelStream(new Response(`data: ${JSON.stringify({id:'gen-incomplete',model,usage:{cost:123},choices:[]})}\n\n`,{headers:{'content-type':'text/event-stream'}}),new AbortController().signal,()=>{});
+ await expect(withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(transport)('https://openrouter.ai/api/v1/chat/completions',modeInit)))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+ const saved=mocks.settle.mock.calls[0][2];
+ expect(saved).toMatchObject({reportedMicros:null,succeeded:false,inputTokens:null,outputTokens:null});
+ if(model==='openai/gpt-6-luna')expect(saved).toMatchObject({outputIncomplete:true,incompleteStream:{generationId:'gen-incomplete'},providerUsage:{reportedModel:model,providerRequestHash:expect.stringMatching(/^[a-f0-9]{64}$/)}});
+ else expect(saved.incompleteStream).toBeUndefined();
 });
 afterEach(()=>vi.unstubAllEnvs());
 

@@ -18,6 +18,8 @@ import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 import {createHash} from "node:crypto";
 import {modelRoutedTransport} from "@/lib/network/model-transport";
 import {isModeStreamRequest,ModelReceiptError} from '@/lib/assistant/main/model-stream';
+import {incompleteStreamReceipt} from '@/lib/assistant/main/model-stream-receipt';
+import {matchesBatchModel} from '@/providers/openrouter-batch';
 import {decisionModelSchema,parseDecisionResponse,validDecisionRequest} from '@/providers/decision-contract';
 import {validProgramDecisionRequest,programResponseSchema} from '@/providers/program-decision-contract';
 import {validProgramDecisionRequest as validProgramV4,programResponseSchema as programResponseV4} from '@/providers/program-decision-contract-v4';
@@ -121,8 +123,11 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       maximumOutputTokens:outputTokens??0,modelAttempt,requestFingerprint,
       foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
-    try{response=await routedTransport(input,{...init,redirect:"error"});}catch{
-      await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>{if(modeStream)throw new ModelReceiptError();});
+    try{response=await routedTransport(input,{...init,redirect:"error"});}catch(error){
+      const observed=modeStream?incompleteStreamReceipt(error):undefined;
+      const stream=observed&&typeof parsed.model==='string'&&matchesBatchModel(observed.reportedModel,parsed.model)?observed:undefined;
+      await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false,
+        ...(stream?{outputIncomplete:true,incompleteStream:stream,providerUsage:providerUsageObservation({id:stream.generationId,model:stream.reportedModel},{httpStatus:200})}:{})}).catch(()=>{if(modeStream)throw new ModelReceiptError();});
       throw new PaidCallOutcomeUnknownError();
     }
     let responseText:string;

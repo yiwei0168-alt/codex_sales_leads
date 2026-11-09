@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { modeModelIds } from './mode-config';
+import {retainIncompleteStreamReceipt} from './model-stream-receipt';
 
 const scope = new AsyncLocalStorage<boolean>();
 export const withModeStream = <T>(fn:()=>T):T => scope.run(true,fn);
@@ -29,7 +30,7 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
   let buffer='',bytes=0,doneMarker=false,finish:string|undefined,content='',reasoning='',transportEnded=false;
   const calls=new Map<number,{id:string;type:'function';function:{name:string;arguments:string}}>();
   const details=new Map<number,Record<string,unknown>>();
-  let meta:Record<string,unknown>={};
+  let meta:Record<string,unknown>={},identityConsistent=true;
   function frame(raw:string){
     const data=raw.split('\n').filter(l=>l.startsWith('data:')).map(l=>l.slice(5).trimStart()).join('\n');
     if(!data)return;
@@ -38,7 +39,7 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
     const chunk=chunkSchema.parse(JSON.parse(data));
     if(chunk.error)throw new ModelStreamError();
     for(const key of ['id','model','provider'] as const){
-      if(chunk[key]!==undefined&&meta[key]!==undefined&&chunk[key]!==meta[key])throw new ModelStreamError();
+      if(chunk[key]!==undefined&&meta[key]!==undefined&&chunk[key]!==meta[key]){identityConsistent=false;throw new ModelStreamError();}
     }
     meta={...meta,...(chunk.id?{id:chunk.id}:{}),...(chunk.model?{model:chunk.model}:{}),...(chunk.provider?{provider:chunk.provider}:{}),...(chunk.usage?{usage:chunk.usage}:{})};
     for(const choice of chunk.choices??[]){
@@ -96,5 +97,13 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
     return Response.json({...meta,choices:[{finish_reason:finish,message:{role:'assistant',content:content||null,
       ...(calls.size?{tool_calls:[...calls.entries()].sort(([a],[b])=>a-b).map(([,v])=>v)}:{}),
       ...(reasoning?{reasoning}:{}),...(details.size?{reasoning_details:[...details.values()]}:{})}}]});
+  }catch(error){
+    if(identityConsistent){
+      const receipt={version:'incomplete-model-stream-v1',generationId:meta.id,reportedModel:meta.model,
+        finishReason:finish??null,doneMarker};
+      retainIncompleteStreamReceipt(error,receipt);
+      if(signal.aborted)retainIncompleteStreamReceipt(signal.reason,receipt);
+    }
+    throw error;
   }finally{signal.removeEventListener('abort',cancel);if(!transportEnded)await reader.cancel().catch(()=>undefined);reader.releaseLock();}
 }

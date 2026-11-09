@@ -1,0 +1,18 @@
+{
+  "version": "synthetic-incomplete-stream-integration-v1",
+  "operationId": "d7444b48-7999-4dad-bd48-d5eb365b2259",
+  "reservationId": "ef42ee41-bc11-41e8-bb68-93836f63831b",
+  "externalRequests": 0,
+  "modelRequests": 1,
+  "metadataRequests": 2,
+  "incompleteIdentityPersisted": true,
+  "partialContentPersisted": false,
+  "partialCostAdopted": false,
+  "crossOwnerLookupBlocked": true,
+  "settlementMicros": 1235,
+  "idempotencePassed": true,
+  "answerReleased": false,
+  "toolsExecuted": 0,
+  "acceptanceScope": "injected transport + real isolated RLS database; not provider reliability or benchmark cost",
+  "passed": true
+}

@@ -1,0 +1,9 @@
+# Incomplete stream metadata and cost reconciliation
+
+Implementation follow-up to failed V10, not a replacement performance score. Preserve only validated generation ID, model, finish reason and terminal-marker state on a failed stream. Conflicting identities are discarded. Persist the receipt under the original account/reservation; no partial response content, reasoning, tool arguments or usage cost is admitted.
+
+The internal reconciliation function accepts an owned reservation ID. It issues one read-only GET to the official generation metadata endpoint, bounds response size/time, and requires matching generation/model, non-BYOK, streamed, non-cancelled terminal metadata and a valid total USD cost. The existing unique-match/idempotent observation policy controls settlement. Missing IDs, 404, timeouts, mismatches and incomplete metadata remain unknown. This does not release an answer, execute tools, change retry/fallback policy or replay model requests.
+
+Official sources verified 2026-11-10: [generation metadata](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation) and [usage accounting](https://openrouter.ai/docs/cookbook/administration/usage-accounting). Only metadata is queried; stored prompt/completion endpoints are not accessed. The lookup is an internal maintenance function, not exposed as an agent tool or client API.
+
+`verify-isolated.ts` uses the existing marker-checked isolated database and **injected synthetic HTTP responses**. It verifies incomplete receipt persistence, tenant isolation, authoritative-report matching, idempotent settlement and no answer/tool release. No external model or metadata call is made, and its synthetic amounts are not product benchmark spend. It does not demonstrate real provider/network reliability. Production services/configuration stay unchanged.
