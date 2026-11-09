@@ -1,0 +1,46 @@
+{
+  "version": "jev-admission-v2-validation",
+  "createdAt": "2026-11-09T02:39:59.839Z",
+  "baseCommit": "8d6447d858e37d3ce5e48a3cdd10f0d75fe66467",
+  "hashes": {
+    "experiments/jev-routing-optimization/contract.ts": "5a96a3e44990277c40f3b358d8b603ad0e8dd159e3e1c4f626f732dcc138bca1",
+    "experiments/jev-routing-optimization/evaluation.ts": "5ce99aada624bfb291d3a12f4a0b8c8de1ef9dafc3be83dfeb09b756eb24a2eb",
+    "experiments/jev-routing-optimization/transport.ts": "e636c3273538c2ec515e033ab560449aedeb7380abc7c1bf34e764e4ee8c4c27",
+    "experiments/jev-routing-optimization/receipts.ts": "b2f167a448f90c2866c59ae8ba29ebb0e66612508778d1060e68c1b1121f68a9",
+    "experiments/jev-routing-optimization/run.ts": "bb827c88a50f0af0ae12b86e0c3af4628e62d0033dbe6e8a366d93b8d0fe46a6",
+    "experiments/decision-routing-validation/cases-v2.json": "09f3854f467654188851836c66c392eff14d675d2b97fe277a504c405e3ed25a",
+    "src/providers/decision-contract.ts": "92dc4e789ab97ca3b13f951ecda85260c38e7219ea40a425694941e4dcd7006e",
+    "src/providers/decision-thresholds.ts": "13b3a1f6e597e23004645bd51cccc4703fcc6386b1d18cf5820a59a227374ea4",
+    "config/agent/decision-thresholds-v2.json": "8c21df2ebf504ddfc329606745956478f993f97366f6361dee665e269e3aeee0",
+    "src/providers/openrouter-decisions.ts": "ebc55874559e1b00f346e0ea1c5fdaaafe01b6a26f43e56b06b1bacfd447443b",
+    "src/lib/assistant/main/decision-validation.ts": "c3ff5b9f7927f15732e491b43d0a6dd4d54daa47dab66d1001077e9eeb661f02",
+    "src/lib/assistant/main/decision-routing.ts": "8bb91ce4fcde88e8f96ff0be69d58f358a314f1094c1f33c628279e561dbc024",
+    "src/lib/assistant/main/hybrid-routing.ts": "5a6f2dd94b33ffdf400e9ce7957c58ff163b70f7976a59915d82952279a74e99",
+    "experiments/jev-routing-optimization/development-manifest.json": "65ba85249d25603dd272a1cc1f07e7f4b50874ab92322b9857f036572144d04f",
+    "experiments/jev-routing-optimization/policy-v1.json": "318d56ff3a92296f748674fb1997a8049f7d496be7fd8394e271449d8fdfacbc",
+    "experiments/jev-routing-optimization/validation-cases.json": "1cd778989c4cf85bb3fd4e0316c39657b032f8a7f28763456887b5996500e21e",
+    "experiments/jev-routing-optimization/admission-v2.ts": "b73c350df70a7d7b72aea7450403c8e39d4e1b0f8bb822cea5bc6851baedef76",
+    "experiments/jev-routing-optimization/run-v2.ts": "e2dce56147b97e88ef39792fef4ea2940e6916fc66c4d1082712ba02bf5b95bf",
+    "experiments/jev-routing-optimization/policy-v2.json": "3ea769abf5d4bf74f1ce02e5b946728c0bb78d97e76cc7749ce16aad4843762e",
+    "experiments/jev-routing-optimization/validation-v2-cases.json": "9678df4cbaf79964476e758e44341b576932b6f9ab829b862c6b0e644434d83c"
+  },
+  "gates": {
+    "availability": 0.95,
+    "minimumFixedCoverage": 0.5,
+    "minimumInterpreterCoverage": 0.5,
+    "minimumFixedGainOverOriginal": 0.25,
+    "noCoverageRegressionAgainstAtomicV1": true,
+    "noInterpreterRegressionAgainstOriginal": true,
+    "wrongFastSuggestions": 0,
+    "guardViolations": 0,
+    "p95Ms": 2000
+  },
+  "callsMaximum": 96,
+  "arms": [
+    "original",
+    "atomic-v1",
+    "atomic-v2"
+  ],
+  "sharedAtomicResponse": true,
+  "labels": "new-synthetic-developer-authored-not-business-Gold"
+}

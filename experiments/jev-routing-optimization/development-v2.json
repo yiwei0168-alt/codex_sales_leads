@@ -1,0 +1,90 @@
+{
+  "policy": {
+    "version": "jev-atomic-admission-v2",
+    "contractVersion": "jev-atomic-routing-v1",
+    "fixedWorkflow": "atomic-v1-preserved",
+    "interpreter": {
+      "enabled": true,
+      "planning": {
+        "probability": 0.8,
+        "margin": 0.2
+      },
+      "fit": {
+        "probability": 0.65,
+        "margin": 0.3
+      }
+    }
+  },
+  "details": [
+    {
+      "route": "interpreter",
+      "plateauSize": 210,
+      "developmentCorrect": 24,
+      "worstGroupCoverage": 1
+    }
+  ],
+  "method": {
+    "version": "two-exposed-groups-stable-plateau-v1",
+    "planningProbabilities": [
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "planningMargins": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "fitProbabilities": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "fitMargins": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "minimumPositivePerGroup": 10,
+    "minimumNegativePerGroup": 24,
+    "objective": "zero observed wrong admissions in both exposed groups; maximize worst-group coverage then total correct; choose center of tied plateau, not highest threshold"
+  },
+  "rows": 95,
+  "receiptSetHash": "368847444ba4ef74b80250a7ede7e3fd679cc4af9c20dcc1e6dd018525dd241b",
+  "excluded": [
+    {
+      "group": "exposed-validation",
+      "id": "F01",
+      "status": "failed-or-unknown"
+    }
+  ],
+  "stats": [
+    {
+      "route": "fixed_workflow",
+      "correct": 22,
+      "wrong": 0
+    },
+    {
+      "route": "interpreter",
+      "correct": 24,
+      "wrong": 0
+    }
+  ],
+  "newModelCalls": 0,
+  "independentValidation": false
+}
