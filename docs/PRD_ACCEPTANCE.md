@@ -2028,3 +2028,11 @@ Status: implemented; focused automated verification and live follow-up are recor
 - 本机六组件健康，但仍指向旧构建；尚未启用 Jev v4。已修复用户中途改要求时新版本路由建议未清除的问题，44 项相关测试与类型检查通过。
 - 冻结隔离探针：真实主模型与 Jev，三个合成公司数据，baseline/hybrid 对比；最多 12 次主模型、1 次 Jev，不重试未知结果，不接触真实业务数据库。完整性、引用、排序和实际 WASM 执行为硬性检查，不据单题推断全产品收益。
 - 详情：[PROGRAM_PILOT_2026-11-09.md](PROGRAM_PILOT_2026-11-09.md)。本机切换和自然业务验收尚待后续证据。
+
+### HYBRID-07 联调与本机激活记录（2026-11-09）
+
+- 继承用户“进行下一步”的范围，完成真实提供方、合成数据、生产 graph/WASM 链路探针；没有把用户授权等同于真实业务通过。
+- 第二轮：Jev 选择 interpreter，执行 1 段程序、3 次叶读取，分数/日期/排序/引用完整。baseline 与 hybrid 都是 4 次主模型调用；不宣称已减少轮数或普遍降本提速。baseline 是首轮复用，不是新的同步 A/B。
+- 已激活本机验收实例：业务源码 `215a4365`，Build ID `tJFTQgMMuESdVijnmjSrB`；六个服务健康，会话保持完整。开关为 `ENABLE_HYBRID_EXECUTION=1`、`HYBRID_DECISION_MODE=advisory`、`HYBRID_DECISION_MODEL=typesafe/jev-1.14`，覆盖本机实例账号，保留原有资格/权限/预算检查。入口 http://localhost:3001。
+- 旧包、配置与私有环境备份保留；切换新增任务/模型尝试/付费预留均为 0，无数据库迁移。构建与临时 Web 验证通过；依赖复用现有安装，不认定为隔离生产交付验证。
+- 验收状态：实现与隔离联调通过；真实业务完整性、实际路由与总体效率待下一条事前登记的自然问题验证。详见 [PROGRAM_PILOT_2026-11-09.md](PROGRAM_PILOT_2026-11-09.md) 及其中两份新证据。

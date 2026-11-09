@@ -1,0 +1,57 @@
+{
+  "protocol": "program-pilot-local-runtime-v1",
+  "cutover": {
+    "switchedAt": "2026-11-09T05:44:35.359Z",
+    "sourceCommit": "215a4365ee1c81874b15e0b11a2fcb34c342823a",
+    "buildId": "tJFTQgMMuESdVijnmjSrB",
+    "flags": {
+      "ENABLE_HYBRID_EXECUTION": "1",
+      "HYBRID_DECISION_MODE": "advisory",
+      "HYBRID_DECISION_MODEL": "typesafe/jev-1.14"
+    },
+    "scope": "local acceptance instance, all accounts using this instance; existing eligibility and permission guards apply",
+    "healthyComponents": [
+      "bge",
+      "api",
+      "web",
+      "worker",
+      "mailbox",
+      "lead"
+    ],
+    "oldConfigAndPackagesRetained": true,
+    "privateEnvironmentBackupRetained": true,
+    "apiStateFilesCopied": 3,
+    "apiStateBytes": 8545,
+    "apiStateCopyManifestSha256": "3ba1f7e1170c5c56a8e0f5155ae2f759ec448079d493814711844b5bd945a026",
+    "apiThreadInventoryPreserved": true,
+    "bgeUnchanged": true,
+    "newTasks": 0,
+    "newModelAttempts": 0,
+    "newPaidReservations": 0,
+    "databaseSchemaChanged": false,
+    "rollbackExecuted": false,
+    "realBusinessAcceptance": "pending",
+    "productionQualified": false
+  },
+  "packaging": {
+    "sourceCommit": "215a4365ee1c81874b15e0b11a2fcb34c342823a",
+    "buildId": "tJFTQgMMuESdVijnmjSrB",
+    "comparedSourceInputs": 722,
+    "sealedFiles": 4073,
+    "standaloneWasm": true,
+    "nodeArtifacts": 5,
+    "dependencyInstallVerified": false,
+    "productionQualified": false,
+    "activated": true
+  },
+  "preview": {
+    "checkedAt": "2026-11-09T05:39:49.830Z",
+    "buildId": "tJFTQgMMuESdVijnmjSrB",
+    "sessionAnonymous": true,
+    "protectedReadStatus": 401,
+    "staticAssets": 11,
+    "passed": true
+  },
+  "privateBuildDependencyCount": 0,
+  "buildManifestCount": 178
+}
