@@ -60,10 +60,4 @@ export function parseDecisionResponse(value: unknown, model: DecisionModel): Dec
     throw new Error('Decision response model mismatch');
   return response;
 }
-/** Provisional concentration threshold, NOT a calibrated correctness probability. */
-export function acceptedRoute(response: DecisionResponse) {
-  const answer = response.answers.route;
-  const ranked = Object.values(answer.probabilities).sort((a,b) => b-a);
-  return answer.choice !== 'uncertain' && ranked[0] >= 0.9 && ranked[0]-ranked[1] >= 0.2
-    ? answer.choice : 'dynamic_agent';
-}
+export {acceptedRoute} from './decision-thresholds';

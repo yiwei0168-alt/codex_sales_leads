@@ -2,6 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {decisionRoutingSamples} from '../src/lib/assistant/main/decision-routing-samples';
 import {decisionModels,buildDecisionRequest,DECISION_VERSION,parseDecisionResponse,acceptedRoute} from '../src/providers/decision-contract';
+import {LEGACY_DECISION_POLICY_VERSION} from '../src/providers/decision-thresholds';
 
 // Read-only analysis of the common 127-case pool. No model calls, no business data.
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -17,7 +18,7 @@ for(const model of decisionModels){
       throw new Error(`Unusable evaluation receipt: ${model}/${sample.id}`);
     const response=parseDecisionResponse(saved.response,model);
     rows.push({sample,latencyMs:Number(saved.latencyMs),rawChoice:response.answers.route.choice,
-      appliedRoute:acceptedRoute(response),receiptHash:createHash('sha256').update(text).digest('hex')});
+      appliedRoute:acceptedRoute(response,LEGACY_DECISION_POLICY_VERSION),receiptHash:createHash('sha256').update(text).digest('hex')});
   }
   const groups=['all','development','holdout'].map(split=>{
     const selected=rows.filter(r=>split==='all'||r.sample.split===split);

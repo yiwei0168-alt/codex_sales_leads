@@ -7,6 +7,7 @@ import { withProductSpend } from '@/lib/billing/context';
 import { beginCall, completeCall } from './repository';
 import { result, type ExecutionContext, type ModelMessage, type ToolResult } from './contracts';
 import { hybridEnabled, hybridFirstAction } from './hybrid-routing';
+import {DECISION_POLICY_VERSION,LEGACY_DECISION_POLICY_VERSION,knownDecisionPolicy} from '@/providers/decision-thresholds';
 
 export function decisionRoutingConfig() {
   const mode = process.env.HYBRID_DECISION_MODE;
@@ -30,12 +31,21 @@ export interface DecisionJournal {
   save: (id:string, output:ToolResult, metrics:Record<string,unknown>) => Promise<void>;
   request: (model:DecisionModel,state:RouteState,id:string) => Promise<DecisionResponse>;
 }
+export interface RoutedDecision {response:DecisionResponse;policyVersion:string}
 /** Unknown/failed attempts are never sent again on recovery. Only this optional route falls back. */
-export async function journaledDecision(model:DecisionModel,state:RouteState,journal:DecisionJournal):Promise<DecisionResponse|null> {
+export async function journaledDecision(model:DecisionModel,state:RouteState,journal:DecisionJournal):Promise<RoutedDecision|null> {
   const saved=await journal.begin(buildDecisionRequest(model,state));
   if(!saved.fresh){
     if(saved.status!=='completed'||saved.output?.status!=='success')return null;
-    try{return parseDecisionResponse(saved.output.data,model);}catch{return null;}
+    try{
+      const data=saved.output.data;
+      if(data&&typeof data==='object'&&'response' in data){
+        if(!('policyVersion' in data)||typeof data.policyVersion!=='string'||!knownDecisionPolicy(data.policyVersion))return null;
+        return {response:parseDecisionResponse(data.response,model),policyVersion:data.policyVersion};
+      }
+      // Pre-calibration receipts retain their original 0.9/0.2 policy, without another paid request.
+      return {response:parseDecisionResponse(data,model),policyVersion:LEGACY_DECISION_POLICY_VERSION};
+    }catch{return null;}
   }
   const started=Date.now();let response:DecisionResponse;
   try{response=await journal.request(model,state,saved.id);}
@@ -48,14 +58,15 @@ export async function journaledDecision(model:DecisionModel,state:RouteState,jou
     return null;
   }
   // A failure saving a successful receipt must not be reclassified or retried.
-  await journal.save(saved.id,result(response),{model,responseModel:response.model,provider:response.provider,
-    generationId:response.id,usage:response.usage,latencyMs:Date.now()-started,route:acceptedRoute(response)});
-  return response;
+  const decision={response,policyVersion:DECISION_POLICY_VERSION};
+  await journal.save(saved.id,result(decision),{model,responseModel:response.model,provider:response.provider,
+    generationId:response.id,usage:response.usage,latencyMs:Date.now()-started,route:acceptedRoute(response,decision.policyVersion),policyVersion:decision.policyVersion});
+  return decision;
 }
 
-export function decisionHint(response:DecisionResponse):ModelMessage {
-  const path=acceptedRoute(response);
-  return {role:'system',content:`[${DECISION_VERSION}] 执行路径建议：${path}。此建议不是业务事实、授权或范围裁剪。先核对原始问题的全部要求；不适合时直接使用普通动态工具。fixed_workflow 只可使用已提供的只读流程，仍须确定公司和参数；interpreter 只可调用获准本地只读工具，不能外部搜索、评分、写入或发信。uncertain 或低确定性已回退 dynamic_agent。最终由当前选定主模型作答，保留引用、未读范围及未完成要求。`};
+export function decisionHint(decision:RoutedDecision):ModelMessage {
+  const path=acceptedRoute(decision.response,decision.policyVersion);
+  return {role:'system',content:`[${DECISION_VERSION}] 阈值版本：${decision.policyVersion}。执行路径建议：${path}。此建议不是业务事实、授权或范围裁剪。先核对原始问题的全部要求；不适合时直接使用普通动态工具。fixed_workflow 只可使用已提供的只读流程，仍须确定公司和参数；interpreter 只可调用获准本地只读工具，不能外部搜索、评分、写入或发信。uncertain 或低确定性已回退 dynamic_agent。最终由当前选定主模型作答，保留引用、未读范围及未完成要求。`};
 }
 
 export async function prepareDecisionRoute(context:ExecutionContext,messages:ModelMessage[],hasPolicy:boolean):Promise<ModelMessage|null> {

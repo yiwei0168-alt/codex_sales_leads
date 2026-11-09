@@ -1,5 +1,7 @@
 # 独立决策路由试点
 
+后续记录：初始 0.9 / 0.2 门槛的校准结果和新版收据策略见 [阈值校准](DECISION_THRESHOLD_CALIBRATION_2026-11-09.md)。本页保留首轮试点参数与结果，不按新门槛追溯改写。
+
 ## 用户确认与范围
 
 HYBRID-02：用户在 Jev 1.14 首轮试点、OpenAI Decisions 对照、保留主回答模型的建议后确认“好的，按照你的建议进行”。模型固定为 `typesafe/jev-1.14` 和 `openai/gpt-6-luna-decisions`，使用现有 OpenRouter 账户。没有确认改用浮动 latest、自动双路由串联或替换主回答模型。

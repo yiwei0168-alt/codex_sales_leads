@@ -1,0 +1,327 @@
+{
+  "date": "2026-11-09",
+  "rule": "HYBRID-03",
+  "policyVersion": "hybrid-decision-thresholds-v2",
+  "method": {
+    "version": "development-zero-observed-error-grid-v1",
+    "probabilities": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "margins": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "minimumPositiveRows": 8,
+    "minimumPositiveFamilies": 2,
+    "minimumNegativeRows": 16,
+    "maximumObservedWrongAdmissions": 0,
+    "objective": "Maximize correct development admissions; tie-break higher probability, then higher margin."
+  },
+  "reportSha256": "e546a82917a8512afe35972da772482c0e7abb26ebf0ecfa8d63cb7fe7bb9a71",
+  "reports": [
+    {
+      "model": "typesafe/jev-1.14",
+      "contractHash": "42a92fd69d671b1801293dfb49ab0fabf155582e83b9e440d11bdc428f9bd10e",
+      "developmentRows": 63,
+      "regressionRows": 64,
+      "developmentReceiptHash": "21ae21f7d75171a341217b2ee53bbb870478dc1668989a330cdf28d27ea15489",
+      "regressionReceiptHash": "f689e38755a03bc757f944ef6d4cbaa610f7d3117b2915bfa0e8893cbf507dd8",
+      "results": [
+        {
+          "route": "fixed_workflow",
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.5,
+            "topTwoMargin": 0.05
+          },
+          "development": {
+            "admitted": 9,
+            "correct": 9,
+            "wrong": 0,
+            "correctFamilies": [
+              "knowledge",
+              "recent"
+            ]
+          },
+          "exposedRegression": {
+            "admitted": 13,
+            "correct": 13,
+            "wrong": 0,
+            "correctFamilies": [
+              "knowledge-paraphrase",
+              "recent-paraphrase"
+            ]
+          },
+          "previousDevelopment": {
+            "admitted": 0,
+            "correct": 0,
+            "wrong": 0,
+            "correctFamilies": []
+          },
+          "previousRegression": {
+            "admitted": 0,
+            "correct": 0,
+            "wrong": 0,
+            "correctFamilies": []
+          }
+        },
+        {
+          "route": "interpreter",
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.85,
+            "topTwoMargin": 0.5
+          },
+          "development": {
+            "admitted": 16,
+            "correct": 16,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-batch",
+              "local-pagination"
+            ]
+          },
+          "exposedRegression": {
+            "admitted": 10,
+            "correct": 10,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-aggregate",
+              "local-filter"
+            ]
+          },
+          "previousDevelopment": {
+            "admitted": 12,
+            "correct": 12,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-batch",
+              "local-pagination"
+            ]
+          },
+          "previousRegression": {
+            "admitted": 6,
+            "correct": 6,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-aggregate"
+            ]
+          }
+        }
+      ],
+      "selection": {
+        "fixed_workflow": {
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.5,
+            "topTwoMargin": 0.05
+          },
+          "support": {
+            "positives": 15,
+            "positiveFamilies": 2,
+            "negatives": 32
+          },
+          "reason": "development-candidate-not-business-validated",
+          "candidatesExamined": 100
+        },
+        "interpreter": {
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.85,
+            "topTwoMargin": 0.5
+          },
+          "support": {
+            "positives": 16,
+            "positiveFamilies": 2,
+            "negatives": 31
+          },
+          "reason": "development-candidate-not-business-validated",
+          "candidatesExamined": 100
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6-luna-decisions",
+      "contractHash": "42a92fd69d671b1801293dfb49ab0fabf155582e83b9e440d11bdc428f9bd10e",
+      "developmentRows": 63,
+      "regressionRows": 64,
+      "developmentReceiptHash": "5ab8913c13f07b7155cfebb4b663bed9b7736d72894c87435b0c01ed394a703b",
+      "regressionReceiptHash": "527e8ce03acc528461f38ab9d6a513ccb2d2e9d337831f9b32b9180456a59f07",
+      "results": [
+        {
+          "route": "fixed_workflow",
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.55,
+            "topTwoMargin": 0.15
+          },
+          "development": {
+            "admitted": 13,
+            "correct": 13,
+            "wrong": 0,
+            "correctFamilies": [
+              "knowledge",
+              "recent"
+            ]
+          },
+          "exposedRegression": {
+            "admitted": 8,
+            "correct": 8,
+            "wrong": 0,
+            "correctFamilies": [
+              "knowledge-paraphrase"
+            ]
+          },
+          "previousDevelopment": {
+            "admitted": 2,
+            "correct": 2,
+            "wrong": 0,
+            "correctFamilies": [
+              "knowledge"
+            ]
+          },
+          "previousRegression": {
+            "admitted": 0,
+            "correct": 0,
+            "wrong": 0,
+            "correctFamilies": []
+          }
+        },
+        {
+          "route": "interpreter",
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.55,
+            "topTwoMargin": 0.35
+          },
+          "development": {
+            "admitted": 16,
+            "correct": 16,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-batch",
+              "local-pagination"
+            ]
+          },
+          "exposedRegression": {
+            "admitted": 15,
+            "correct": 15,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-aggregate",
+              "local-filter"
+            ]
+          },
+          "previousDevelopment": {
+            "admitted": 3,
+            "correct": 3,
+            "wrong": 0,
+            "correctFamilies": [
+              "local-pagination"
+            ]
+          },
+          "previousRegression": {
+            "admitted": 0,
+            "correct": 0,
+            "wrong": 0,
+            "correctFamilies": []
+          }
+        }
+      ],
+      "selection": {
+        "fixed_workflow": {
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.55,
+            "topTwoMargin": 0.15
+          },
+          "support": {
+            "positives": 15,
+            "positiveFamilies": 2,
+            "negatives": 32
+          },
+          "reason": "development-candidate-not-business-validated",
+          "candidatesExamined": 100
+        },
+        "interpreter": {
+          "threshold": {
+            "enabled": true,
+            "topProbability": 0.55,
+            "topTwoMargin": 0.35
+          },
+          "support": {
+            "positives": 16,
+            "positiveFamilies": 2,
+            "negatives": 31
+          },
+          "reason": "development-candidate-not-business-validated",
+          "candidatesExamined": 100
+        }
+      }
+    }
+  ],
+  "source": "Existing synthetic provider receipts, identities and request contract hashes verified; development only used for selection.",
+  "validation": {
+    "tests": {
+      "files": 6,
+      "passed": 90
+    },
+    "typecheck": true,
+    "focusedLint": true,
+    "reproducibleConfigCheck": true,
+    "nodeBundleSmoke": true,
+    "candidateBuild": {
+      "passed": true,
+      "nextVersion": "16.3.4",
+      "typecheck": true,
+      "buildId": "H5h31gkCbOu-UtMg3NIUM",
+      "directory": ".local-runtime/decision-calibration-next-final-20261109",
+      "source": "working-tree-candidate-not-fixed-release",
+      "activated": false
+    },
+    "databaseRecovery": "mock-only",
+    "original254ReceiptsAndV1ReportMatchPublishedPilot": true,
+    "nodeBundles": [
+      {
+        "file": ".local-runtime/decision-calibration-candidate-final-20261109/main.mjs",
+        "sha256": "3435713f7403e85cfc86efcf2c64ff3aa00800cbcbb665d5539af236dc80e3b7"
+      },
+      {
+        "file": ".local-runtime/decision-calibration-candidate-final-20261109/decision.mjs",
+        "sha256": "690e7e0bc940c838dd5c78cb21fd640583665bc632b637a3dc6b23d0c5a1af58"
+      }
+    ]
+  },
+  "scope": {
+    "newModelCalls": 0,
+    "rawReceiptsModified": false,
+    "labelsChanged": false,
+    "requestPromptChanged": false,
+    "independentNaturalBusinessValidation": false,
+    "probabilityCalibration": false,
+    "productionActivated": false,
+    "historicalBaselineScripts": "explicitly pinned to v1",
+    "legacyReceipts": "v1 preserved; no repeated paid request"
+  },
+  "remaining": [
+    "New unseen natural-business samples with the frozen v2 policy.",
+    "Limited shadow/advisory release and full-task correctness, citations and latency comparison."
+  ]
+}

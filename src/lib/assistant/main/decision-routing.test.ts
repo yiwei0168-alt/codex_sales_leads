@@ -6,6 +6,7 @@ import {PaidCallOutcomeUnknownError} from '@/lib/billing/policy';
 import {DecisionRequestError} from '@/providers/openrouter-decisions';
 import {result,type ModelMessage} from './contracts';
 import {decisionRoutingSamples} from './decision-routing-samples';
+import {DECISION_POLICY_VERSION,LEGACY_DECISION_POLICY_VERSION} from '@/providers/decision-thresholds';
 
 const model=decisionModels[0];
 const messages=(request='帮我比较本地多家公司的资料'):ModelMessage[]=>[{role:'system',content:'[hybrid-v1:eligible]'},{role:'user',content:request}];
@@ -32,9 +33,10 @@ it('skips rules, history, scopes, attachments, policies and oversized inputs wit
   expect(decisionState([...messages(),{role:'user',content:'followup'}],false)).toBeNull();
 });
 it('saves response before exposing a strictly enumerated advisory hint',async()=>{
-  const deps=journal();expect(await journaledDecision(model,state,deps)).toEqual(response);
-  expect(deps.save).toHaveBeenCalledWith('call-1',result(response),expect.objectContaining({route:'interpreter'}));
-  const hint=decisionHint(response);expect(hint.content).toContain('interpreter');expect(hint.tool_calls).toBeUndefined();
+  const deps=journal(),decision={response,policyVersion:DECISION_POLICY_VERSION};
+  expect(await journaledDecision(model,state,deps)).toEqual(decision);
+  expect(deps.save).toHaveBeenCalledWith('call-1',result(decision),expect.objectContaining({route:'interpreter',policyVersion:DECISION_POLICY_VERSION}));
+  const hint=decisionHint(decision);expect(hint.content).toContain('interpreter');expect(hint.tool_calls).toBeUndefined();
   expect(hint.content).not.toContain('gen-fixture');
 });
 it.each(['started','unknown','failed'])('never reissues %s receipts',async status=>{
@@ -43,7 +45,22 @@ it.each(['started','unknown','failed'])('never reissues %s receipts',async statu
 });
 it('reuses completed replies on recovery',async()=>{
   const deps=journal();vi.mocked(deps.begin).mockResolvedValue({id:'call-1',fresh:false,status:'completed',output:result(response)});
-  expect(await journaledDecision(model,state,deps)).toEqual(response);expect(deps.request).not.toHaveBeenCalled();
+  expect(await journaledDecision(model,state,deps)).toEqual({response,policyVersion:LEGACY_DECISION_POLICY_VERSION});expect(deps.request).not.toHaveBeenCalled();
+});
+it('pins new receipts and refuses an unrecognized saved policy without replay',async()=>{
+  for(const policyVersion of [DECISION_POLICY_VERSION,'future-unknown']){
+    const deps=journal();vi.mocked(deps.begin).mockResolvedValue({id:'call-1',fresh:false,status:'completed',output:result({response,policyVersion})});
+    expect(await journaledDecision(model,state,deps)).toEqual(policyVersion===DECISION_POLICY_VERSION?{response,policyVersion}:null);
+    expect(deps.request).not.toHaveBeenCalled();expect(deps.save).not.toHaveBeenCalled();
+  }
+});
+it('does not promote a legacy low-probability suggestion after recovery',async()=>{
+  const old=structuredClone(response);old.answers.route.probabilities={fixed_workflow:0.05,dynamic_agent:0.05,interpreter:0.85,uncertain:0.05};
+  const deps=journal();vi.mocked(deps.begin).mockResolvedValue({id:'call-1',fresh:false,status:'completed',output:result(old)});
+  const recovered=await journaledDecision(model,state,deps);
+  expect(decisionHint(recovered!).content).toContain('执行路径建议：dynamic_agent');
+  expect(decisionHint({response:old,policyVersion:DECISION_POLICY_VERSION}).content).toContain('执行路径建议：interpreter');
+  expect(deps.request).not.toHaveBeenCalled();
 });
 it.each([new PaidCallOutcomeUnknownError(),new DecisionRequestError('http',403),new DecisionRequestError('invalid_response')])('falls back once without a second model: %s',async error=>{
   const deps=journal();vi.mocked(deps.request).mockRejectedValue(error);

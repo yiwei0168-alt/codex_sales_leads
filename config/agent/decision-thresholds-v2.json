@@ -1,0 +1,17 @@
+{
+  "version": "hybrid-decision-thresholds-v2",
+  "contractVersion": "hybrid-decision-v1",
+  "calibrationVersion": "decision-calibration-20261109-v1",
+  "scope": "advisory-only-synthetic-development-calibration",
+  "automaticToolExecution": false,
+  "models": {
+    "typesafe/jev-1.14": {
+      "fixed_workflow": {"enabled": true, "topProbability": 0.5, "topTwoMargin": 0.05},
+      "interpreter": {"enabled": true, "topProbability": 0.85, "topTwoMargin": 0.5}
+    },
+    "openai/gpt-6-luna-decisions": {
+      "fixed_workflow": {"enabled": true, "topProbability": 0.55, "topTwoMargin": 0.15},
+      "interpreter": {"enabled": true, "topProbability": 0.55, "topTwoMargin": 0.35}
+    }
+  }
+}

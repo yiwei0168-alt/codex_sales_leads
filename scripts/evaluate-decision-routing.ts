@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {decisionRoutingSamples} from '../src/lib/assistant/main/decision-routing-samples';
 import {buildDecisionRequest,decisionModelSchema,DECISION_VERSION,acceptedRoute} from '../src/providers/decision-contract';
 import {requestDecision,DecisionRequestError} from '../src/providers/openrouter-decisions';
+import {LEGACY_DECISION_POLICY_VERSION} from '../src/providers/decision-thresholds';
 
 // Explicit, bounded synthetic evaluation. No user database, real emails or product settings.
 const args=process.argv.slice(2),live=args.includes('--live');
@@ -37,7 +38,8 @@ else {
       try{
         const response=await requestDecision(model,sample.state);
         saved={...base,status:'completed',response,latencyMs:Date.now()-started,
-          rawChoice:response.answers.route.choice,appliedRoute:acceptedRoute(response)};
+          rawChoice:response.answers.route.choice,policyVersion:LEGACY_DECISION_POLICY_VERSION,
+          appliedRoute:acceptedRoute(response,LEGACY_DECISION_POLICY_VERSION)};
         await writeFile(path,JSON.stringify(saved,null,2));
       }catch(error){
         const reason=error instanceof DecisionRequestError?`${error.reason}_${error.status??'schema'}`:'transport-or-receipt-unknown';
