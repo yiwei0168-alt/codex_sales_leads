@@ -1,0 +1,246 @@
+{
+  "version": "p09-answer-fixture-check-v2",
+  "scope": "Post-hoc deterministic table/order/date/citation check, not independent semantic acceptance. Non-table answers require separate review.",
+  "results": [
+    {
+      "file": "P09-A-1.trace.json",
+      "answerHash": "baf04b282b7b7e80971ef92a7d6b74a0fc62020c393bda1978ec33182ab8c5bd",
+      "matchedTableRows": 12,
+      "passed": true,
+      "checks": [
+        {
+          "company": "Maple Supply",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Westhaven GmbH",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Harbor Circuit",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Sable Connect",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Tern Integration",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Juniper Link",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Orchard Systems",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Yarrow Handel",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Ridge Retail",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Quartz Networks",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Vale Tech",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Zenith Partner",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        }
+      ]
+    },
+    {
+      "file": "P09-B-1.trace.json",
+      "answerHash": "a33462f1c97ff05aa1aeb89a88f90cd2c304c26d0e412d78ed5ef8df3e4b4aff",
+      "matchedTableRows": 12,
+      "passed": true,
+      "checks": [
+        {
+          "company": "Maple Supply",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Westhaven GmbH",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Harbor Circuit",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Sable Connect",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Tern Integration",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Juniper Link",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Orchard Systems",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Yarrow Handel",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Ridge Retail",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Quartz Networks",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Vale Tech",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        },
+        {
+          "company": "Zenith Partner",
+          "correctTablePosition": true,
+          "correctDate": true,
+          "correctLatestMailCitation": true
+        }
+      ]
+    },
+    {
+      "file": "P09-C-1.trace.json",
+      "answerHash": "97d589e7c6a29dec7e46a042cf0372e066330acc1919344f902e0a0f42fc85b5",
+      "matchedTableRows": 0,
+      "passed": false,
+      "checks": [
+        {
+          "company": "Maple Supply",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Westhaven GmbH",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Harbor Circuit",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Sable Connect",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Tern Integration",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Juniper Link",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Orchard Systems",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Yarrow Handel",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Ridge Retail",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Quartz Networks",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Vale Tech",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        },
+        {
+          "company": "Zenith Partner",
+          "correctTablePosition": false,
+          "correctDate": false,
+          "correctLatestMailCitation": false
+        }
+      ]
+    }
+  ]
+}

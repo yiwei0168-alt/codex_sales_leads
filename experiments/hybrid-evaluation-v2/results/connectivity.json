@@ -1,0 +1,24 @@
+{
+  "version": "hybrid-v2-public-connectivity-check",
+  "modelCalls": 0,
+  "authorizationHeadersSent": false,
+  "proxyConfigured": true,
+  "checks": [
+    {
+      "attempt": 1,
+      "status": 200,
+      "elapsedMs": 3167.9664000000002
+    },
+    {
+      "attempt": 2,
+      "status": 200,
+      "elapsedMs": 672.7505999999994
+    },
+    {
+      "attempt": 3,
+      "status": 200,
+      "elapsedMs": 373.40279999999984
+    }
+  ],
+  "limitation": "Public metadata connectivity only; cannot prove generation availability, establish the cause of earlier failures or reconcile charges."
+}
