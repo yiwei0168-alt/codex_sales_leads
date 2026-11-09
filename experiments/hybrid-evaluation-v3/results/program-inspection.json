@@ -1,0 +1,56 @@
+{
+  "version": "program-inspection-v3",
+  "rows": [
+    {
+      "file": "P09-A-1.trace.json",
+      "status": "answered",
+      "modelCalls": 7,
+      "inputTokens": 109687,
+      "cachedTokens": 90845,
+      "outputTokens": 2210,
+      "programs": [],
+      "transportFailures": [],
+      "journalFailures": []
+    },
+    {
+      "file": "P09-B-1.trace.json",
+      "status": "answered",
+      "modelCalls": 5,
+      "inputTokens": 65665,
+      "cachedTokens": 46155,
+      "outputTokens": 1984,
+      "programs": [
+        {
+          "tool": "programmatic_tools",
+          "status": "success",
+          "valueChars": 4189,
+          "savedLeaves": 13,
+          "usesReceipt": true,
+          "usesTime": true
+        }
+      ],
+      "transportFailures": [],
+      "journalFailures": []
+    },
+    {
+      "file": "P09-C-1.trace.json",
+      "status": "answered",
+      "modelCalls": 5,
+      "inputTokens": 61400,
+      "cachedTokens": 51748,
+      "outputTokens": 2053,
+      "programs": [
+        {
+          "tool": "programmatic_tools",
+          "status": "success",
+          "valueChars": 4123,
+          "savedLeaves": 13,
+          "usesReceipt": true,
+          "usesTime": true
+        }
+      ],
+      "transportFailures": [],
+      "journalFailures": []
+    }
+  ]
+}
