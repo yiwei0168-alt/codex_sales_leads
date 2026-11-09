@@ -1,0 +1,7 @@
+# V7 context integration — P10 paired pilot
+
+Run the unchanged explicit v5 all-account mail-date count P10 on the same isolated synthetic DB. Three new once-only runs in original P10 arm order B,C,A, one persistent process, no warm-up; include cold B and every failure. ABC model profiles and original quality/cost/time gates remain unchanged. Compared with v6, only the opt-in v7 context route implementation is enabled for this process; default product routing remains v4. Do not pool runs with v6 or attribute all differences to routing because provider/caching conditions vary.
+
+Freeze all current sources/config and `HYBRID_PROGRAM_CONTEXT_VERSION=v7` before execution. A disables hybrid; B uses hybrid with all-deep model profiles; C uses normal automatic profiles. Confirm actual router hint, selected main-model profile, program calls and two-page all-mail coverage. Maximum 24 HTTP requests and 600 seconds per task; no task retry. Source drift, persistence errors and unexpected effects stop the batch. Unknown billing remains unknown.
+
+Review all three outcomes blind against unchanged P10 facts and actual pagination receipts; only fully accepted and billed pairs qualify for descriptive timing/cost comparisons. Three tasks/one business item cannot qualify the full benchmark or prove generalization. Existing three v6 transport failures and 26 historical unknown charges remain. No production deployment, external research, writes, email sync or sends.

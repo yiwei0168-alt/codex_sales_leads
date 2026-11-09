@@ -1,0 +1,78 @@
+{
+  "version": "hybrid-route-validation-v7-observation",
+  "split": "holdout",
+  "designHash": "e22b426594c96e5fffb03afacb176e3160bbb37bee06928a16471c23802cb2e8",
+  "runtimeHash": "7b3661f0b5d27c211fa93a4ff169dfc8a614ac5d5c032c5d343a0f84f93fcafd",
+  "independentQualification": false,
+  "cases": 24,
+  "providerAttempts": 24,
+  "providerCompleted": 24,
+  "availability": 1,
+  "accuracyIncludingFallback": 0.9583333333333334,
+  "initialPipelineCorrect": 23,
+  "confusion": {
+    "fixed_workflow": {
+      "fixed_workflow": 7,
+      "interpreter": 0,
+      "dynamic_agent": 1
+    },
+    "interpreter": {
+      "fixed_workflow": 0,
+      "interpreter": 8,
+      "dynamic_agent": 0
+    },
+    "dynamic_agent": {
+      "fixed_workflow": 0,
+      "interpreter": 0,
+      "dynamic_agent": 8
+    }
+  },
+  "perClass": {
+    "fixed_workflow": {
+      "tp": 7,
+      "predicted": 7,
+      "expected": 8,
+      "precision": 1,
+      "recall": 0.875,
+      "f1": 0.9333333333333333
+    },
+    "interpreter": {
+      "tp": 8,
+      "predicted": 8,
+      "expected": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "dynamic_agent": {
+      "tp": 8,
+      "predicted": 9,
+      "expected": 8,
+      "precision": 0.8888888888888888,
+      "recall": 1,
+      "f1": 0.9411764705882353
+    }
+  },
+  "macroF1": 0.9581699346405229,
+  "successfulP95Ms": 666.5871000000006,
+  "knownCostUsd": 0.00217119,
+  "unknownChargeCount": 0,
+  "wrongFast": [],
+  "policyChanged": false,
+  "holdoutOpened": true,
+  "performanceClaims": false,
+  "productionCandidateActivated": false,
+  "observations": 24,
+  "gates": {
+    "complete": true,
+    "macroF1": true,
+    "fixedPrecision": true,
+    "fixedRecall": true,
+    "interpreterPrecision": true,
+    "interpreterRecall": true,
+    "wrongFast": true,
+    "availability": true,
+    "successfulP95": true
+  },
+  "acceptancePassed": true
+}

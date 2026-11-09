@@ -1,5 +1,6 @@
 import { digest, type ModelMessage } from './contracts';
 
+export function programContextVersion(){return process.env.HYBRID_PROGRAM_CONTEXT_VERSION==='v7'?'v7':'v4';}
 export function hybridEnabled() { return process.env.ENABLE_HYBRID_EXECUTION !== '0'; }
 export type HybridRoute = { path: 'workflow' | 'dynamic' | 'interpreter'; reason: string;
   workflow?: { workflow: 'customer_recent'; query: string; messageLimit: number } };
@@ -20,7 +21,7 @@ export function hybridFirstAction(messages: ModelMessage[]): ModelMessage | null
   const users = messages.filter(message => message.role === 'user');
   if (users.length !== 1 || messages.some(message => message.role === 'assistant')) return null;
   // Only a freshly initialized, enabled production context receives this server marker.
-  if (!messages.some(message => message.role === 'system' && /^\[hybrid-v[124]:eligible\]/.test(message.content ?? ''))) return null;
+  if (!messages.some(message => message.role === 'system' && /^\[hybrid-v[1247]:eligible\]/.test(message.content ?? ''))) return null;
   const route = suggestHybridRoute(users[0].content ?? '');
   if (!route.workflow) return null;
   return { role: 'assistant', content: null, tool_calls: [{ id: `hybrid_route_${digest(route.workflow).slice(0,32)}`,

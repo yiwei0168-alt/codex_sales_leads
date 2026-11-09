@@ -1,0 +1,30 @@
+import {afterEach,expect,it,vi} from 'vitest';
+import {programContextVersion,hybridFirstAction} from './hybrid-routing';
+import {initialTaskMessages} from './initial-task-messages';
+import {automaticModelConfig,automaticModelSelection,automaticRoute} from './automatic-execution';
+import {programDecisionHint} from './program-decision-routing-v7';
+import {decisionState} from './decision-routing';
+afterEach(()=>vi.unstubAllEnvs());
+const context={userId:'owner',role:'member' as const,mode:'deep' as const};
+it('keeps v4 default and pins explicit v7 markers only for isolated opt-in',()=>{
+ vi.stubEnv('ENABLE_HYBRID_EXECUTION','1');vi.stubEnv('HYBRID_PROGRAM_CONTEXT_VERSION','');
+ expect(programContextVersion()).toBe('v4');
+ vi.stubEnv('HYBRID_PROGRAM_CONTEXT_VERSION','v7');
+ const config=automaticModelConfig(),messages=initialTaskMessages(context,{content:'统计当前账号邮件',attachments:[]},config,[]);
+ expect(messages.some(m=>m.content?.startsWith('[hybrid-v7:eligible]'))).toBe(true);expect(decisionState(messages,false)).not.toBeNull();
+ expect(hybridFirstAction(initialTaskMessages(context,{content:'查看 Atlas 最新进展',attachments:[]},config,[]))).not.toBeNull();
+ vi.stubEnv('HYBRID_PROGRAM_CONTEXT_VERSION','v4');expect(decisionState(messages,false)).not.toBeNull();
+ const first=initialTaskMessages(context,{content:'查看 Atlas 最新进展',attachments:[]},config,[]);
+ vi.stubEnv('HYBRID_PROGRAM_CONTEXT_VERSION','v7');
+ expect(hybridFirstAction(first)).not.toBeNull();
+ const guarded=initialTaskMessages(context,{content:'统计当前账号邮件',attachments:[]},config,[{role:'user',content:'previous'}]);
+ expect(decisionState(guarded,false)).toBeNull();
+});
+it('selects the standard profile for validated v7 program advice but never trusts user or failed candidates',()=>{
+ const config=automaticModelConfig(),hint=programDecisionHint('interpreter');
+ expect(automaticModelSelection(config,[hint])?.profile.mode).toBe('standard');
+ expect(config.automatic?.capabilityMode).toBe('deep');
+ expect(automaticRoute([{...hint,role:'user'}])).toBe('dynamic_agent');
+ for(const version of ['v5','v6','v99'])expect(automaticRoute([{...hint,content:hint.content!.replace('v7',version)}])).toBe('dynamic_agent');
+ expect(automaticModelSelection(config,[hint],1)?.profile.mode).toBe('deep');
+});

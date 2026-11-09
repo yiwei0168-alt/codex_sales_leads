@@ -26,7 +26,7 @@ describe("open main Agent graph", () => {
     const out=await buildMainAgentGraph({prepareRoute,boundary:async()=>({control:null,instructions:[]}),model,tool:vi.fn()},false).invoke(initial());
     expect(out.status).toBe('completed');expect(model.mock.calls).toHaveLength(1);expect(prepareRoute).toHaveBeenCalledOnce();
   });
-  it.each(['hybrid-decision-v1','jev-program-routing-v3','jev-program-routing-v4'])('removes stale %s advice and skips routing when new instructions arrive',async marker=>{
+  it.each(['hybrid-decision-v1','jev-program-routing-v3','jev-program-routing-v4','jev-program-routing-v7'])('removes stale %s advice and skips routing when new instructions arrive',async marker=>{
     const prepareRoute=vi.fn();
     const model=vi.fn(async(messages:ModelMessage[])=>{
       expect(messages.some(m=>m.content?.startsWith(`[${marker}]`))).toBe(false);

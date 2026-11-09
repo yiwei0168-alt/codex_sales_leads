@@ -31,7 +31,7 @@ export function automaticRoute(messages: ModelMessage[], revision = 0): Automati
   let route: AutomaticRoute = 'dynamic_agent';
   for (const message of messages) {
     if (message.role === 'system') {
-      const match = /^\[jev-program-routing-v4\] 建议 (fixed_workflow|interpreter|dynamic_agent)。/.exec(message.content ?? '');
+      const match = /^\[jev-program-routing-v(?:4|7)\] 建议 (fixed_workflow|interpreter|dynamic_agent)。/.exec(message.content ?? '');
       if (match) route = match[1] as AutomaticRoute;
     }
   }
