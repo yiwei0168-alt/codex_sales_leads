@@ -1,0 +1,77 @@
+{
+  "version": "hybrid-route-observation-v5-fresh",
+  "split": "holdout",
+  "designHash": "e22b426594c96e5fffb03afacb176e3160bbb37bee06928a16471c23802cb2e8",
+  "runtimeHash": "4c88ada4263407c246aa6c040be47c143e936d06d76d9f8058ae046732ea2a45",
+  "independentQualification": false,
+  "cases": 24,
+  "providerAttempts": 24,
+  "providerCompleted": 24,
+  "availability": 1,
+  "accuracyIncludingFallback": 1,
+  "initialPipelineCorrect": 24,
+  "confusion": {
+    "fixed_workflow": {
+      "fixed_workflow": 8,
+      "interpreter": 0,
+      "dynamic_agent": 0
+    },
+    "interpreter": {
+      "fixed_workflow": 0,
+      "interpreter": 8,
+      "dynamic_agent": 0
+    },
+    "dynamic_agent": {
+      "fixed_workflow": 0,
+      "interpreter": 0,
+      "dynamic_agent": 8
+    }
+  },
+  "perClass": {
+    "fixed_workflow": {
+      "tp": 8,
+      "predicted": 8,
+      "expected": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "interpreter": {
+      "tp": 8,
+      "predicted": 8,
+      "expected": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "dynamic_agent": {
+      "tp": 8,
+      "predicted": 8,
+      "expected": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    }
+  },
+  "macroF1": 1,
+  "successfulP95Ms": 1206.872800000001,
+  "knownCostUsd": 0.0019364939999999998,
+  "unknownChargeCount": 0,
+  "wrongFast": [],
+  "policyChanged": false,
+  "holdoutOpened": true,
+  "performanceClaims": false,
+  "observations": 24,
+  "gates": {
+    "complete": true,
+    "macroF1": true,
+    "fixedPrecision": true,
+    "fixedRecall": true,
+    "interpreterPrecision": true,
+    "interpreterRecall": true,
+    "wrongFast": true,
+    "availability": true,
+    "successfulP95": true
+  },
+  "acceptancePassed": true
+}

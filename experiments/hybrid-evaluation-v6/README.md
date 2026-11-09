@@ -1,0 +1,9 @@
+# Post-repair persistent-process paired smoke v6
+
+Prospectively retain the three explicit v5 tasks P02/P10/P24, synthetic fixture, ABC model profiles, original seeded arm order and original quality/cost/latency gates. Nine new uniquely claimed tasks, one repetition. Preserve every earlier outcome and unknown charge. No source-label changes, production changes or implicit retries.
+
+Freeze current product code after SSE connection reuse and all-account imported-mail metadata repairs. Run serially in one persistent Node process, retaining the normal model connection pool like the product server. Include the first cold task and all failures; no unmeasured warm-up. This differs from v5's subprocess-per-task protocol, so do not pool their timing results or attribute all differences to routing alone. Each run has separate queue, lease, checkpoint, tool receipts, financial reservation and observation. At most 24 HTTP requests / 600 seconds per task. Unknown outcomes continue only to distinct scheduled tasks; drift, unexpected effect or persistence error stops the batch. A saved observation is reused; an unfinished claim is never resubmitted.
+
+P10 now has the actual read-only mailbox_message_list capability (20 rows/page), verified separately on the isolated DB/WASM. Actual model selection and answer completeness remain to be measured. The source prompts and factual assertions are unchanged from v5. P02 must distinguish full timeline coverage from limited body reading; P24 must not invent the cause of 5-to-8-port changes.
+
+Small synthetic smoke is diagnostic, not independent human Gold or full acceptance. Terminal success alone is insufficient; complete factual/citation/coverage review precedes quality-matched cost and timing comparisons. Unknown charges are not zero. Browser-visible latency and TTFT remain unmeasured. No claims of overall gate passage from nine outputs.
