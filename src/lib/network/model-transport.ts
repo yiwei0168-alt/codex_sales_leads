@@ -1,4 +1,5 @@
 import { fetch as undiciFetch, ProxyAgent } from "undici";
+import {observeModelTransport} from './transport-observation';
 
 type ProxyEnvironment = "GEMINI_PROXY_URL" | "MODEL_PROXY_URL";
 
@@ -62,8 +63,8 @@ export function modelRoutedTransport(
     agent = new ProxyAgent(url);
     agents.set(url, agent);
   }
-  return (request, options) => undiciFetch(request as Parameters<typeof undiciFetch>[0], {
+  return (request, options) => observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
     ...options,
     dispatcher: agent,
-  } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>;
+  } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>);
 }

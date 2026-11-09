@@ -43,7 +43,7 @@ it('persists cancellation without advancing to another model even for a retryabl
  await expect(orderedModeDecision({signal:controller.signal,begin,save,request:async()=>{
   const reason=new ModelWaitError('total');controller.abort(reason);throw reason;
  }})).rejects.toBeInstanceOf(ModelWaitError);
- expect(begin).toHaveBeenCalledOnce();expect(save).toHaveBeenCalledWith('first',0,{status:'unavailable',retryable:false,reason:'execution-cancelled'});
+ expect(begin).toHaveBeenCalledOnce();expect(save).toHaveBeenCalledWith('first',0,expect.objectContaining({status:'unavailable',retryable:false,reason:'execution-cancelled',failureDiagnostic:expect.any(Object)}));
 });
 it('preserves a completed response receipt but does not return it after cancellation',async()=>{
  const controller=new AbortController(),save=vi.fn();

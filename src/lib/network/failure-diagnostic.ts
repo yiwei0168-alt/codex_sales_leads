@@ -1,3 +1,4 @@
+import {transportFailureObservation} from './transport-observation';
 // Deliberate allowlists: error messages, URLs, headers and arbitrary provider fields
 // can contain credentials or private task data and must never enter this record.
 const names = new Set(['Error','TypeError','TimeoutError','AbortError','AggregateError','SocketError','ConnectTimeoutError']);
@@ -14,5 +15,6 @@ export function failureDiagnostic(error: unknown) {
       code:typeof e.code === 'string' && codes.has(e.code) ? e.code : null});
     current = e.cause;
   }
-  return {version:'network-failure-diagnostic-v1',chain};
+  const transport=transportFailureObservation(error);
+  return {version:'network-failure-diagnostic-v1',chain,...(transport?{transport}:{})};
 }

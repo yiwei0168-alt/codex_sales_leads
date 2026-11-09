@@ -1,0 +1,125 @@
+{
+  "version": "v5-unauthenticated-post-transport-probe",
+  "authorizationSent": false,
+  "modelCalls": 0,
+  "rows": [
+    {
+      "bytes": 2,
+      "diagnostic": {
+        "version": "network-failure-diagnostic-v1",
+        "chain": [
+          {
+            "name": "TypeError",
+            "code": null
+          },
+          {
+            "name": "Error",
+            "code": "ECONNRESET"
+          }
+        ]
+      },
+      "elapsedMs": 5036.972900000001,
+      "events": [
+        {
+          "stage": "undici:client:beforeConnect",
+          "elapsedMs": 10.097700000000032
+        },
+        {
+          "stage": "undici:client:beforeConnect",
+          "elapsedMs": 10.50500000000011
+        },
+        {
+          "stage": "undici:client:connected",
+          "elapsedMs": 22.45620000000008
+        },
+        {
+          "stage": "undici:client:sendHeaders",
+          "elapsedMs": 23.071899999999914
+        },
+        {
+          "stage": "undici:request:bodySent",
+          "elapsedMs": 23.564399999999978
+        },
+        {
+          "stage": "undici:client:connectError",
+          "elapsedMs": 5031.2931
+        },
+        {
+          "stage": "undici:request:error",
+          "elapsedMs": 5031.4752
+        }
+      ]
+    },
+    {
+      "bytes": 50000,
+      "status": 401,
+      "elapsedMs": 5396.0668,
+      "events": [
+        {
+          "stage": "undici:client:beforeConnect",
+          "elapsedMs": 1.9291000000002896
+        },
+        {
+          "stage": "undici:client:beforeConnect",
+          "elapsedMs": 2.0465000000003783
+        },
+        {
+          "stage": "undici:client:connected",
+          "elapsedMs": 3.6458000000002357
+        },
+        {
+          "stage": "undici:client:sendHeaders",
+          "elapsedMs": 3.738800000000083
+        },
+        {
+          "stage": "undici:request:bodySent",
+          "elapsedMs": 3.9679000000005544
+        },
+        {
+          "stage": "undici:client:connected",
+          "elapsedMs": 4675.9567
+        },
+        {
+          "stage": "undici:client:sendHeaders",
+          "elapsedMs": 4676.6684
+        },
+        {
+          "stage": "undici:request:bodySent",
+          "elapsedMs": 4680.0752999999995
+        },
+        {
+          "stage": "undici:request:headers",
+          "elapsedMs": 5393.531600000001
+        },
+        {
+          "stage": "undici:request:error",
+          "elapsedMs": 5395.1305
+        }
+      ]
+    },
+    {
+      "bytes": 100000,
+      "status": 401,
+      "elapsedMs": 1309.5311999999994,
+      "events": [
+        {
+          "stage": "undici:client:sendHeaders",
+          "elapsedMs": 1.1769999999996799
+        },
+        {
+          "stage": "undici:request:bodySent",
+          "elapsedMs": 711.4671999999991
+        },
+        {
+          "stage": "undici:request:headers",
+          "elapsedMs": 1308.5264000000006
+        },
+        {
+          "stage": "undici:request:error",
+          "elapsedMs": 1308.964
+        }
+      ]
+    }
+  ],
+  "limitation": "Invalid unauthenticated synthetic requests only. No inference request or paid retry. Diagnostics contain event names/timings only; no header, body, connection address or private content. Passing probes cannot establish stream stability."
+}

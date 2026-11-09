@@ -8,6 +8,7 @@ import { modelRoutedTransport } from '@/lib/network/model-transport';
 import { collectModelStream, withModeStream, ModelWaitError, ModelReceiptError } from './model-stream';
 import type { ModeConfig } from './mode-config';
 import {modelRequestManifest} from './model-request-manifest';
+import {markTransportFailure} from '@/lib/network/transport-observation';
 
 export const modelReplySchema = z.object({
   role: z.literal("assistant"), content: z.string().nullable().optional(),
@@ -35,12 +36,14 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
   signal?.addEventListener('abort',cancel,{once:true});
   if(signal?.aborted)cancel();
   const adapted:typeof fetch=async(input,init)=>{
+    const started=performance.now();let streaming=false;
     try{
       controller.signal.throwIfAborted();
       const response=await Promise.race([modelRoutedTransport(transport,input,init)(input,init),aborted]);
       if(!response.ok){clearTimeout(first);return response;}
+      streaming=true;
       return await collectModelStream(response,controller.signal,()=>clearTimeout(first));
-    }catch(error){transportError=error;throw error;}
+    }catch(error){if(streaming)markTransportFailure(error,'response-stream',started);transportError=error;throw error;}
   };
   try{
     const response=await withModeStream(()=>budgetedFetch(adapted)(`${route.baseUrl}/chat/completions`,{

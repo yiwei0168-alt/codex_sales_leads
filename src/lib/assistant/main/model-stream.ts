@@ -26,7 +26,7 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
   if(!response.ok)return response;
   if(!response.headers.get('content-type')?.includes('text/event-stream')||!response.body)throw new ModelStreamError();
   const reader=response.body.getReader(),decoder=new TextDecoder();
-  let buffer='',bytes=0,doneMarker=false,finish:string|undefined,content='',reasoning='';
+  let buffer='',bytes=0,doneMarker=false,finish:string|undefined,content='',reasoning='',transportEnded=false;
   const calls=new Map<number,{id:string;type:'function';function:{name:string;arguments:string}}>();
   const details=new Map<number,Record<string,unknown>>();
   let meta:Record<string,unknown>={};
@@ -73,8 +73,28 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
       let end;while((end=buffer.indexOf('\n\n'))>=0){frame(buffer.slice(0,end));buffer=buffer.slice(end+2);}
     }
     if(!doneMarker||!finish||!['stop','tool_calls'].includes(finish))throw new ModelStreamError();
+    // [DONE] can arrive just before HTTP EOF. Immediate cancellation tears down a
+    // reusable proxy tunnel. Briefly drain transport completion, never adopting
+    // any further content/tool arguments or waiting indefinitely for a server.
+    let drainTimer:ReturnType<typeof setTimeout>|undefined;
+    const expired=new Promise<false>(resolve=>{drainTimer=setTimeout(()=>resolve(false),100);});
+    try{
+      let trailingBytes=0;
+      while(trailingBytes<=16384){
+        signal.throwIfAborted();
+        const next=await Promise.race([reader.read(),expired]);
+        if(next===false)break;
+        if(next.done){transportEnded=true;break;}
+        trailingBytes+=next.value.byteLength;
+      }
+      signal.throwIfAborted();
+    }catch{
+      // A reset after a valid terminal marker cannot invalidate the already
+      // completed answer/usage receipt. Explicit task cancellation still wins.
+      signal.throwIfAborted();
+    }finally{clearTimeout(drainTimer);}
     return Response.json({...meta,choices:[{finish_reason:finish,message:{role:'assistant',content:content||null,
       ...(calls.size?{tool_calls:[...calls.entries()].sort(([a],[b])=>a-b).map(([,v])=>v)}:{}),
       ...(reasoning?{reasoning}:{}),...(details.size?{reasoning_details:[...details.values()]}:{})}}]});
-  }finally{signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>undefined);reader.releaseLock();}
+  }finally{signal.removeEventListener('abort',cancel);if(!transportEnded)await reader.cancel().catch(()=>undefined);reader.releaseLock();}
 }
