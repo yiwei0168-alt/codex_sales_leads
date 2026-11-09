@@ -8,6 +8,7 @@ vi.mock('./knowledge-message-guard',()=>({KnowledgeSourceChangedError:class exte
 vi.mock('./memory-message-guard',()=>({MemoryContextChangedError:class extends Error{}}));
 import { executeRegisteredTool } from './tool-execution';
 import { executeHybridRead } from './hybrid-execution';
+import { executeProgrammatic } from './programmatic-execution';
 import { defineTool } from './tool-definition';
 import { digest, result, type ToolResult } from './contracts';
 
@@ -41,4 +42,22 @@ it('an existing leaf without a receipt returns unknown and is not silently rerun
  storage.begin.mockResolvedValue({id:randomUUID(),fresh:false});
  const out=await executeRegisteredTool(leaf,{},'uncertain',context);
  expect(out.status).toBe('unknown');expect(read).not.toHaveBeenCalled();expect(storage.complete).not.toHaveBeenCalled();
+});
+it('recovers an unfinished program parent by reusing completed concurrent leaf receipts',async()=>{
+ const read=vi.fn(async(i:{query:string})=>result({query:i.query}));
+ const leaf=defineTool({id:'search_channel',input:z.object({query:z.string()}),description:'fixture',execute:read});
+ const parent=defineTool({id:'programmatic_tools',effect:'reversible',recovery:'composite',input:z.object({code:z.string()}),description:'fixture',
+  execute:(args,c)=>executeProgrammatic(args,c,{allowed:new Set(['search_channel']),validate:async()=>{},
+   dispatch:(call,ctx)=>executeRegisteredTool(leaf,JSON.parse(call.function.arguments).arguments,call.id,ctx)})});
+ const input={code:`return tools.parallel(['one','two','three'].map(query=>({tool:'search_channel',arguments:{query}}))).map(r=>r.data);`};
+ const save=storage.complete.getMockImplementation()!;let loseParent=true;
+ storage.complete.mockImplementation(async(c,id,output)=>{
+  if(loseParent&&output.data?.kind==='hybrid-program-v2'){loseParent=false;throw Error('parent save interrupted');}
+  return save(c,id,output);
+ });
+ const deep={...context,mode:'deep' as const};
+ await expect(executeRegisteredTool(parent,input,'program-key',deep)).rejects.toThrow('parent save interrupted');
+ const recovered=await executeRegisteredTool(parent,input,'program-key',deep);
+ expect(recovered.status).toBe('success');expect(read).toHaveBeenCalledTimes(3);
+ expect(storage.begin.mock.calls.filter(([,c])=>c.tool==='search_channel')).toHaveLength(6);
 });
