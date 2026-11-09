@@ -15,3 +15,9 @@
 门槛：三家名称、分数、日期、来源链接完整，分数降序；hybrid 必须实际执行 WASM 程序。保存调用次数、墙钟时间、原始回执以检查链路，不产生开发效率台账或费用报告。单题 A/B 不能证明总体加速收益。协议及源文件散列见 `experiments/program-pilot/manifest.json`，先提交再调用。
 
 运行包和开关只有在探针与运行包检查通过、没有活动任务时才进入本机切换；保留旧配置、旧运行包和 API 状态恢复路径。当前尚未切换。
+
+## 首轮联调与夹具修正
+
+首轮两个答案均正确，但 hybrid 未实际执行程序（两组均 4 次主模型、3 次普通读取），因此硬性门槛未通过。发现探针删除了 initialTaskMessages 预先提供的完整编排 schema，不能据此判断真实产品必然不采用程序。保留结果于 evidence/program-pilot-2026-11-09.json。
+
+第二轮保留真实产品的初始编排说明和 schema，仍限制可执行叶工具为合成 company_read。仅重跑 hybrid（最多 6 次主模型、1 次 Jev）；baseline 复用首轮完整回执并明确标记，不作为新的同步 A/B，也不把耗时差异宣称因果收益。调用前冻结于 experiments/program-pilot-v2/manifest.json。业务数据仍不参与。

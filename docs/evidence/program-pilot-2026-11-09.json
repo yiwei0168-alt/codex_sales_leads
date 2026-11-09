@@ -1,0 +1,40 @@
+{
+  "protocol": "program-pilot-v1",
+  "synthetic": true,
+  "actualProvider": true,
+  "productionDatabaseAccess": false,
+  "productionActivated": false,
+  "reports": [
+    {
+      "arm": "baseline",
+      "status": "completed",
+      "route": null,
+      "modelCalls": 4,
+      "leafCalls": 3,
+      "programs": 0,
+      "graphWallMs": 11567,
+      "complete": true,
+      "ordered": true,
+      "passed": true,
+      "syntheticToolData": true,
+      "realBusinessAccepted": false,
+      "reply": "| 名称 | 已保存分数 | 更新时间 | 来源 |\n|---|---:|---|---|\n| Birch | 88 | 2026-11-02 | [Birch 来源](https://example.invalid/birch) |\n| Cedar | 74 | 2026-10-28 | [Cedar 来源](https://example.invalid/cedar) |\n| Atlas | 63 | 2026-10-30 | [Atlas 来源](https://example.invalid/atlas) |"
+    },
+    {
+      "arm": "hybrid",
+      "status": "completed",
+      "route": "interpreter",
+      "modelCalls": 4,
+      "leafCalls": 3,
+      "programs": 0,
+      "graphWallMs": 6621,
+      "complete": true,
+      "ordered": true,
+      "passed": false,
+      "syntheticToolData": true,
+      "realBusinessAccepted": false,
+      "reply": "按已保存分数从高到低：\n\n| 名称 | 分数 | 更新时间 | 来源 |\n|---|---:|---|---|\n| Birch | 88 | 2026-11-02 | [Birch 记录](https://example.invalid/birch) |\n| Cedar | 74 | 2026-10-28 | [Cedar 记录](https://example.invalid/cedar) |\n| Atlas | 63 | 2026-10-30 | [Atlas 记录](https://example.invalid/atlas) |"
+    }
+  ],
+  "passed": false
+}
