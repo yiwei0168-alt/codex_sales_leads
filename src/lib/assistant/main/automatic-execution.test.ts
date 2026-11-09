@@ -7,10 +7,29 @@ import {hybridFirstAction} from './hybrid-routing';
 import {buildMainAgentGraph} from './graph';
 import {result,type ModelMessage} from './contracts';
 import {modeAllowsTool} from './mode-tools';
+import {KNOWLEDGE_RESPONSE_POLICY,KNOWLEDGE_DISCOVERY_RESPONSE_POLICY} from './knowledge-response-policy';
 
 afterEach(()=>vi.unstubAllEnvs());
 const input={content:'查看 Atlas 最新进展',attachments:[]};
 const context={userId:'owner',role:'member' as const,mode:'deep' as const};
+it('pins discovery to an explicit new job version, preserving prior jobs and capabilities',()=>{
+ vi.stubEnv('HYBRID_KNOWLEDGE_DISCOVERY','0');const old=automaticModelConfig();
+ const oldPrompt=automaticPromptRules(old.automatic!);
+ vi.stubEnv('HYBRID_KNOWLEDGE_DISCOVERY','1');const candidate=automaticModelConfig();
+ expect(candidate.automatic!.version).toBe('hybrid-auto-v2-discovery');
+ expect(automaticPromptRules(candidate.automatic!)).toContain(KNOWLEDGE_DISCOVERY_RESPONSE_POLICY);
+ expect(automaticPromptRules(old.automatic!)).toBe(oldPrompt);
+ expect(oldPrompt).toContain(KNOWLEDGE_RESPONSE_POLICY);
+ expect(candidate.automatic!.profiles).toEqual(old.automatic!.profiles);
+ expect(candidate.automatic!.capabilityMode).toBe(old.automatic!.capabilityMode);
+ const restricted=automaticModelConfig('knowledge');
+ expect(restricted.automatic!.capabilityMode).toBe('quick');
+ expect(modeAllowsTool('quick','mail_send')).toBe(false);
+ expect(automaticPromptRules(restricted.automatic!)).toContain('本入口限定为知识资料只读问答');
+ expect(automaticPromptRules(restricted.automatic!)).toContain('不要用“资料不足”代替拒绝');
+ vi.stubEnv('HYBRID_KNOWLEDGE_DISCOVERY','unexpected');
+ expect(automaticModelConfig().automatic!.version).toBe(old.automatic!.version);
+});
 it('freezes the opt-in quick interpreter profile without changing capabilities or old jobs',()=>{
  vi.stubEnv('HYBRID_INTERPRETER_PROFILE','standard');const prior=automaticModelConfig();
  vi.stubEnv('HYBRID_INTERPRETER_PROFILE','quick');const candidate=automaticModelConfig();

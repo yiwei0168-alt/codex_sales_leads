@@ -2,12 +2,13 @@ import {z} from 'zod';
 import {modeConfigSchema, modeModelConfig} from './mode-config';
 import type {ModelConfig, ModelMessage} from './contracts';
 import content from './mode-prompt-content.json';
-import {KNOWLEDGE_RESPONSE_POLICY} from './knowledge-response-policy';
+import {KNOWLEDGE_RESPONSE_POLICY,KNOWLEDGE_DISCOVERY_RESPONSE_POLICY} from './knowledge-response-policy';
 import {RESPONSE_RESPONSIBILITY_POLICY} from './response-readability-policy';
 
 export const AUTOMATIC_EXECUTION_VERSION = 'hybrid-auto-v1';
+export const DISCOVERY_AUTOMATIC_EXECUTION_VERSION = 'hybrid-auto-v2-discovery';
 export const automaticConfigSchema = z.object({
-  version: z.literal(AUTOMATIC_EXECUTION_VERSION),
+  version: z.enum([AUTOMATIC_EXECUTION_VERSION,DISCOVERY_AUTOMATIC_EXECUTION_VERSION]),
   capabilityMode: z.enum(['deep','quick']),
   profiles: z.object({fixed_workflow: modeConfigSchema, interpreter: modeConfigSchema, dynamic_agent: modeConfigSchema}).strict(),
 }).strict();
@@ -19,7 +20,7 @@ export function automaticModelConfig(scope: 'business'|'knowledge' = 'business')
   const base = modeModelConfig(scope === 'knowledge' ? 'quick' : 'deep');
   const interpreterTier=process.env.HYBRID_INTERPRETER_PROFILE==='quick'?'quick'
     :process.env.HYBRID_INTERPRETER_PROFILE==='deep'?'deep':'standard';
-  return {...base, automatic: automaticConfigSchema.parse({version: AUTOMATIC_EXECUTION_VERSION,
+  return {...base, automatic: automaticConfigSchema.parse({version: process.env.HYBRID_KNOWLEDGE_DISCOVERY==='1'?DISCOVERY_AUTOMATIC_EXECUTION_VERSION:AUTOMATIC_EXECUTION_VERSION,
     capabilityMode: scope === 'knowledge' ? 'quick' : 'deep', profiles: {
       fixed_workflow: modeModelConfig('quick').profile,
       interpreter: modeModelConfig(interpreterTier).profile,
@@ -73,5 +74,6 @@ export function automaticPromptRules(config: AutomaticExecutionConfig): string {
   const scope = automatic.capabilityMode === 'quick'
     ? '本入口限定为知识资料只读问答；不得发起外部搜索、同步、写入或发送。需要其他业务动作时请用户在业务对话中提出，不要求选择模型或模式。'
     : `${content.deep}\n日常邮件、客户维护、同步和草稿任务也可按用户要求使用获准工具。同步排队不等于完成；草稿不等于已发送；发送、删除、正式发布继续遵守既有确认。不要因为内部模型档位为 quick 或 standard 而让用户切换模式；可用工具由服务器提供，权限与审批逐次检查。`;
-  return `[${automatic.version}] 自动执行\n${common}\n\n${scope}\n\n${KNOWLEDGE_RESPONSE_POLICY}\n\n${RESPONSE_RESPONSIBILITY_POLICY}`;
+  const knowledgePolicy=automatic.version===DISCOVERY_AUTOMATIC_EXECUTION_VERSION?KNOWLEDGE_DISCOVERY_RESPONSE_POLICY:KNOWLEDGE_RESPONSE_POLICY;
+  return `[${automatic.version}] 自动执行\n${common}\n\n${scope}\n\n${knowledgePolicy}\n\n${RESPONSE_RESPONSIBILITY_POLICY}`;
 }

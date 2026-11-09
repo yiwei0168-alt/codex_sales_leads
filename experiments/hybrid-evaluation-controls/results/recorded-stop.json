@@ -1,0 +1,10 @@
+{
+  "version": "recorded-credit-stop-v1",
+  "source": "V11 original saved traces",
+  "stoppedAt": "P01-B-1",
+  "newTaskSubmissions": 0,
+  "newModelRequests": 0,
+  "reusedAnswers": false,
+  "productionChanged": false,
+  "claim": "Replay-only verification of batch orchestration; not provider recovery or answer-quality acceptance."
+}
