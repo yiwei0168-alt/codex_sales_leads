@@ -1,0 +1,101 @@
+{
+  "version": "hybrid-evaluation-v1",
+  "status": "designed-not-executed",
+  "labelStatus": "author-proposed, review required before qualification claims",
+  "route": {
+    "cases": 96,
+    "development": 32,
+    "holdout": 64,
+    "policy": "config/agent/jev-program-policy-v4.json",
+    "tuning": "development only; never adjust after holdout results without a new version and new holdout",
+    "proposedGates": {
+      "holdoutMacroF1": 0.9,
+      "fixedPrecision": 0.95,
+      "interpreterPrecision": 0.95,
+      "fixedRecall": 0.85,
+      "interpreterRecall": 0.85,
+      "unsafeFastAssignments": 0,
+      "guardProviderCalls": 0,
+      "routerAvailability": 0.95,
+      "routerP95Ms": 2500
+    }
+  },
+  "performance": {
+    "tasks": 24,
+    "repetitions": 3,
+    "arms": {
+      "A": {
+        "name": "dynamic-strong-control",
+        "router": false,
+        "wrappers": false,
+        "model": "frozen deep chain for every turn"
+      },
+      "B": {
+        "name": "hybrid-same-model",
+        "router": true,
+        "wrappers": true,
+        "model": "same frozen deep chain as A for every turn"
+      },
+      "C": {
+        "name": "production-auto",
+        "router": true,
+        "wrappers": true,
+        "model": "production hybrid-auto-v1 frozen route profiles"
+      }
+    },
+    "totalTaskRuns": 216,
+    "orderSeed": 20261109,
+    "taskConcurrency": 1,
+    "maxProgramLeafConcurrency": 3,
+    "smoke": {
+      "taskIds": [
+        "P01",
+        "P02",
+        "P09",
+        "P10",
+        "P23",
+        "P24"
+      ],
+      "repetition": 1,
+      "totalRuns": 18,
+      "reuse": "Only reuse exact frozen receipt identities; 198 additional runs if smoke passes."
+    },
+    "qualityGateFirst": true,
+    "proposedGates": {
+      "correctTerminalRate": 0.95,
+      "criticalViolations": 0,
+      "maxQualityDropVsA": 0.05,
+      "relativeCostReductionVsA": 0.2,
+      "pairedMedianLatencyReductionVsA": 0.2,
+      "maxP95LatencyIncreaseVsA": 0.1
+    },
+    "fixtures": "synthetic only; isolated tenant snapshots, actual registered tools and WASM; synthetic public-evidence replay clearly labelled",
+    "cost": "actual provider usage/charge receipts, all router/main/leaf/fallback/failure attempts; unknown is not zero",
+    "wallClock": "Primary: user submit through final answer visible, unknown without UI instrumentation. Also enqueue accepted through durable terminal; queue/router/models/tools/persistence/UI wait recorded separately.",
+    "budget": "Dataset generation makes no paid calls. The runner must bind an isolated evaluation account and existing approved spend limits; it cannot raise limits or use a production tenant.",
+    "liveExternalExtension": {
+      "taskIds": [
+        "L01",
+        "L02",
+        "L03"
+      ],
+      "arms": [
+        "A",
+        "B",
+        "C"
+      ],
+      "repetitions": 3,
+      "additionalRuns": 27,
+      "bindingStatus": "L03 requires two independently preselected public candidates and source snapshot binding before execution; never choose them from an arm result.",
+      "reporting": "Separate from frozen replay. Required before claiming end-to-end external-search time/cost improvements."
+    },
+    "runnerStatus": "specification only; current pilot harness is not a runner for this full dataset"
+  },
+  "exclusions": [
+    "No existing real customer mail copied",
+    "No production database reset",
+    "No email delivery",
+    "No uncontrolled live website mutations",
+    "No claim of independently blind Gold"
+  ]
+}

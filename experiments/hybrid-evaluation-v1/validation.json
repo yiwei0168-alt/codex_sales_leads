@@ -1,0 +1,36 @@
+{
+  "version": "hybrid-evaluation-design-validation-v1",
+  "routingCases": 96,
+  "development": 32,
+  "holdout": 64,
+  "productionEntryContractChecks": 96,
+  "entryCounts": {
+    "context_guard": 24,
+    "deterministic_workflow": 8,
+    "jev": 64
+  },
+  "performanceTasks": 24,
+  "pairedBlocks": 72,
+  "plannedRuns": 216,
+  "smokeRuns": 18,
+  "liveExtensionRuns": 27,
+  "fixtures": {
+    "companies": 12,
+    "mails": 48,
+    "products": 4
+  },
+  "armOrderCounts": {
+    "CBA": 12,
+    "BAC": 12,
+    "CAB": 12,
+    "ABC": 12,
+    "BCA": 12,
+    "ACB": 12
+  },
+  "observationSchemaCompiled": true,
+  "semanticLabelsIndependentlyVerified": false,
+  "modelCalls": 0,
+  "businessToolCalls": 0,
+  "evaluationResultsAvailable": false,
+  "passed": true
+}

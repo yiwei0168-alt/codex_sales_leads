@@ -1,0 +1,650 @@
+[
+  {
+    "taskId": "P16",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P11",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P23",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P13",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P04",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P04",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P15",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P09",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P08",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P23",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P21",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P06",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P02",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P18",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P05",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P07",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P19",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P21",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P14",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P06",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P24",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P05",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P10",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P03",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P16",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P02",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P03",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P11",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P11",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P02",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P03",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P20",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P19",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P24",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P14",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P08",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P08",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P07",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P22",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P18",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P01",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P24",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P19",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P20",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P22",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P09",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P14",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P17",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P10",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P01",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P21",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P05",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P12",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P12",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P09",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P17",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P23",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P15",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P10",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P13",
+    "repetition": 2,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P16",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P13",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P17",
+    "repetition": 1,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P06",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P22",
+    "repetition": 3,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P15",
+    "repetition": 1,
+    "armOrder": [
+      "B",
+      "A",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P01",
+    "repetition": 1,
+    "armOrder": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "taskId": "P20",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P07",
+    "repetition": 3,
+    "armOrder": [
+      "C",
+      "A",
+      "B"
+    ]
+  },
+  {
+    "taskId": "P18",
+    "repetition": 3,
+    "armOrder": [
+      "B",
+      "C",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P04",
+    "repetition": 2,
+    "armOrder": [
+      "C",
+      "B",
+      "A"
+    ]
+  },
+  {
+    "taskId": "P12",
+    "repetition": 2,
+    "armOrder": [
+      "A",
+      "C",
+      "B"
+    ]
+  }
+]

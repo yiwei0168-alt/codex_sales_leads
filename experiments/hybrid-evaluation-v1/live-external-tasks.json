@@ -1,0 +1,34 @@
+[
+  {
+    "id": "L01",
+    "prompt": "在英国找分销商、零售商和系统集成商各三家，按官网域名去重，列公开来源，不加为正式客户。",
+    "bindingStatus": "ready-for-isolated-public-search",
+    "assertions": {
+      "targetPerRole": 3,
+      "roleCountsNotProof": true,
+      "requireOfficialRoleAndCountryEvidence": true,
+      "duplicateDomains": 0
+    }
+  },
+  {
+    "id": "L02",
+    "prompt": "搜索英国、德国的网络设备分销商，各三家，保留官网和证据日期，不写正式客户档案。",
+    "bindingStatus": "ready-for-isolated-public-search",
+    "assertions": {
+      "targetPerCountry": 3,
+      "requireOfficialRoleAndCountryEvidence": true,
+      "duplicateDomains": 0
+    }
+  },
+  {
+    "id": "L03",
+    "promptTemplate": "对预先冻结的 {{candidateA}} 与 {{candidateB}} 补证、纠正角色、研究评分并独立复核，不发布正式分数。",
+    "bindingStatus": "requires-pre-registered-public-candidates",
+    "assertions": {
+      "candidateCount": 2,
+      "scopeFrozenBeforeAnyArm": true,
+      "researchOnly": true,
+      "officialPublication": 0
+    }
+  }
+]

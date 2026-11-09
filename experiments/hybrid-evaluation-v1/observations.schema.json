@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hybrid evaluation observation v1",
+  "description": "One submitted evaluation item, including failures. Unknown duration/charge is null. Cross-record identity, deduplication, timestamp order and scoring require runner validation beyond this schema.",
+  "oneOf": [{"$ref":"#/definitions/routing"},{"$ref":"#/definitions/performance"}],
+  "definitions": {
+    "hash": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "nullableMs": {"type":["number","null"],"minimum":0},
+    "nullableString": {"type":["string","null"]},
+    "route": {"enum":["fixed_workflow","interpreter","dynamic_agent"]},
+    "event": {
+      "type":"object","additionalProperties":false,
+      "required":["eventId","provider","requestId","stage","status","amount","currency","usage","receiptRef","startedAt","endedAt"],
+      "properties": {
+        "eventId":{"type":"string","minLength":1},
+        "provider":{"type":"string","minLength":1},
+        "requestId":{"$ref":"#/definitions/nullableString"},
+        "stage":{"enum":["router","main","evidence","scoring","review","search","fetch","other"]},
+        "status":{"enum":["succeeded","failed","unknown"]},
+        "amount":{"type":["number","null"],"minimum":0},
+        "currency":{"$ref":"#/definitions/nullableString"},
+        "usage":{"type":"object","required":["inputTokens","outputTokens","cachedTokens","reasoningTokens","credits"],"properties":{
+          "inputTokens":{"$ref":"#/definitions/nullableMs"},"outputTokens":{"$ref":"#/definitions/nullableMs"},
+          "cachedTokens":{"$ref":"#/definitions/nullableMs"},"reasoningTokens":{"$ref":"#/definitions/nullableMs"},"credits":{"$ref":"#/definitions/nullableMs"}
+        }},
+        "receiptRef":{"$ref":"#/definitions/nullableString"},
+        "startedAt":{"type":"string","format":"date-time"},
+        "endedAt":{"type":["string","null"],"format":"date-time"}
+      }
+    },
+    "events":{"type":"array","items":{"$ref":"#/definitions/event"}},
+    "routing": {
+      "type":"object","additionalProperties":false,
+      "required":["kind","runId","caseId","split","manifestHash","runtimeFreezeHash","entryPath","providerRequested","providerStatus","rawResponseRef","rawResponseHash","appliedRoute","latencyMs","error","billableEvents"],
+      "properties": {
+        "kind":{"const":"routing"},"runId":{"type":"string","minLength":1},"caseId":{"type":"string","minLength":1},
+        "split":{"enum":["development","holdout"]},"manifestHash":{"$ref":"#/definitions/hash"},"runtimeFreezeHash":{"$ref":"#/definitions/hash"},
+        "entryPath":{"enum":["context_guard","deterministic_workflow","jev"]},
+        "providerRequested":{"type":"boolean"},"providerStatus":{"enum":["skipped","completed","unavailable","invalid","unknown"]},
+        "rawResponseRef":{"$ref":"#/definitions/nullableString"},"rawResponseHash":{"oneOf":[{"$ref":"#/definitions/hash"},{"type":"null"}]},
+        "appliedRoute":{"$ref":"#/definitions/route"},"latencyMs":{"$ref":"#/definitions/nullableMs"},
+        "error":{"$ref":"#/definitions/nullableString"},"billableEvents":{"$ref":"#/definitions/events"}
+      }
+    },
+    "performance": {
+      "type":"object","additionalProperties":false,
+      "required":["kind","runId","taskId","arm","repetition","blockId","manifestHash","runtimeFreezeHash","fixtureHash","lane","status","timestamps","timingMs","actualRoutes","traceRef","answerRef","modelAttempts","toolCalls","programCalls","billableEvents","billingComplete","localResourcesRef","quality","error"],
+      "properties": {
+        "kind":{"const":"performance"},"runId":{"type":"string","minLength":1},"taskId":{"type":"string","minLength":1},
+        "arm":{"enum":["A","B","C"]},"repetition":{"type":"integer","minimum":1,"maximum":3},"blockId":{"type":"string","minLength":1},
+        "manifestHash":{"$ref":"#/definitions/hash"},"runtimeFreezeHash":{"$ref":"#/definitions/hash"},"fixtureHash":{"$ref":"#/definitions/hash"},
+        "lane":{"enum":["controlled","live-external"]},
+        "status":{"enum":["answered","clarified","refused","partial","failed","timeout","cancelled","unknown"]},
+        "timestamps":{"type":"object","required":["userSubmitted","enqueued","started","firstUsefulOutput","persisted","answerVisible"],"additionalProperties":false,"properties":{
+          "userSubmitted":{"$ref":"#/definitions/nullableString"},"enqueued":{"$ref":"#/definitions/nullableString"},"started":{"$ref":"#/definitions/nullableString"},
+          "firstUsefulOutput":{"$ref":"#/definitions/nullableString"},"persisted":{"$ref":"#/definitions/nullableString"},"answerVisible":{"$ref":"#/definitions/nullableString"}
+        }},
+        "timingMs":{"type":"object","required":["userWall","enqueueToTerminal","queue","router","modelWork","toolWork","persistence","uiWait","firstUsefulOutput"],"additionalProperties":false,"properties":{
+          "userWall":{"$ref":"#/definitions/nullableMs"},"enqueueToTerminal":{"$ref":"#/definitions/nullableMs"},"queue":{"$ref":"#/definitions/nullableMs"},
+          "router":{"$ref":"#/definitions/nullableMs"},"modelWork":{"$ref":"#/definitions/nullableMs"},"toolWork":{"$ref":"#/definitions/nullableMs"},
+          "persistence":{"$ref":"#/definitions/nullableMs"},"uiWait":{"$ref":"#/definitions/nullableMs"},"firstUsefulOutput":{"$ref":"#/definitions/nullableMs"}
+        }},
+        "actualRoutes":{"type":"array","items":{"$ref":"#/definitions/route"}},
+        "traceRef":{"$ref":"#/definitions/nullableString"},"answerRef":{"$ref":"#/definitions/nullableString"},
+        "modelAttempts":{"type":["integer","null"],"minimum":0},"toolCalls":{"type":["integer","null"],"minimum":0},"programCalls":{"type":["integer","null"],"minimum":0},
+        "billableEvents":{"$ref":"#/definitions/events"},"billingComplete":{"type":"boolean"},"localResourcesRef":{"$ref":"#/definitions/nullableString"},
+        "quality":{"type":["object","null"],"required":["reviewerId","reviewVersion","hardGatesPass","correctTerminal","score","findingsRef"],"additionalProperties":false,"properties":{
+          "reviewerId":{"type":"string"},"reviewVersion":{"type":"string"},"hardGatesPass":{"type":"boolean"},"correctTerminal":{"type":"boolean"},
+          "score":{"type":["number","null"],"minimum":0,"maximum":100},"findingsRef":{"type":"string","minLength":1}
+        }},
+        "error":{"$ref":"#/definitions/nullableString"}
+      }
+    }
+  }
+}
