@@ -1,0 +1,696 @@
+{
+  "version": "v10-local-read-gate",
+  "phase": "smoke",
+  "submitted": 18,
+  "qualityPassed": false,
+  "correctRate": 0.7777777777777778,
+  "byArm": {
+    "A": {
+      "submitted": 6,
+      "correct": 4,
+      "rate": 0.6666666666666666,
+      "knownCostUsd": 0.187306,
+      "unknownCharges": 0
+    },
+    "B": {
+      "submitted": 6,
+      "correct": 5,
+      "rate": 0.8333333333333334,
+      "knownCostUsd": 0.1382787,
+      "unknownCharges": 0
+    },
+    "C": {
+      "submitted": 6,
+      "correct": 5,
+      "rate": 0.8333333333333334,
+      "knownCostUsd": 0.08082654,
+      "unknownCharges": 0
+    }
+  },
+  "rows": [
+    {
+      "taskId": "P01",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 88,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "628d43c2-e7d8-4dc4-8fdd-0e3441fc0a2d",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.020904600000000002,
+      "unknownCharges": 0,
+      "backendMs": 27973,
+      "mainCalls": 7,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P01",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 93,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "628d43c2-e7d8-4dc4-8fdd-0e3441fc0a2d",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0115413,
+      "unknownCharges": 0,
+      "backendMs": 14087,
+      "mainCalls": 1,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P01",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 87,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "628d43c2-e7d8-4dc4-8fdd-0e3441fc0a2d",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.000495205,
+      "unknownCharges": 0,
+      "backendMs": 6040,
+      "mainCalls": 1,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6-luna"
+      ]
+    },
+    {
+      "taskId": "P02",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 88,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "d61acbd6-f661-4966-86b7-af3a28c55724",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.026086,
+      "unknownCharges": 0,
+      "backendMs": 12200,
+      "mainCalls": 1,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P02",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 83,
+      "modelReviewPassed": false,
+      "mechanicalPassed": true,
+      "correct": false,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "d61acbd6-f661-4966-86b7-af3a28c55724",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0211048,
+      "unknownCharges": 0,
+      "backendMs": 29342,
+      "mainCalls": 7,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P02",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 89,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "d61acbd6-f661-4966-86b7-af3a28c55724",
+        "read": true,
+        "bodyReads": 3
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.001183675,
+      "unknownCharges": 0,
+      "backendMs": 5824,
+      "mainCalls": 1,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6-luna"
+      ]
+    },
+    {
+      "taskId": "P09",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 94,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "checks": [
+          {
+            "company": "Maple Supply",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Westhaven GmbH",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Harbor Circuit",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Sable Connect",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Tern Integration",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Juniper Link",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Orchard Systems",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Yarrow Handel",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Ridge Retail",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Quartz Networks",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Vale Tech",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Zenith Partner",
+            "orderedSource": true,
+            "dated": true
+          }
+        ],
+        "rows": 12,
+        "nonInlineFormatNeedsExplicitAdjudication": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.047500762,
+      "unknownCharges": 0,
+      "backendMs": 32430,
+      "mainCalls": 5,
+      "programs": 2,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P09",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 94,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "checks": [
+          {
+            "company": "Maple Supply",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Westhaven GmbH",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Harbor Circuit",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Sable Connect",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Tern Integration",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Juniper Link",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Orchard Systems",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Yarrow Handel",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Ridge Retail",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Quartz Networks",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Vale Tech",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Zenith Partner",
+            "orderedSource": true,
+            "dated": true
+          }
+        ],
+        "rows": 12,
+        "nonInlineFormatNeedsExplicitAdjudication": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.046238662,
+      "unknownCharges": 0,
+      "backendMs": 34825,
+      "mainCalls": 5,
+      "programs": 2,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P09",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 97,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "checks": [
+          {
+            "company": "Maple Supply",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Westhaven GmbH",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Harbor Circuit",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Sable Connect",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Tern Integration",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Juniper Link",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Orchard Systems",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Yarrow Handel",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Ridge Retail",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Quartz Networks",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Vale Tech",
+            "orderedSource": true,
+            "dated": true
+          },
+          {
+            "company": "Zenith Partner",
+            "orderedSource": true,
+            "dated": true
+          }
+        ],
+        "rows": 12,
+        "nonInlineFormatNeedsExplicitAdjudication": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0782332,
+      "unknownCharges": 0,
+      "backendMs": 42117,
+      "mainCalls": 7,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P10",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 98,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "pages": 2,
+        "uniqueMessages": 40,
+        "duplicateMessageReads": 0,
+        "counts": {
+          "2026-11-02": 8,
+          "2026-11-03": 12,
+          "2026-11-04": 12,
+          "2026-11-05": 8
+        },
+        "interval": true,
+        "chain": true
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.015447312000000001,
+      "unknownCharges": 0,
+      "backendMs": 18391,
+      "mainCalls": 3,
+      "programs": 1,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P10",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 92,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "pages": 2,
+        "uniqueMessages": 40,
+        "duplicateMessageReads": 0,
+        "counts": {
+          "2026-11-02": 8,
+          "2026-11-03": 12,
+          "2026-11-04": 12,
+          "2026-11-05": 8
+        },
+        "interval": true,
+        "chain": true
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0340278,
+      "unknownCharges": 0,
+      "backendMs": 27788,
+      "mainCalls": 6,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P10",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 98,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "pages": 2,
+        "uniqueMessages": 40,
+        "duplicateMessageReads": 0,
+        "counts": {
+          "2026-11-02": 8,
+          "2026-11-03": 12,
+          "2026-11-04": 12,
+          "2026-11-05": 8
+        },
+        "interval": true,
+        "chain": true
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.014524812000000002,
+      "unknownCharges": 0,
+      "backendMs": 19174,
+      "mainCalls": 3,
+      "programs": 1,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P23",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 99,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "dbe4594d-15df-4ddc-81b9-539c10314c10",
+        "read": true,
+        "bodyReads": 4
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.024998026,
+      "unknownCharges": 0,
+      "backendMs": 10416,
+      "mainCalls": 2,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P23",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 98,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "dbe4594d-15df-4ddc-81b9-539c10314c10",
+        "read": true,
+        "bodyReads": 2
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.017982199999999997,
+      "unknownCharges": 0,
+      "backendMs": 21760,
+      "mainCalls": 7,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P23",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 89,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "correct": true,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "requiredMail": "dbe4594d-15df-4ddc-81b9-539c10314c10",
+        "read": true,
+        "bodyReads": 4
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0014664860000000001,
+      "unknownCharges": 0,
+      "backendMs": 9821,
+      "mainCalls": 3,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6-luna"
+      ]
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 1,
+      "qualityScore": 97,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "correct": false,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "bothVersionsRead": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.0156556,
+      "unknownCharges": 0,
+      "backendMs": 19547,
+      "mainCalls": 3,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 1,
+      "qualityScore": 98,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "correct": false,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "bothVersionsRead": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.013967400000000001,
+      "unknownCharges": 0,
+      "backendMs": 23016,
+      "mainCalls": 3,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    },
+    {
+      "taskId": "P24",
+      "arm": "A",
+      "repetition": 1,
+      "qualityScore": 98,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "correct": false,
+      "status": "answered",
+      "policyViolation": false,
+      "detail": {
+        "bothVersionsRead": false
+      },
+      "billingComplete": true,
+      "knownCostUsd": 0.015053399999999998,
+      "unknownCharges": 0,
+      "backendMs": 20888,
+      "mainCalls": 3,
+      "programs": 0,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ]
+    }
+  ],
+  "eligibleLatencyPairs": 4,
+  "excludedLatencyPairs": 2,
+  "costReduction": 0.5684786392320588,
+  "pairedMedianLatencyReduction": 0.42932860155992003,
+  "p95LatencyIncrease": -0.2300021369043379,
+  "bootstrap": null,
+  "localReadQualificationPassed": false,
+  "overallAcceptancePassed": false,
+  "independentHumanGold": false,
+  "userVisibleTimingAvailable": false,
+  "productionChanged": false,
+  "historicalUnknownCharges": 26,
+  "knownReviewCostUsd": 0.6623060000000001
+}

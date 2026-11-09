@@ -1,0 +1,431 @@
+{
+  "version": "v10-local-read-blind-review",
+  "phase": "smoke",
+  "identity": "c322f710768413e5d680a5be148db93ee2395b129f43c2bae392082ca23dd537",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "independentHumanGold": false,
+  "answers": 18,
+  "passed": 17,
+  "rows": [
+    {
+      "reviewId": "07d57e9ee9d980e8baeb",
+      "facts": 36,
+      "completeness": 22,
+      "citations": 17,
+      "scope": 8,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Facts match the receipts: latest mail c1-m4 is a confirmation of receipt with no purchase date committed, the sample quote request has a 11-12 deadline, and the NX410 sheet was sent 11-02.",
+        "The answer says all imported records were viewed. Receipts show the timeline's 4 events and 3 body reads (c1-m2, c1-m3, c1-m4). The earliest mail (c1-m1) was only seen as a timeline excerpt, so this claim slightly overstates reading.",
+        "The owner is correctly labelled as inferred, not explicitly assigned.",
+        "Citations are readable /api/mailbox links, and each matches a receipt.",
+        "The 'no unread pagination' claim is supported by hasMore=false."
+      ],
+      "total": 88,
+      "passed": true,
+      "taskId": "P01",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "ced754be-9f63-4ecd-b41e-14d9a247dafb"
+    },
+    {
+      "reviewId": "3ebaec9f6de4e3ac934c",
+      "facts": 38,
+      "completeness": 23,
+      "citations": 17,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Facts are accurate, and the latest item is correctly reported without an invented purchase date.",
+        "Scope is stated truthfully: 4 timeline records, 3 bodies read, the earliest viewed by excerpt only, and no mailbox sync.",
+        "The owner is flagged as inferred.",
+        "Link formatting has a leading space inside the URL parentheses ('( /api/...'), which may break the links.",
+        "The earliest mail c1-m1 is not cited or described, which is a minor gap."
+      ],
+      "total": 93,
+      "passed": true,
+      "taskId": "P01",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "4a8c4aec-697a-465f-a9b5-0504fd9d8f68"
+    },
+    {
+      "reviewId": "a60ee326902be5cc5817",
+      "facts": 37,
+      "completeness": 21,
+      "citations": 16,
+      "scope": 9,
+      "readability": 4,
+      "hardGatePass": true,
+      "issues": [
+        "Facts are accurate. The 11-04 confirmation, the 11-03 quote request with its 11-12 deadline, and the 11-02 NX410 sheet all match the receipts.",
+        "The answer says the 11-04 mail 'confirmed receipt of the other party's information'. This is vague but not wrong.",
+        "The owner inference is labelled.",
+        "Scope is truthful: first timeline page, 4 records, 3 bodies read, no more pages.",
+        "Links have a leading-space formatting issue, and they use the raw message ID as link text.",
+        "The earliest mail c1-m1 is not mentioned, and the answer gives no explicit date or deadline statement for the follow-up."
+      ],
+      "total": 87,
+      "passed": true,
+      "taskId": "P01",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "be0052e2-7871-491d-97e2-30b0f2ce3ef1"
+    },
+    {
+      "reviewId": "07ca4c835726648b83ca",
+      "facts": 36,
+      "completeness": 22,
+      "citations": 17,
+      "scope": 8,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "核心事实正确:最新邮件为 11/5,内容是确认收到,采购日期未承诺,答案没有编造采购日期。",
+        "负责人写成“推定由我方销售代表跟进”,并明确说明这不是邮件指派,标注合理。",
+        "范围说明基本正确:时间线共 4 条,已读最新 3 封正文,另 1 封只看了摘要。但答案没有明说时间线已无更多页(hasMore=false)。",
+        "“核实样品报价是否已发出”和“建议确认客户采购时间表”是建议,不是来源事实。",
+        "引用是可访问的 /api/mailbox 邮件链接,覆盖最新 3 封。较早的 11/2 邮件没有链接。",
+        "“已导入邮件”的说明准确。"
+      ],
+      "total": 88,
+      "passed": true,
+      "taskId": "P02",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "a29c11db-ace3-4e5d-8077-5599fa992fef"
+    },
+    {
+      "reviewId": "2a8998fcd582b836ecdd",
+      "facts": 34,
+      "completeness": 22,
+      "citations": 17,
+      "scope": 5,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "核心事实正确,没有编造采购日期,最新邮件和待跟进事项也都准确。",
+        "范围说明写“已查看该客户当前全部已导入往来记录”,有些夸大。回执显示只读了 3 封正文,11/2 邮件只看了时间线摘要。答案没有区分已读正文和未读正文,而任务要求区分这两类。",
+        "“推定由我方销售代表跟进”已标明是推定,不是邮件指派。",
+        "引用是可访问的邮件链接。11/2 邮件没有链接,但答案本身也没有提到它。",
+        "没有明确说明时间线 hasMore=false。"
+      ],
+      "total": 83,
+      "passed": false,
+      "taskId": "P02",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "1d793609-6f78-4929-81df-6b42d7535f8e"
+    },
+    {
+      "reviewId": "b8fd2867ebe0d7a1cc6d",
+      "facts": 38,
+      "completeness": 23,
+      "citations": 14,
+      "scope": 10,
+      "readability": 4,
+      "hardGatePass": true,
+      "issues": [
+        "事实准确:最新邮件、客户需求、采购日期未承诺、截止时间和负责人未明确,都与来源一致。",
+        "范围说明最准确:时间线 4 条,hasMore=false,读取最新 3 封正文,未做邮箱同步。",
+        "没有编造负责人,也没有编造采购日期。",
+        "引用只给出裸记录 ID(放在反引号里),没有可点击链接。用户拿到的只是 ID,可读性弱于其他两份答案。",
+        "覆盖了 11/2 的规格需求,但这封邮件正文未读。答案引用它时依据的是时间线摘要,没有说明这一点。"
+      ],
+      "total": 89,
+      "passed": true,
+      "taskId": "P02",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "383b386e-f6c9-43d0-8950-dc79e15e3d0f"
+    },
+    {
+      "reviewId": "2515bd6c68646af1dce9",
+      "facts": 38,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "All 12 rows match the expected latest mails (m4 for each company). The sort is correct: date ascending, then company ID ascending.",
+        "The receipts show that the company list and all 12 timelines were read, with hasMore false throughout.",
+        "Citations are readable /api/mailbox/messages links that match the receipt sourceUrls.",
+        "Dates are labeled UTC and the scope is truthful: imported mail only.",
+        "Minor: the answer does not state the exact time of day. The UTC choice is disclosed."
+      ],
+      "total": 94,
+      "passed": true,
+      "taskId": "P09",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "85da8059-835b-4b0e-bc0e-6e5a1b2bae8d"
+    },
+    {
+      "reviewId": "e2de9e30b64245e14611",
+      "facts": 38,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "All 12 rows and their order are correct and match the receipts.",
+        "All timelines were read with no pagination left, and the scope statement is accurate.",
+        "Message links are readable and correct.",
+        "Minor: only the date is given, with UTC stated."
+      ],
+      "total": 94,
+      "passed": true,
+      "taskId": "P09",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "6ca125c3-8b31-4b43-9be7-6f9ecbac4431"
+    },
+    {
+      "reviewId": "ef2040f43129c7b3e303",
+      "facts": 39,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "All 12 rows and the ordering are correct.",
+        "The answer gives the UTC time as well as the date and notes that every latest mail is outbound, which matches the receipts.",
+        "Every company timeline was read directly, and the company list has hasMore false.",
+        "The links are readable. The stray skill_list call is harmless."
+      ],
+      "total": 97,
+      "passed": true,
+      "taskId": "P09",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "c48759d3-2811-4d16-abc5-4c27b9df9745"
+    },
+    {
+      "reviewId": "35972c77ac4ad3aff374",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Counts 8/12/12/8 and total 40 match the assertions and the receipts. Both pages were read, and the last page has hasMore=false.",
+        "Cites the two page receipt IDs, which are real. The IDs are not user-facing links, so I deducted a little.",
+        "The answer says duplicates were checked by ID. The receipt shows an empty anomalies list, which supports that."
+      ],
+      "total": 98,
+      "passed": true,
+      "taskId": "P10",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "28809816-e289-475e-80b3-664eeca9c2b6"
+    },
+    {
+      "reviewId": "49a5de7cae261d6865e3",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 12,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Counts and total are correct. Both pages were read through hasMore=false.",
+        "The answer gives no receipt IDs or source links, so the citations are weak. The receipts exist but the user can't see them.",
+        "The scope statements match the tool scope text."
+      ],
+      "total": 92,
+      "passed": true,
+      "taskId": "P10",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "fa428534-b335-4ec2-b559-6e31a80509d0"
+    },
+    {
+      "reviewId": "fdc7bbfa5bfed64ebb7f",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Counts 8/12/12/8 and total 40 are correct. Pagination was read to the end.",
+        "Cites the two actual page receipt IDs. They are not readable links, so I deducted a little.",
+        "The dedupe claim is supported by the empty anomalies list."
+      ],
+      "total": 98,
+      "passed": true,
+      "taskId": "P10",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "251ad283-b939-452e-860a-8f21ae518266"
+    },
+    {
+      "reviewId": "5dc1e1c9eddac4aa53c9",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 19,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The answer correctly says no explicit deadline was given. It matches c2-m3, which has a null deadline.",
+        "It cites mail IDs dbe4594d and d61acbd6 with readable /api/mailbox/messages links. Both IDs appear in the receipts.",
+        "It says all 4 imported mails were checked. The receipts support this: the timeline had 4 events, hasMore=false, and all 4 bodies were read.",
+        "It quotes the English body text inside the Chinese answer. This is faithful to the source and is not a problem.",
+        "Minor: it cites only 2 of the 4 mails."
+      ],
+      "total": 99,
+      "passed": true,
+      "taskId": "P23",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "dcbc9ada-4c64-455b-a8f9-f9286d63132e"
+    },
+    {
+      "reviewId": "786f8ab4fbb80dadd3b1",
+      "facts": 40,
+      "completeness": 24,
+      "citations": 19,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The answer correctly says the deadline is unspecified. It quotes the bodies accurately and invents no dates.",
+        "The receipts show a timeline with 4 events and hasMore=false. Only 2 bodies were read, which are the 2 relevant mails. The answer limits its scope to imported mail records, which is truthful.",
+        "Minor: it does not state that the full timeline was reviewed. It also does not read the earlier 2 mails, but those are not needed for the question.",
+        "Citations are readable links that match the receipts."
+      ],
+      "total": 98,
+      "passed": true,
+      "taskId": "P23",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "fd459645-72ca-426c-8e35-9204b37bbc62"
+    },
+    {
+      "reviewId": "c7d62ec4b0a1f8a67994",
+      "facts": 39,
+      "completeness": 23,
+      "citations": 13,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The answer is factually correct: no explicit deadline, and the 11-04 request date is right.",
+        "Citations are bare mail IDs in backticks with no readable links. The task rubric treats a bare ID as a weak user-facing citation.",
+        "It does not state the scope of the check, such as imported mail only.",
+        "It paraphrases the body as '未明确截止日期' and presents this as the mail's note. This is acceptable."
+      ],
+      "total": 89,
+      "passed": true,
+      "taskId": "P23",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "15203be8-be89-44cd-a0ab-785cf12bebae"
+    },
+    {
+      "reviewId": "380d626a35ca38d8b583",
+      "facts": 39,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The ports (5 and 8) and the unknown cause match the receipt and the assertions.",
+        "It cites the fixture source URLs and the evidence IDs from the receipt.",
+        "It states that verifiedFacts is empty and that coverage is limited to the retrieved snippets.",
+        "Minor: the receipt's evidence IDs are chunk IDs, not the documentIds. The answer calls them 'evidence IDs', which is acceptable.",
+        "The v2 approval date is quoted from the text, which is correct. The answer says it is not independently verified."
+      ],
+      "total": 97,
+      "passed": true,
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "c500af45-3deb-4d48-a8bb-2dd89b075aa5"
+    },
+    {
+      "reviewId": "c816c6349bdb8915ece9",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The ports (5 and 8) and the unknown cause match the receipt and the assertions.",
+        "The quoted text is accurate and each source is linked and matches its evidence ID.",
+        "The scope limit is stated: there are no verifiedFacts and other documents were not covered.",
+        "Minor: the quoted v2 passage leaves out part of the text, but it does so without distorting it."
+      ],
+      "total": 98,
+      "passed": true,
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "76191e97-60ed-48d2-b9ee-e9f0441e74bb"
+    },
+    {
+      "reviewId": "d1b1f4a57589ecbce864",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The ports (5 and 8) and the unknown cause match the receipt and the assertions.",
+        "Both sources have links and evidence IDs.",
+        "It says there are no verifiedFacts and that the search had candidate limits.",
+        "Minor: the table quote of v1 is shortened, but the cause statement is quoted in full below it."
+      ],
+      "total": 98,
+      "passed": true,
+      "taskId": "P24",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "77d8aa1f-7d5c-49cb-abb2-afb2597b2792"
+    }
+  ],
+  "receipts": [
+    {
+      "taskId": "P01",
+      "generationId": "gen-1794248664-LCekn9Og2l3dze6jZwT6",
+      "costUsd": 0.087514
+    },
+    {
+      "taskId": "P02",
+      "generationId": "gen-1794248672-KxNcME96YAadTzECj4kx",
+      "costUsd": 0.08795
+    },
+    {
+      "taskId": "P09",
+      "generationId": "gen-1794248683-PcJH4e232XZwpztkFOoh",
+      "costUsd": 0.244206
+    },
+    {
+      "taskId": "P10",
+      "generationId": "gen-1794248690-xCXG4xrhRsZOzq4efLgU",
+      "costUsd": 0.091582
+    },
+    {
+      "taskId": "P23",
+      "generationId": "gen-1794248696-31JseuaUf0ZbjGgjQT3O",
+      "costUsd": 0.086036
+    },
+    {
+      "taskId": "P24",
+      "generationId": "gen-1794248702-PwDxWR4iLB9Wo42SCMRJ",
+      "costUsd": 0.065018
+    }
+  ],
+  "knownReviewCostUsd": 0.6623060000000001,
+  "unknownReviewCharges": 0
+}
