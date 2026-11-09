@@ -1,0 +1,81 @@
+{
+  "version": "hybrid-performance-p10-v8-time-catalog-progress",
+  "runtimeFreezeHash": "da82cf01708dcc7e31f246b34ab4ec831975181a2cc144de847658baada4545a",
+  "submitted": 3,
+  "planned": 3,
+  "answered": 3,
+  "remaining": 0,
+  "knownCostUsd": 0.194960724,
+  "unknownCharges": 0,
+  "rows": [
+    {
+      "taskId": "P10",
+      "arm": "A",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 21226,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0293039,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "5f25c97c78ab8e65902871af01e89f926cc9a8f9368c84fcd374f50d04ef89ab",
+      "observationHash": "5b0c53b4d950be6b6e793e5bd69b6d87445559fae1d6849e297854268353d56b"
+    },
+    {
+      "taskId": "P10",
+      "arm": "B",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 20040,
+      "modelAttempts": 4,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 1,
+      "successfulPrograms": 1,
+      "actualRoutes": [
+        "interpreter"
+      ],
+      "knownCostUsd": 0.039753012,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "b42f872602fa114b5a622e81fd7ac3717786447368b1dc0cd7192d83fd85428a",
+      "observationHash": "b4c5d00941bbd70655929375acce741fdcc5a83c00ca141c65ce36c7ec6d54ce"
+    },
+    {
+      "taskId": "P10",
+      "arm": "C",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 18287,
+      "modelAttempts": 4,
+      "models": [
+        "anthropic/claude-sonnet-5.5"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.125903812,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "ca5b8bcb6f7e12e1f1a79c94ce835b6bda39046d3b12aa16ca89bf2dce1498d5",
+      "observationHash": "4d975d6c306f74ce4ccd6a08781d4b880739684b393a52462a92521db30aff3c"
+    }
+  ],
+  "historicalUnknownCharges": 26,
+  "independentQualityAccepted": false,
+  "performanceGatePassed": false,
+  "userVisibleTimingAvailable": false,
+  "conclusion": "Diagnostic smoke only. Independent quality/holdout review and broader fixtures remain required before claiming overall latency/cost improvement.",
+  "productionChanged": false
+}

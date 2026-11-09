@@ -1,6 +1,14 @@
 import {z} from 'zod';
 import {tenantQuery} from '@/lib/rag/db';
 
+/** Published return shape lets programs aggregate in one pass instead of probing live data. */
+export const mailboxMessageListData=z.object({
+ items:z.array(z.object({id:z.uuid(),sentAt:z.string().describe('Explicit timestamp with numeric offset; pass to tools.time for sorting or day grouping.'),
+  direction:z.enum(['inbound','outbound']),sourceUrl:z.string()})),
+ interval:z.object({from:z.string(),until:z.string(),fromInclusive:z.literal(true),untilExclusive:z.literal(true)}),
+ offset:z.number().int().min(0),hasMore:z.boolean(),nextOffset:z.number().int().min(0).nullable(),paginationLimitReached:z.boolean(),scope:z.string(),
+});
+
 export const mailboxMessageListInput=z.object({
  from:z.iso.datetime({offset:true}),until:z.iso.datetime({offset:true}),
  offset:z.number().int().min(0).max(100000).default(0),

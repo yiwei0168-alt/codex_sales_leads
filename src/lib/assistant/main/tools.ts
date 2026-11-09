@@ -14,7 +14,7 @@ import {memoryEditorSchema} from "@/lib/outreach/memory-editor";
 import {saveManualMemory} from "@/lib/outreach/memory-save";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
 import { readTaskDetail } from "../task-detail";
-import { result, type ExecutionContext, type ProductTool } from "./contracts";
+import { result, toolResultSchema, type ExecutionContext, type ProductTool } from "./contracts";
 import { listRuns } from "./repository";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
 import {updateCompanyState} from "@/lib/sales/repository";
@@ -24,7 +24,7 @@ import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
 import {listPendingMailboxCandidates,reviewMailboxCandidate} from "@/lib/mailbox/candidate-review";
 import { listOutbound } from "@/lib/mailbox/outbound";
-import {mailboxMessageListInput,listImportedMailMetadata} from '@/lib/mailbox/message-list';
+import {mailboxMessageListInput,mailboxMessageListData,listImportedMailMetadata} from '@/lib/mailbox/message-list';
 import { buildLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
 import { importSkill, listSkills, readSkill, changeSkill, skillImportSchema } from "./skills";
@@ -210,7 +210,7 @@ export const productTools: ProductTool[] = [
     cost: "unknown", connections: ["openrouter"], execute: async i => result(await buildLeadMarketPlaybook(i, [])) }),
   defineTool({ id: "mail_connections", description: "List current account mailbox identities and connection states; no credentials.", input: empty,
     execute: async (_, c) => result((await listMailboxConnections(c.userId)).map(v => ({ id: v.id, email: v.email, displayName:v.displayName, accessMode:v.accessMode, status: v.status })), { cost: "known" }) }),
-  defineTool({id:'mailbox_message_list',description:'Page all current-account imported inbound/outbound message metadata in an explicit timestamp interval, including mail not linked to a customer. Use for account-wide date counts; mail_history and customer timelines are narrower scopes. from is inclusive, until exclusive; specify timezone offsets, convert the requested local date boundaries, and follow nextOffset until hasMore=false. Up to 20 records/page, interval at most 366 days. No body read, IMAP, sync or model call. Private metadata must not be sent to external research tools.',input:mailboxMessageListInput,
+  defineTool({id:'mailbox_message_list',version:'2',description:'Page all current-account imported inbound/outbound message metadata in an explicit timestamp interval, including mail not linked to a customer. Use for account-wide date counts; mail_history and customer timelines are narrower scopes. from is inclusive, until exclusive; specify timezone offsets, convert the requested local date boundaries, and follow nextOffset until hasMore=false. Up to 20 records/page, interval at most 366 days. Return data.items has id, sentAt, direction and sourceUrl; data.hasMore/nextOffset describe pagination. Aggregate the known fields in the same pass; do not reread all pages merely to discover their shape. Retain sourceUrl references and coverage in the result. No body read, IMAP, sync or model call. Private metadata must not be sent to external research tools.',input:mailboxMessageListInput,output:toolResultSchema.extend({data:mailboxMessageListData.nullable().optional()}),
     execute:async(i,c)=>{const data=await listImportedMailMetadata(c.userId,i);return result(data,{cost:'known',...(data.paginationLimitReached?{status:'partial' as const,missing:['Pagination offset limit reached; narrow the interval before claiming complete coverage']}: {})});}}),
   defineTool({ id: "mail_history", description: "Read outbound history for a company, or unassociated account mail when company is omitted. Not an account-wide imported-mail inventory; use mailbox_message_list for date-range counts.",
     input: z.object({ companyExternalId: z.string().max(180).optional(), offset: z.number().int().min(0).max(100000).default(0) }).strict(),

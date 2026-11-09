@@ -21,7 +21,7 @@ export const toolResultSchema = z.object({
 export type ToolResult = z.infer<typeof toolResultSchema>;
 export interface ProductTool {
   id: string; version: string; description: string;
-  input: z.ZodType; output: typeof toolResultSchema;
+  input: z.ZodType; output: z.ZodType<ToolResult>;
   role: "member" | "admin"; effect: Effect;
   dependencies: string[]; connections: string[];
   cost: "known" | "estimated" | "unknown";

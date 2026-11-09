@@ -1,0 +1,73 @@
+{
+  "version": "model-assisted-blind-quality-v8",
+  "identity": "6c5e2405fa4e9342dfc979e2ea3ed078796965f0445e5ad8672992ac435ab88b",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794247145-Pg8AgCapUY76Y2IJ9VtA",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 3,
+  "passed": 2,
+  "knownReviewCostUsd": 0.09749,
+  "rows": [
+    {
+      "reviewId": "925a016162517756a537",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 12,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The counts (8/12/12/8, total 40), the two pages and the hasMore=false end are all correct.",
+        "The answer lists no mail IDs or sourceUrls. The task needs no per-mail citations, but source attribution is thin."
+      ],
+      "total": 92,
+      "passed": true,
+      "version": "v8",
+      "taskId": "P10",
+      "arm": "A",
+      "runId": "71c51476-7f92-4b11-95f8-5ca56c914549"
+    },
+    {
+      "reviewId": "badfe14f04331ac461e4",
+      "facts": 38,
+      "completeness": 25,
+      "citations": 10,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": false,
+      "issues": [
+        "The counts and the pagination description are correct.",
+        "It gives a verification receipt, 935075d7-46ae-492b-8791-6057de3e7fe0. This ID appears in no tool call, so it looks fabricated.",
+        "The answer lists no source URLs."
+      ],
+      "total": 87,
+      "passed": false,
+      "version": "v8",
+      "taskId": "P10",
+      "arm": "B",
+      "runId": "f4acf4e1-7e6d-4fdf-a3bc-f7ec81edf710"
+    },
+    {
+      "reviewId": "bc52bfa8b2674c9bbec4",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 16,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The counts and total are correct, and the answer reads to hasMore=false.",
+        "It cites two real callIds as read receipts: d1fb9f8b and defd08de. Both appear in the tool outputs.",
+        "The packet shows a duplicate pagination run. The answer reports only two reads, which is a minor inconsistency.",
+        "It says the daily counts were computed programmatically. The packet doesn't show this."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v8",
+      "taskId": "P10",
+      "arm": "C",
+      "runId": "f0d7521f-9a85-4ad2-b4e7-808ed858c0b6"
+    }
+  ]
+}

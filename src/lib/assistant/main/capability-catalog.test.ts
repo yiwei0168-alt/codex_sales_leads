@@ -18,6 +18,9 @@ it('opts in only for hybrid automatic jobs, retaining full wrapper schemas and l
  const messages=initialTaskMessages(context,input,config,[]);
  expect(messages[0].content).toContain('[capability-catalog-v2:compact]');
  expect(messages.some(m=>m.content?.includes('以下编排入口的完整契约已经提供'))).toBe(true);
+ expect(messages[0].content).toContain('programmatic_read [');
+ expect(messages[1].content).not.toContain('"id":"programmatic_read"');
+ expect(messages[1].content).toContain('"id":"programmatic_tools"');
  vi.stubEnv('ENABLE_HYBRID_EXECUTION','0');
  expect(initialTaskMessages(context,input,config,[])[0].content).not.toContain('[capability-catalog-v2:compact]');
 });

@@ -11,6 +11,16 @@ import {modeAllowsTool} from './mode-tools';
 afterEach(()=>vi.unstubAllEnvs());
 const input={content:'查看 Atlas 最新进展',attachments:[]};
 const context={userId:'owner',role:'member' as const,mode:'deep' as const};
+it('freezes the opt-in quick interpreter profile without changing capabilities or old jobs',()=>{
+ vi.stubEnv('HYBRID_INTERPRETER_PROFILE','standard');const prior=automaticModelConfig();
+ vi.stubEnv('HYBRID_INTERPRETER_PROFILE','quick');const candidate=automaticModelConfig();
+ expect(candidate.automatic!.profiles.interpreter).toEqual(modeModelConfig('quick').profile);
+ expect(candidate.automatic!.capabilityMode).toBe('deep');
+ expect(automaticModelSelection(prior,[programDecisionHint('interpreter')])!.profile.mode).toBe('standard');
+ expect(automaticModelSelection(candidate,[programDecisionHint('interpreter'),{role:'tool',content:JSON.stringify(result(null,{status:'partial'}))}])!.profile.mode).toBe('deep');
+ vi.stubEnv('HYBRID_INTERPRETER_PROFILE','unrecognized');
+ expect(automaticModelConfig().automatic!.profiles.interpreter.mode).toBe('standard');
+});
 it.each([['fixed_workflow','quick'],['interpreter','standard'],['dynamic_agent','deep']] as const)('selects frozen %s model tier %s without changing capability scope', (route,tier)=>{
   const config=automaticModelConfig(),before=JSON.stringify(config);
   const selected=automaticModelSelection(config,[programDecisionHint(route)])!;

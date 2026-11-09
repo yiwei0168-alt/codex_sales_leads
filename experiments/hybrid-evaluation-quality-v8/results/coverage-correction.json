@@ -1,0 +1,61 @@
+{
+  "version": "v8-posthoc-measurement-correction",
+  "rows": [
+    {
+      "arm": "A",
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "pages": 2,
+      "completeReadPasses": 1,
+      "duplicateMessageReads": 0,
+      "uniqueMessages": 40,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "coveragePassed": true,
+      "quotedReceiptVerified": null
+    },
+    {
+      "arm": "B",
+      "programAttempts": 1,
+      "successfulPrograms": 1,
+      "pages": 2,
+      "completeReadPasses": 1,
+      "duplicateMessageReads": 0,
+      "uniqueMessages": 40,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "coveragePassed": true,
+      "quotedReceiptVerified": true
+    },
+    {
+      "arm": "C",
+      "programAttempts": 2,
+      "successfulPrograms": 2,
+      "pages": 4,
+      "completeReadPasses": 2,
+      "duplicateMessageReads": 40,
+      "uniqueMessages": 40,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "coveragePassed": true,
+      "quotedReceiptVerified": null
+    }
+  ],
+  "paidCalls": 0,
+  "originalReportsRetained": true,
+  "explanation": "Original collector counted only programmatic_tools, omitting successful programmatic_read. Raw coverage audit also summed repeated reads instead of counting unique mail IDs. C performed two complete passes, 40 duplicate message reads; its code-generated daily counts are correct. B quoted a real program receipt omitted from the blind packet, so reviewer fabrication allegation is unsupported; absence of user-facing source URLs remains a citation usability concern. Raw blind grade is retained, no overall acceptance granted.",
+  "independentQualityOverride": false,
+  "overallAcceptancePassed": false
+}

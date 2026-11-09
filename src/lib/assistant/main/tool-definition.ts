@@ -3,7 +3,7 @@ import { toolResultSchema, type ExecutionContext, type ProductTool, type ToolRes
 export function defineTool<T extends z.ZodType>(options: {
   id: string; description: string; input: T;
   execute: (input: z.infer<T>, context: ExecutionContext) => Promise<ToolResult>;
-} & Partial<Pick<ProductTool, "role" | "effect" | "dependencies" | "connections" | "cost" | "recovery">>): ProductTool {
+} & Partial<Pick<ProductTool, "version" | "output" | "role" | "effect" | "dependencies" | "connections" | "cost" | "recovery">>): ProductTool {
   return { version: "1", role: "member", effect: "read", dependencies: [], connections: [], cost: "known", recovery: "read-retry",
-    ...options, output: toolResultSchema, execute: (input, context) => options.execute(options.input.parse(input), context) };
+    output: toolResultSchema, ...options, execute: (input, context) => options.execute(options.input.parse(input), context) };
 }
