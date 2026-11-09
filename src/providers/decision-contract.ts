@@ -3,6 +3,7 @@ import {validProgramDecisionRequest} from './program-decision-contract';
 import {validProgramDecisionRequest as validProgramV4} from './program-decision-contract-v4';
 import {validProgramDecisionRequest as validProgramV5} from './program-decision-contract-v5';
 import {validProgramDecisionRequest as validProgramV6} from './program-decision-contract-v6';
+import {validProgramDecisionRequest as validProgramV7} from './program-decision-contract-v7';
 
 export const DECISION_VERSION = 'hybrid-decision-v1';
 export const DECISION_URL = 'https://openrouter.ai/api/alpha/decisions';
@@ -34,7 +35,7 @@ export function buildDecisionRequest(model: DecisionModel, state: RouteState) {
 }
 /** Admit only explicitly reviewed, versioned text protocols. */
 export function validDecisionRequest(value: unknown): boolean {
-  if(validProgramDecisionRequest(value)||validProgramV4(value)||validProgramV5(value)||validProgramV6(value))return true;
+  if(validProgramDecisionRequest(value)||validProgramV4(value)||validProgramV5(value)||validProgramV6(value)||validProgramV7(value))return true;
   return validLegacyDecisionRequest(value);
 }
 /** Historical single-question pricing contract remains single-question. */

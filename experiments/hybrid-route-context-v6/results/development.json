@@ -1,0 +1,88 @@
+{
+  "version": "jev-context-v6-development-result",
+  "identity": "358a518cd43c40b07e237db514e0e2892627c2001a59d78b2aabdeabd5569241",
+  "holdout": false,
+  "productionActivated": false,
+  "thresholdsChanged": false,
+  "rows": [
+    {
+      "id": "C5-06",
+      "expected": "fixed_workflow",
+      "actual": "dynamic_agent",
+      "providerCompleted": true,
+      "correct": false,
+      "contextReady": {
+        "type": "choice",
+        "choice": "no",
+        "probabilities": {
+          "yes": 0.22,
+          "no": 0.78,
+          "unclear": 0
+        },
+        "confidence": 0.67
+      },
+      "latencyMs": 1443.7376999999997,
+      "knownCostUsd": 0.000084252
+    },
+    {
+      "id": "C5-17",
+      "expected": "dynamic_agent",
+      "actual": "dynamic_agent",
+      "providerCompleted": true,
+      "correct": true,
+      "contextReady": {
+        "type": "choice",
+        "choice": "no",
+        "probabilities": {
+          "yes": 0.03,
+          "no": 0.97,
+          "unclear": 0
+        },
+        "confidence": 0.96
+      },
+      "latencyMs": 495.3182999999999,
+      "knownCostUsd": 0.000085428
+    },
+    {
+      "id": "C5-18",
+      "expected": "dynamic_agent",
+      "actual": "dynamic_agent",
+      "providerCompleted": true,
+      "correct": true,
+      "contextReady": {
+        "type": "choice",
+        "choice": "no",
+        "probabilities": {
+          "yes": 0,
+          "no": 1,
+          "unclear": 0
+        },
+        "confidence": 1
+      },
+      "latencyMs": 464.60599999999977,
+      "knownCostUsd": 0.000086016
+    },
+    {
+      "id": "P10-v6-development",
+      "expected": "interpreter",
+      "actual": "dynamic_agent",
+      "providerCompleted": true,
+      "correct": false,
+      "contextReady": {
+        "type": "choice",
+        "choice": "no",
+        "probabilities": {
+          "yes": 0.26,
+          "no": 0.74,
+          "unclear": 0
+        },
+        "confidence": 0.61
+      },
+      "latencyMs": 495.79140000000007,
+      "knownCostUsd": 0.000086646
+    }
+  ],
+  "allDevelopmentChecksPassed": false,
+  "knownCostUsd": 0.00034234200000000004,
+  "unknownCharges": 0
+}

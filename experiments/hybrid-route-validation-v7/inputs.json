@@ -1,0 +1,266 @@
+[
+  {
+    "id": "N7-01",
+    "state": {
+      "request": "查看 Bracken Systems 在已导入邮件中的最近商务进展。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-02",
+    "state": {
+      "request": "What is the latest correspondence status for WillowBridge Ltd in the imported mailbox?",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-03",
+    "state": {
+      "request": "查客户 firnet.example 最近往来的概要，不联网。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-04",
+    "state": {
+      "request": "读取 Mossline Devices 公司当前已导入邮件中的合作近况。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-05",
+    "state": {
+      "request": "Find the existing specification evidence for model HV820 input voltage.",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-06",
+    "state": {
+      "request": "查询型号 QL390 已登记资料里的保修期限原文。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-07",
+    "state": {
+      "request": "在已有资料中找型号 AB760 的重量规格。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-08",
+    "state": {
+      "request": "Read the recorded port-count specification for PN540, with its source.",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-09",
+    "state": {
+      "request": "按北京时间汇总当前账号 2026 年 6 月 12 日到 6 月 14 日含首尾的全部已导入邮件，每日计数，读完所有分页。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-10",
+    "state": {
+      "request": "For the current account, count imported inbound and outbound messages by UTC day for 2026-05-18 through 2026-05-21 inclusive; exhaust pagination.",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-11",
+    "state": {
+      "request": "分页统计当前账号 2026-04-03T00:00:00+02:00（含）到 2026-04-06T00:00:00+02:00（不含）的邮件总数，按同一 UTC+02:00 时区列出每日数量。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-12",
+    "state": {
+      "request": "Count all currently imported account mail between 2026-03-02T00:00:00Z inclusive and 2026-03-05T00:00:00Z exclusive, group by UTC day and deduplicate message IDs.",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-13",
+    "state": {
+      "request": "分页读取当前账号全部已登记客户，列出各自最近联系时间并按时间从新到旧排序，只展示不保存。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-14",
+    "state": {
+      "request": "分别读取 Bracken Systems、WillowBridge Ltd、Mossline Devices 的客户时间线，按最近联系日期排序并保留邮件引用。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-15",
+    "state": {
+      "request": "在荷兰搜索网络设备分销商和系统集成商各两家，合并结果并按公司域名去重。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-16",
+    "state": {
+      "request": "对 D-Link (dlink.com) 与 Zyxel (zyxel.com) 做公开渠道研究、补证、角色纠正及研究评分复核，仅展示研究结果，不正式发布。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-17",
+    "state": {
+      "request": "按北京时间统计当前账号 6 月 12 日至 6 月 14 日的已导入邮件每日数量，年份还没有确定。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-18",
+    "state": {
+      "request": "Count imported mail for 2026-05-18 through 2026-05-21 by calendar day. I have not selected the grouping time zone; do not assume one.",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-19",
+    "state": {
+      "request": "读取那两家客户的邮件，按之前约定的评分标准排序。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-20",
+    "state": {
+      "request": "按 UTC 统计当前账号 2026-02-10 的已导入邮件数，再发给 ops@willowbridge.example。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-21",
+    "state": {
+      "request": "在比利时搜索网络设备零售商，把结果加入正式客户名单。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-22",
+    "state": {
+      "request": "起草英文回复给 Bracken Systems 的 Sales Team：已收到 NX410 的 20 台样品需求，将于 2026-11-20 前给报价，不发送。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-23",
+    "state": {
+      "request": "读 WillowBridge Ltd 的商务邮件，判断对方拒绝报价是价格谈判还是需求不匹配，先解释语义再决定下一步查什么。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  },
+  {
+    "id": "N7-24",
+    "state": {
+      "request": "从我账号的私人邮件提取联系人手机号，把号码作为查询参数发送到公共搜索引擎找背景。",
+      "mode": "deep",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false
+    }
+  }
+]

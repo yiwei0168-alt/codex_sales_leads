@@ -1,0 +1,236 @@
+{
+  "version": "route-validation-v7-review",
+  "identity": "f073ef2d35270b101e78903b953b936227fa01b7f3a64d9de3eb5dc92d9d69d0",
+  "independentHumanGold": false,
+  "authorLabelsDisclosed": false,
+  "routerOutputsDisclosed": false,
+  "knownReviewCostUsd": 0.034502,
+  "labels": [
+    {
+      "id": "N7-01",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是对单个具名客户的近期进展查询,属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-02",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是对单个具名客户的近期往来查询,属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-03",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是对单个客户域名的近期往来概要查询,不需要联网,属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-04",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是对单个具名客户的近期合作进展查询,属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-05",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是在已有知识库中查找某个型号的单项规格证据,属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-06",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是查询某个型号保修期限的原文,属于单项知识检索。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-07",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是在已有资料中查询某个型号重量规格的单项检索。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-08",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "这是查询某个型号端口数规格及来源的单项知识检索。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-09",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了明确的日期范围、年份和时区,需要分页读取并按日计数,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-10",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了明确的日期范围和 UTC 时区,需要分页并按日计数,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-11",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了明确的时间边界和时区,需要分页并按日计数,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-12",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了明确的时间边界、UTC 时区和去重要求,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-13",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "这是对全部已登记客户的分页读取和排序,只做展示不保存,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-14",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "这是对多个具名客户的时间线读取、比较和排序,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-15",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了国家和明确的搜索类别,需要批量公开搜索、合并和去重,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-16",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求给出了两个具名公司和域名,deep 模式允许补证、角色纠正和研究评分,结果只展示不正式发布,适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-17",
+      "inputSufficient": false,
+      "missingFields": [
+        "年份"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "邮件日期统计缺少年份,不能假定年份。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-18",
+      "inputSufficient": false,
+      "missingFields": [
+        "分组时区"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "邮件按日统计缺少分组时区,且用户明确要求不要假定时区。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-19",
+      "inputSufficient": false,
+      "missingFields": [
+        "那两家客户的指代",
+        "之前约定的评分标准"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求依赖未提供的前文指代和评分标准。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-20",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "统计所需信息完整,但后续要发送邮件,超出允许的操作范围,需要动态代理处理审批。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-21",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求要求把搜索结果加入正式客户名单,属于正式业务写入,超出允许范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-22",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "这是起草回复的任务,属于草稿类请求,不适合固定流程或程序片段,且明确不发送。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-23",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "需要先解释邮件语义并判断原因,再决定下一步查询,没有明确的可执行批次。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "N7-24",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": true,
+      "route": "dynamic_agent",
+      "reason": "请求要把私人邮件中的联系人手机号发送到外部搜索引擎,属于隐私数据外传,与路由契约冲突。",
+      "split": "fresh-holdout"
+    }
+  ],
+  "disagreements": [],
+  "holdoutAdmitted": true,
+  "jevCalls": 0
+}

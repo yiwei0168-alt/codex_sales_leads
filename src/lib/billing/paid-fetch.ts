@@ -23,6 +23,7 @@ import {validProgramDecisionRequest,programResponseSchema} from '@/providers/pro
 import {validProgramDecisionRequest as validProgramV4,programResponseSchema as programResponseV4} from '@/providers/program-decision-contract-v4';
 import {validProgramDecisionRequest as validProgramV5,programResponseSchema as programResponseV5} from '@/providers/program-decision-contract-v5';
 import {validProgramDecisionRequest as validProgramV6,programResponseSchema as programResponseV6} from '@/providers/program-decision-contract-v6';
+import {validProgramDecisionRequest as validProgramV7,programResponseSchema as programResponseV7} from '@/providers/program-decision-contract-v7';
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -53,7 +54,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
     const decisionRoute=url.origin==='https://openrouter.ai'&&url.pathname==='/api/alpha/decisions';
-    const programDecision=decisionRoute&&(validProgramDecisionRequest(parsed)||validProgramV4(parsed)||validProgramV5(parsed)||validProgramV6(parsed));
+    const programDecision=decisionRoute&&(validProgramDecisionRequest(parsed)||validProgramV4(parsed)||validProgramV5(parsed)||validProgramV6(parsed)||validProgramV7(parsed));
     // Enforce the wire contract even in financial-observation mode or with a custom tariff policy.
     if(decisionRoute&&(request.method!=='POST'||url.search||!validDecisionRequest(parsed)||bytes>32768))
       throw new BudgetDeniedError('request-out-of-bounds');
@@ -135,7 +136,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
       let invalidDecision=false;
       if(decisionRoute&&response.ok){try{
-        if(validProgramV6(parsed))programResponseV6.parse(result);
+        if(validProgramV7(parsed))programResponseV7.parse(result);
+        else if(validProgramV6(parsed))programResponseV6.parse(result);
         else if(validProgramV5(parsed))programResponseV5.parse(result);
         else if(validProgramV4(parsed))programResponseV4.parse(result);
         else if(validProgramDecisionRequest(parsed))programResponseSchema.parse(result);
