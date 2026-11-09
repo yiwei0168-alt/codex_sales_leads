@@ -30,9 +30,13 @@ export function buildDecisionRequest(model: DecisionModel, state: RouteState) {
     questions: { route: routeQuestion },
     provider: { require_parameters: true, data_collection: 'deny' as const, allow_fallbacks: false } };
 }
-/** Restrict the paid wire surface to the one reviewed, text-only question. */
+/** Admit only explicitly reviewed, versioned text protocols. */
 export function validDecisionRequest(value: unknown): boolean {
   if(validProgramDecisionRequest(value)||validProgramV4(value))return true;
+  return validLegacyDecisionRequest(value);
+}
+/** Historical single-question pricing contract remains single-question. */
+export function validLegacyDecisionRequest(value: unknown): boolean {
   const parsed = z.object({model: decisionModelSchema, state: routeStateSchema,
     questions: z.object({route: z.unknown()}).strict(),
     provider: z.object({require_parameters: z.literal(true), data_collection: z.literal('deny'),

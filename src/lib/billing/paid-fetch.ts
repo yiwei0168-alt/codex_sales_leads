@@ -51,6 +51,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
     const decisionRoute=url.origin==='https://openrouter.ai'&&url.pathname==='/api/alpha/decisions';
+    const programDecision=decisionRoute&&(validProgramDecisionRequest(parsed)||validProgramV4(parsed));
     // Enforce the wire contract even in financial-observation mode or with a custom tariff policy.
     if(decisionRoute&&(request.method!=='POST'||url.search||!validDecisionRequest(parsed)||bytes>32768))
       throw new BudgetDeniedError('request-out-of-bounds');
@@ -66,7 +67,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
     const ragProvider=ragAnswerSol&&Array.isArray(object(parsed.provider).only)
       ?object(parsed.provider).only as unknown[]:[];
-    const selectedContract=playbookSol?"openrouter-sol-openai-playbook-credits"
+    const selectedContract=programDecision?'openrouter-jev-program-decisions':playbookSol?"openrouter-sol-openai-playbook-credits"
       :reviewTerra?"openrouter-terra-review-credits-standard-json"
         :judgeSol?"openrouter-sol-judge-credits-standard-json"
           :ragAnswerSol&&ragProvider.length===1&&ragProvider[0]==="openai"
@@ -78,7 +79,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     let costBoundKnown=true;
     try{
       native=!scope.tariffPolicy?(await nativeModelBound(quote)??await embeddingModelBound(quote)):null;
-      rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
+      rule=native?.rule??(scope.tariffPolicy?(programDecision?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote,policy.rules)):selectedContract
         ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
     }catch(error){
       if(!(error instanceof BudgetDeniedError)||!admissionOverride?.allowFinancialAdmissionBypass)throw error;

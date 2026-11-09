@@ -1,0 +1,377 @@
+{
+  "version": "jev-program-routing-v4",
+  "manifestHash": "74fe3b646652c173a44cb6359c29bdda0bc2668f9d322d5185a24fe6e0548378",
+  "policy": {
+    "version": "jev-program-policy-v4",
+    "contractVersion": "jev-program-routing-v4",
+    "routes": {
+      "fixed_workflow": {
+        "enabled": true,
+        "probability": 0.55,
+        "margin": 0.15
+      },
+      "interpreter": {
+        "enabled": true,
+        "probability": 0.55,
+        "margin": 0.2
+      }
+    }
+  },
+  "gates": {
+    "minimumFixed": 9,
+    "minimumInterpreter": 9,
+    "maximumWrongFast": 0,
+    "minimumAvailability": 0.9,
+    "maximumP95Ms": 2500
+  },
+  "synthetic": true,
+  "productionActivated": false,
+  "fullTaskAcceptance": false,
+  "validation": {
+    "fixed": 11,
+    "interpreter": 11,
+    "wrongFast": [],
+    "availability": 1,
+    "p95Ms": 907,
+    "gatePassed": true,
+    "outcomes": [
+      {
+        "id": "F01",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 2102
+      },
+      {
+        "id": "F02",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 400
+      },
+      {
+        "id": "F03",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 401
+      },
+      {
+        "id": "F04",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 430
+      },
+      {
+        "id": "F05",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 399
+      },
+      {
+        "id": "F06",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 386
+      },
+      {
+        "id": "F07",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 443
+      },
+      {
+        "id": "F08",
+        "expected": "fixed_workflow",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 578
+      },
+      {
+        "id": "F09",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 415
+      },
+      {
+        "id": "F10",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 413
+      },
+      {
+        "id": "F11",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 384
+      },
+      {
+        "id": "F12",
+        "expected": "fixed_workflow",
+        "route": "fixed_workflow",
+        "status": "completed",
+        "latencyMs": 428
+      },
+      {
+        "id": "I01",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 380
+      },
+      {
+        "id": "I02",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 402
+      },
+      {
+        "id": "I03",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 380
+      },
+      {
+        "id": "I04",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 405
+      },
+      {
+        "id": "I05",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 396
+      },
+      {
+        "id": "I06",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 375
+      },
+      {
+        "id": "I07",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 391
+      },
+      {
+        "id": "I08",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 429
+      },
+      {
+        "id": "I09",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 404
+      },
+      {
+        "id": "I10",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 474
+      },
+      {
+        "id": "I11",
+        "expected": "interpreter",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 483
+      },
+      {
+        "id": "I12",
+        "expected": "interpreter",
+        "route": "interpreter",
+        "status": "completed",
+        "latencyMs": 381
+      },
+      {
+        "id": "D01",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 916
+      },
+      {
+        "id": "D02",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 907
+      },
+      {
+        "id": "D03",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 435
+      },
+      {
+        "id": "D04",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 400
+      },
+      {
+        "id": "D05",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 378
+      },
+      {
+        "id": "D06",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 386
+      },
+      {
+        "id": "D07",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 405
+      },
+      {
+        "id": "D08",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 430
+      },
+      {
+        "id": "D09",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 423
+      },
+      {
+        "id": "D10",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 418
+      },
+      {
+        "id": "D11",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 429
+      },
+      {
+        "id": "D12",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 387
+      },
+      {
+        "id": "G01",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 422
+      },
+      {
+        "id": "G02",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 488
+      },
+      {
+        "id": "G03",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 495
+      },
+      {
+        "id": "G04",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 384
+      },
+      {
+        "id": "G05",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 383
+      },
+      {
+        "id": "G06",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 466
+      },
+      {
+        "id": "G07",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 422
+      },
+      {
+        "id": "G08",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "completed",
+        "latencyMs": 603
+      },
+      {
+        "id": "G09",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "context-guard",
+        "latencyMs": null
+      },
+      {
+        "id": "G10",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "context-guard",
+        "latencyMs": null
+      },
+      {
+        "id": "G11",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "context-guard",
+        "latencyMs": null
+      },
+      {
+        "id": "G12",
+        "expected": "dynamic_agent",
+        "route": "dynamic_agent",
+        "status": "context-guard",
+        "latencyMs": null
+      }
+    ]
+  },
+  "receiptSetHash": "c3a3b8c82f04efb8d21941c6f66d8790d7649d52094ccfb69288c337def2afa3"
+}

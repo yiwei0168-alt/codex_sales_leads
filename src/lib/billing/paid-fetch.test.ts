@@ -6,6 +6,7 @@ vi.mock("./reconciliation",()=>({recordVerifiedCostObservation:mocks.reconcile})
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
 import {buildDecisionRequest,DECISION_URL} from '@/providers/decision-contract';
+import {buildProgramDecisionRequest,programQuestions} from '@/providers/program-decision-contract-v4';
 import {withModeStream,ModelWaitError,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 import {withSpendContext} from "./context";
 import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
@@ -43,6 +44,21 @@ it('records Decisions input/output usage and rejects malformed successful decisi
     usage:{input_tokens:100,output_tokens:20,cost:0.0000042},answers:{}}));
   await withSpendContext(scope,()=>budgetedFetch(transport)(DECISION_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}));
   expect(mocks.settle).toHaveBeenCalledWith(scope.userId,expect.anything(),expect.objectContaining({inputTokens:100,outputTokens:20,outputIncomplete:true,succeeded:false}));
+});
+it('uses the explicit multi-question bound and validates every v4 answer before settlement',async()=>{
+  const rule=billingPolicy.rules.find(r=>r.key==='openrouter-jev-program-decisions')!;mocks.quote.mockReturnValue(rule);
+  const body=buildProgramDecisionRequest({request:'Synthetic research batch',hasHistory:false,hasAttachments:false,hasPolicy:false,hasKnowledgeScope:false,mode:'deep'});
+  const answer={type:'choice',choice:'yes',probabilities:{yes:.9,no:.08,unclear:.02},confidence:.9};
+  const output={model:body.model,id:'gen-program-test',usage:{input_tokens:900,output_tokens:80,cost:.0000378},
+    answers:Object.fromEntries(Object.keys(programQuestions).map(key=>[key,answer]))};
+  const transport=vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(output))
+    .mockResolvedValueOnce(Response.json({...output,answers:{...output.answers,allowed_effects:undefined}}));
+  const send=()=>withSpendContext(scope,()=>budgetedFetch(transport)(DECISION_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}));
+  await send();
+  expect(mocks.quote).toHaveBeenCalledWith(expect.anything(),expect.anything(),expect.any(Number),'openrouter-jev-program-decisions');
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({maximumChargeMicros:44041});
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:true,outputIncomplete:false,inputTokens:900,outputTokens:80});
+  await send();expect(mocks.settle.mock.calls[1][2]).toMatchObject({succeeded:false,outputIncomplete:true});
 });
 
 it('never bypasses Decisions data policy or permits extra questions in observation mode',async()=>{

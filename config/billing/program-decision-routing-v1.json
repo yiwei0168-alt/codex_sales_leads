@@ -1,0 +1,17 @@
+{
+  "version": "program-decision-routing-v1",
+  "rules": [{
+    "key": "openrouter-jev-program-decisions",
+    "origin": "https://openrouter.ai",
+    "pathname": "/api/alpha/decisions",
+    "model": "typesafe/jev-1.14",
+    "maximumChargeMicros": 44041,
+    "maximumRequestBytes": 32768,
+    "maximumOutputTokens": 0,
+    "requestContract": "openrouter-program-decisions-v1",
+    "boundDescription": "Only exact reviewed three-question v3 or four-question v4 text routing protocols. State <=6000 characters; request <=32768 bytes. Conservative envelope: four evaluations each charged up to the published 262144-token model context at USD 0.042/M input; ceil(4*262144*0.042)=44041 USD micros. Output free. No images, assets, arbitrary extra questions, plugins, retries, fallback or user-controlled provider policy. This reservation bound is not an estimate of typical spend.",
+    "reference": "https://openrouter.ai/typesafe/jev-1.14",
+    "verifiedAt": "2026-11-09T00:00:00Z",
+    "expiresAt": "2026-11-16T00:00:00Z"
+  }]
+}

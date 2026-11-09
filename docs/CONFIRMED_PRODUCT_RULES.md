@@ -3383,3 +3383,13 @@ Status: implemented; focused automated verification and live follow-up are recor
 - v4 将 allowed_effects 作为独立必答条件，覆盖完整混合请求和工作模式；修正开发题中两处对象范围不明确的表述，旧结果不改写。新验证文本在调用前冻结，沿用门槛，不使用已暴露验证题调整后的成绩冒充独立结果。
 - 程序中断时附带有长度限制的已保存证据预览，继续保护原始引用、回执与未知调用不重发。
 - 详情：[PROGRAMMATIC_SEGMENTS_2026-11-09.md](PROGRAMMATIC_SEGMENTS_2026-11-09.md)。v4 校准验证待执行；用户确认范围没有新增。
+
+
+### HYBRID-07 完成记录 — 程序片段与 Jev v4（2026-11-09）
+
+- 已实现：programmatic_tools 通过原 dispatcher 编排本地读取、公开搜索、补证和既有研究评分/复核；最多 24 个调用、并发 3、语义判断 handoff；保留旧本地只读协议、租户/模式/预算/取消/回执保护，未知结果不自动重试。工程限制详见阶段文档。
+- Jev v4：独立判断 context_ready、allowed_effects、fixed_fit、segment_fit。固定路径阈值概率≥0.55、分差≥0.15；程序路径概率≥0.55、分差≥0.20；必要条件全部满足且另一路径明确 no 才建议快捷执行。阈值是合成开发集选择结果，不是真实正确率。
+- 校准后在 24fdc82b 冻结，再验证新 48 题：固定 11/12、程序 11/12、动态/保护 24/24、错误快捷路由 0，实际 44/44 请求成功，p95 907ms；另 4 题被上下文规则跳过。门槛通过。v3 未通过结果完整保留，不合并为通过证据。
+- 验证：相关 143 项测试通过，类型检查/lint 通过；模拟父回执写入中断时复用完成的并发子调用。多判断题使用独立计费请求契约，不放宽历史单题契约，不修改用户预算。
+- 完成边界：代码与合成路由验收完成，运行实例开关未变，不等于已部署或真实业务整项任务质量/总时长/省费验收完成。
+- 文档：[PROGRAMMATIC_SEGMENTS_2026-11-09.md](PROGRAMMATIC_SEGMENTS_2026-11-09.md)；提示快照：[JEV_PROGRAM_ROUTING_V4_PROMPT.md](JEV_PROGRAM_ROUTING_V4_PROMPT.md)；证据：[jev-program-v4-validation-2026-11-09.json](evidence/jev-program-v4-validation-2026-11-09.json)。

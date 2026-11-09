@@ -6,8 +6,23 @@ import {billingPolicy,tariffSchema,quoteRequest} from "./policy";
 import {assertRequestContract} from "./request-contract";
 import {deepSeekRequestBody} from "@/providers/deepseek-request";
 import {TavilySearchProvider} from "@/providers/tavily";
+import {buildProgramDecisionRequest} from '@/providers/program-decision-contract-v4';
+import {buildDecisionRequest} from '@/providers/decision-contract';
 const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
+it('keeps multi-question program pricing separate from the historical one-question contract',()=>{
+  const state={request:'synthetic batch',hasHistory:false,hasAttachments:false,hasPolicy:false,hasKnowledgeScope:false};
+  const body=buildProgramDecisionRequest({...state,mode:'deep'}),legacy=buildDecisionRequest('typesafe/jev-1.14',state);
+  const old=billingPolicy.rules.find(r=>r.key==='openrouter-jev-1.14-decision-route')!;
+  const query={origin:old.origin,pathname:old.pathname,model:old.model,requestBytes:10000,outputTokens:null};
+  const selected=quoteRequest(query,undefined,Date.parse('2026-11-09T12:00:00Z'),'openrouter-jev-program-decisions');
+  expect(selected.maximumChargeMicros).toBe(Math.ceil(4*262144*.042));
+  expect(()=>assertRequestContract(old,body,'')).toThrow('request-out-of-bounds');
+  expect(()=>assertRequestContract(selected,legacy,'')).toThrow('request-out-of-bounds');
+  expect(()=>assertRequestContract(selected,body,'')).not.toThrow();
+  expect(()=>assertRequestContract(selected,{...body,questions:{...body.questions,extra:{type:'choice'}}},'')).toThrow('request-out-of-bounds');
+  expect(quoteRequest(query,undefined,Date.parse('2026-11-09T12:00:00Z')).key).toBe(old.key);
+});
 
 it("covers all captured standard Sol endpoint prices, long-context overrides and removed discounts",()=>{
   const maxima={prompt:11,completion:49.5,input_cache_read:1.1,input_cache_write:13.75};
@@ -75,8 +90,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.14.0+decision-routing-v1");
-  expect(billingPolicy.rules).toHaveLength(16);
+  expect(billingPolicy.version).toBe("request-bounds-v1.14.0+decision-routing-v1+program-decision-routing-v1");
+  expect(billingPolicy.rules).toHaveLength(17);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
     expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);

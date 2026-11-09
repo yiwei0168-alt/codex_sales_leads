@@ -1,5 +1,7 @@
 # Jev 路由提示词与执行路径（2026-11-09）
 
+> 历史快照：下文是 HYBRID-06 的本地只读候选定义。HYBRID-07 已实现受控业务程序片段与 Jev v4；当前契约见 [PROGRAMMATIC_SEGMENTS_2026-11-09.md](PROGRAMMATIC_SEGMENTS_2026-11-09.md)，当前逐字提示见 [JEV_PROGRAM_ROUTING_V4_PROMPT.md](JEV_PROGRAM_ROUTING_V4_PROMPT.md)。保留下文以复核旧实验，不作为新路由说明。
+
 这是实验候选 jev-atomic-routing-v1 的逐字提示词快照，v2 准入优化没有改动这些提示词。来源：`experiments/jev-routing-optimization/contract.ts`，SHA-256：`5a96a3e44990277c40f3b358d8b603ad0e8dd159e3e1c4f626f732dcc138bca1`。
 
 ## 三条执行路径
