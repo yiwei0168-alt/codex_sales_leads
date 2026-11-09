@@ -2285,3 +2285,9 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 - All 54 registered local-read executions finished: 51 answered, 3 partial, 5 unknown charges. These are execution statuses, not quality acceptance; raw failures remain in the denominator.
 - Before grading repetitions 2/3, freeze an explicit evidence index distinguishing timeline records from mail bodies. Same blind reviewer, rubric, thresholds and six requests; no first-repeat scores, model/arm/cost or preferred result supplied. See experiments/hybrid-evaluation-quality-v10/REPEAT_REVIEW.md. Original first-repeat grades and one-shot adjudication remain unchanged.
 - User authorization remains execution/optimization until acceptance; no production deployment, weakened gate or model preference is inferred.
+
+
+### HYBRID-10 / V10 repeated qualification closed, not passed (2026-11-10)
+- All 54 registered executions finished; 51 answered and 3 partial, so the maximum possible correct rate is 94.44%, below the unchanged 95% gate. Five task charges remain unknown. No production rollout.
+- Blind reviews cover 42 answers: raw 40 passes, effective 41 including the separately archived one-shot P02-A adjudication. Two review transport failures leave 12 answers ungraded and add two unknown charges. Independent unattempted review bundles continued; no uncertain request was repeated.
+- See experiments/hybrid-evaluation-v10/RESULTS.md and experiments/hybrid-evaluation-quality-v10/results/incomplete-audit.json. Full benchmark, live external extension and browser timing remain pending. Next implementation work preserves incomplete-stream generation metadata and enables owner-scoped authoritative cost lookup; acceptance is not inferred from these repairs.

@@ -1,0 +1,176 @@
+{
+  "version": "v10-closed-incomplete-review",
+  "submitted": 54,
+  "answered": 51,
+  "maximumPossibleCorrectRate": 0.9444444444444444,
+  "requiredCorrectRate": 0.95,
+  "executionGatePassed": false,
+  "reviewed": 42,
+  "rawReviewPassed": 40,
+  "effectiveReviewPassed": 41,
+  "unreviewed": [
+    {
+      "reviewId": "63ddff052c4683be8ac8",
+      "taskId": "P09",
+      "arm": "A",
+      "repetition": 2,
+      "runId": "d6981c4d-a96d-49f7-b50e-9e36f85a9052",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "4160c91d7e4e5f2cfcb8",
+      "taskId": "P09",
+      "arm": "B",
+      "repetition": 2,
+      "runId": "78a4c4ea-208c-4c3b-8fd0-11c768381aa0",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "c6c43fec7eba03af2966",
+      "taskId": "P09",
+      "arm": "C",
+      "repetition": 2,
+      "runId": "180fde60-0551-4194-8d22-63aa8d211117",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "eb6c360b10b99bc890f1",
+      "taskId": "P09",
+      "arm": "A",
+      "repetition": 3,
+      "runId": "b8f5a36c-d829-4db1-b96e-6231242d70c3",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "777fe06269bec4ae5997",
+      "taskId": "P09",
+      "arm": "B",
+      "repetition": 3,
+      "runId": "b72995d0-bd5d-4e9d-96fb-5613181c3603",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "d450665dd1de556e54b6",
+      "taskId": "P09",
+      "arm": "C",
+      "repetition": 3,
+      "runId": "8aa988ea-0910-4120-bdc0-8b120177bf1c",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "63b550d1cacd831b16ad",
+      "taskId": "P24",
+      "arm": "A",
+      "repetition": 2,
+      "runId": "a0f7288a-f307-40df-80ea-d48fa88ba010",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "1a5885890251bd313618",
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 2,
+      "runId": "77827121-1dd3-469d-bbc5-a44e1568d66b",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "fbe4c090e90684c81fd8",
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 2,
+      "runId": "633063ef-6f0e-45b4-b7a7-3b0541b177d0",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "5aae8ef71e46397bd27a",
+      "taskId": "P24",
+      "arm": "A",
+      "repetition": 3,
+      "runId": "74205943-5f3c-43a4-b441-832895055bfa",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "81fa02ee3cf49f9f3c46",
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 3,
+      "runId": "160c25a7-2382-4a6a-a653-e5330b55342a",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    },
+    {
+      "reviewId": "e8efa29a96f1c4fa4f13",
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 3,
+      "runId": "fcc7c78e-d826-405d-a251-640d68fd0dfa",
+      "reason": "review-outcome-unknown",
+      "receiptStatus": "unknown"
+    }
+  ],
+  "reviewComplete": false,
+  "qualityPassed": false,
+  "localReadQualificationPassed": false,
+  "overallAcceptancePassed": false,
+  "costReduction": null,
+  "qualityMatchedLatencyReduction": null,
+  "knownTaskCostUsd": 1.123603977,
+  "unknownTaskCharges": 5,
+  "knownReviewCostUsd": 1.236481,
+  "unknownReviewCharges": 2,
+  "historicalUnknownCharges": 26,
+  "partialTasks": [
+    {
+      "taskId": "P23",
+      "arm": "B",
+      "repetition": 2,
+      "status": "partial"
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 2,
+      "status": "partial"
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 3,
+      "status": "partial"
+    }
+  ],
+  "byArm": {
+    "A": {
+      "submitted": 18,
+      "answered": 18,
+      "knownCostUsd": 0.5529435000000001,
+      "unknownCharges": 0
+    },
+    "B": {
+      "submitted": 18,
+      "answered": 16,
+      "knownCostUsd": 0.3341162740000001,
+      "unknownCharges": 3
+    },
+    "C": {
+      "submitted": 18,
+      "answered": 17,
+      "knownCostUsd": 0.23654420299999998,
+      "unknownCharges": 2
+    }
+  },
+  "reason": "3/54 incomplete tasks already exceed the 5% limit. Two unknown review calls leave 12 answers ungraded. No scores or provider charges imputed; no failed requests reissued. Original smoke correction retained separately.",
+  "productionChanged": false,
+  "userVisibleTimingAvailable": false,
+  "independentHumanGold": false
+}
