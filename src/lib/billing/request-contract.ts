@@ -3,6 +3,7 @@ import {isBeijingEmbeddingOrigin} from "./embedding-model-bound";
 import {validLegacyDecisionRequest} from '@/providers/decision-contract';
 import {validProgramDecisionRequest} from '@/providers/program-decision-contract';
 import {validProgramDecisionRequest as validProgramV4} from '@/providers/program-decision-contract-v4';
+import {validProgramDecisionRequest as validProgramV5} from '@/providers/program-decision-contract-v5';
 
 function record(value:unknown):value is Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value);}
 function keys(value:Record<string,unknown>,allowed:string[]){return Object.keys(value).every(key=>allowed.includes(key));}
@@ -18,7 +19,7 @@ export function assertRequestContract(rule:RequestBound,body:Record<string,unkno
   }
   if(rule.requestContract==='openrouter-program-decisions-v1'){
     valid=method==='POST'&&rule.origin==='https://openrouter.ai'&&rule.pathname==='/api/alpha/decisions'
-      &&query===''&&body.model===rule.model&&(validProgramDecisionRequest(body)||validProgramV4(body));
+      &&query===''&&body.model===rule.model&&(validProgramDecisionRequest(body)||validProgramV4(body)||validProgramV5(body));
   }
   if(rule.requestContract==="openrouter-sol-standard-json-v1"||rule.requestContract==="openrouter-sol-openai-playbook-v1"
     ||rule.requestContract==="openrouter-sol-openai-playbook-v2"){

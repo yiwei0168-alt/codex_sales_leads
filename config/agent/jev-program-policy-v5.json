@@ -1,0 +1,16 @@
+{
+  "version": "jev-program-policy-v5-context-candidate",
+  "contractVersion": "jev-program-routing-v5",
+  "routes": {
+    "fixed_workflow": {
+      "enabled": true,
+      "probability": 0.55,
+      "margin": 0.15
+    },
+    "interpreter": {
+      "enabled": true,
+      "probability": 0.55,
+      "margin": 0.2
+    }
+  }
+}

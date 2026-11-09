@@ -1,0 +1,198 @@
+{
+  "version": "model-assisted-blind-quality-v6",
+  "identity": "b0a568b2720d2763f4890381995697301072c454fd391daee8e032d42ee80682",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794244041-4txFEg5jmUGfzhb7Lphe",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 9,
+  "passed": 4,
+  "knownReviewCostUsd": 0.107262,
+  "rows": [
+    {
+      "reviewId": "02029ddc75e6be469410",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "这是一条服务不可用的提示,没有回答问题",
+        "没有给出 v1 和 v2 的端口数",
+        "没有来源",
+        "没有说明端口变化的原因无法确认"
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v6",
+      "taskId": "P24",
+      "arm": "A",
+      "runId": "37d4eb95-ab31-4fa3-b214-c3170ea938b7"
+    },
+    {
+      "reviewId": "209aae90eda912b2b127",
+      "facts": 30,
+      "completeness": 17,
+      "citations": 13,
+      "scope": 7,
+      "readability": 4,
+      "hardGatePass": true,
+      "issues": [
+        "最新进展和未承诺采购日期这两点正确",
+        "读取范围表述为4条关联记录,读了3封正文,较早1封只看摘要。这符合预期的覆盖情况",
+        "没有明确说明 hasMore=false",
+        "列出的最近3条里漏了 c2-m1 的客户请求,但提到了范围",
+        "负责人是推定得出的,已作标注",
+        "给出了邮件的 API 链接,可以接受"
+      ],
+      "total": 71,
+      "passed": false,
+      "version": "v6",
+      "taskId": "P02",
+      "arm": "B",
+      "runId": "cdc6bb89-9365-4296-ac44-3134e38dc22c"
+    },
+    {
+      "reviewId": "53460cc49281bba8c180",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "这是一条服务不可用的提示,没有回答问题",
+        "没有 Juniper Link 的最新进展"
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v6",
+      "taskId": "P02",
+      "arm": "C",
+      "runId": "ee7658bb-6e4f-4047-9310-da1329930648"
+    },
+    {
+      "reviewId": "6444e6e745af557f2db2",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 12,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "每日数量(8、12、12、8)和总数 40 都正确",
+        "已说明读完2页,末页 hasMore=false",
+        "没有列出邮件ID或来源链接,引用较弱"
+      ],
+      "total": 90,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P10",
+      "arm": "B",
+      "runId": "3ce108c1-6553-411b-b811-6a7a4215a1e9"
+    },
+    {
+      "reviewId": "6b23b04fdaf5915ab96e",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 12,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "每日数量和总数都正确",
+        "已说明读完2页,末页 hasMore=false",
+        "没有给出邮件来源引用"
+      ],
+      "total": 90,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P10",
+      "arm": "A",
+      "runId": "186ef0e2-6c19-41a8-aae8-13353b285903"
+    },
+    {
+      "reviewId": "9d94de81fd5b8eb33f97",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "这是一条服务不可用的提示,没有回答问题",
+        "没有端口数、来源或原因结论"
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v6",
+      "taskId": "P24",
+      "arm": "B",
+      "runId": "3ce27b89-4086-4e65-ba63-36d7a986ca87"
+    },
+    {
+      "reviewId": "a6abf4172a044ef1266f",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 12,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "每日数量和总数都正确",
+        "已说明读完2页,末页 hasMore=false,按ID去重",
+        "没有列出邮件来源链接"
+      ],
+      "total": 90,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P10",
+      "arm": "C",
+      "runId": "221f098e-6127-4e0f-acdd-df374ac15952"
+    },
+    {
+      "reviewId": "ba33cfab74de06271f2a",
+      "facts": 31,
+      "completeness": 19,
+      "citations": 14,
+      "scope": 6,
+      "readability": 4,
+      "hardGatePass": true,
+      "issues": [
+        "最新进展和采购日期未承诺这两点正确",
+        "范围部分说「已查看全部已导入往来记录」,没有区分只读了3封正文、较早1封未读正文",
+        "没有说明 hasMore=false",
+        "引用了邮件API链接和英文原文",
+        "负责人是推定得出的,已作标注"
+      ],
+      "total": 74,
+      "passed": false,
+      "version": "v6",
+      "taskId": "P02",
+      "arm": "A",
+      "runId": "86b3d5de-ef20-4cc4-abbe-87e0469f808f"
+    },
+    {
+      "reviewId": "fd236cb439e7be3c9b66",
+      "facts": 37,
+      "completeness": 23,
+      "citations": 15,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "v1 为 5 个端口、v2 为 8 个端口,都正确;原因无法确认,也说得明确",
+        "给出了 fixture 来源坐标,并附有工具返回的来源编号",
+        "来源编号 d03e3b6d… 和 7338cd23… 与任务给出的文档ID不同。但任务说明允许使用数据包里提供的实际文档ID,所以不扣分太多",
+        "引用的原文内容无法逐一核对"
+      ],
+      "total": 90,
+      "passed": true,
+      "version": "v6",
+      "taskId": "P24",
+      "arm": "C",
+      "runId": "0bcb99d4-ed1c-405d-857d-7b81006c6924"
+    }
+  ]
+}

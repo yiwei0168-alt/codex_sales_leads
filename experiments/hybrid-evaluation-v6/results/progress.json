@@ -1,0 +1,231 @@
+{
+  "version": "hybrid-performance-smoke-v6-persistent-progress",
+  "runtimeFreezeHash": "bf6eac8f911ca3d635deda6ac3867ad0006e920244af07851ac636f44ec53d67",
+  "submitted": 9,
+  "planned": 9,
+  "answered": 6,
+  "remaining": 0,
+  "knownCostUsd": 0.232673204,
+  "unknownCharges": 4,
+  "rows": [
+    {
+      "taskId": "P02",
+      "arm": "A",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 41002,
+      "modelAttempts": 7,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0232973,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "22293d77a3437372b78f6c7d8f06a26ef9666b00c0894be0ce83e46f6c99bbe5",
+      "observationHash": "3df1eecdde1b09e5a3c8022cb15749fe356c85bbbf8bc72b8e7f38966ccef4be"
+    },
+    {
+      "taskId": "P02",
+      "arm": "B",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 13595,
+      "modelAttempts": 1,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "fixed_workflow"
+      ],
+      "knownCostUsd": 0.032266,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "6e2f908926d6ee7dc47dec8bdd988dfbedb085cf693df01f73a536d49b4ce73e",
+      "observationHash": "a63b199d801d71b7ce3c755d790bb770c9a56353469af614d90444b44a9c06d0"
+    },
+    {
+      "taskId": "P02",
+      "arm": "C",
+      "status": "partial",
+      "backendEnqueueToTerminalMs": 6116,
+      "modelAttempts": 1,
+      "models": [
+        "openai/gpt-6-luna"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "fixed_workflow"
+      ],
+      "knownCostUsd": 0,
+      "unknownCharges": [
+        {
+          "eventId": "f77c135e-6f2b-4a5d-ba2e-968b471355b1",
+          "stage": "main",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "f489b9c119b831acd8fa8bc9f0b97fb0acbcd9bdf651b8ec8ad832eb4fcec042",
+      "observationHash": "ae5f738aaaff088078ce44070848f07d8ced1bf57d5c9d4f447b8ef1d7b49848"
+    },
+    {
+      "taskId": "P10",
+      "arm": "A",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 30222,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0327994,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "969b827ee3ed4c3d577f837f5409ec4f0a1a9f5351254b6f9daa4ed179b94d6e",
+      "observationHash": "4fee00c59ca5fee6808c3531bdf3082e8da6e16ef86a1a57b157421d7b01a3bf"
+    },
+    {
+      "taskId": "P10",
+      "arm": "B",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 23228,
+      "modelAttempts": 4,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 1,
+      "successfulPrograms": 1,
+      "actualRoutes": [
+        "interpreter"
+      ],
+      "knownCostUsd": 0.047206072,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "99f1cec0125cd869c07795fffab693c8d2f973efbf236816ca96d8423280a4f0",
+      "observationHash": "bf52bd405f1604b85af1e1834bf38337e4d0fb469c7c031c5d0ebe2ced5bde06"
+    },
+    {
+      "taskId": "P10",
+      "arm": "C",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 24633,
+      "modelAttempts": 4,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 1,
+      "successfulPrograms": 1,
+      "actualRoutes": [
+        "interpreter"
+      ],
+      "knownCostUsd": 0.026365372,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "0f44372cbb15f1048df81db2ea7242c87787dcadfd741027094674b7905e481f",
+      "observationHash": "5f754a23dddd25356d4e7bfabe124b37c3d5287aa714f35ca20822539c52c8aa"
+    },
+    {
+      "taskId": "P24",
+      "arm": "A",
+      "status": "partial",
+      "backendEnqueueToTerminalMs": 43683,
+      "modelAttempts": 3,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0157616,
+      "unknownCharges": [
+        {
+          "eventId": "a212f16d-d191-4936-8ee9-eb5a6b6c351e",
+          "stage": "main",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "596d3922a43c3362dc68624af465431578b9dba7c1221a41498186c3f3479138",
+      "observationHash": "b46ede87e0b658a15ff2258b49c5c3fff952300c82d92bacf926a5f584784610"
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "status": "partial",
+      "backendEnqueueToTerminalMs": 59165,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.012526059999999999,
+      "unknownCharges": [
+        {
+          "eventId": "853b49cc-0143-424f-930d-6803c4d6020d",
+          "stage": "main",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "fb387a3426f6957483ede5b82a7d32b8dfc6821390dad9179743ff0a12858f2b",
+      "observationHash": "8b44dab264d59836f6a9dae467a2b473525138466ddcfc4924f00515c91f14c1"
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 51517,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0424514,
+      "unknownCharges": [
+        {
+          "eventId": "65d4a228-e438-4950-ae7b-133ef429205c",
+          "stage": "router",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "7442c14481d98b5b1a48c25a0f613f8bdeaf08ce9bf885372b57417e4eac4c93",
+      "observationHash": "9330fdf2b37f3f28c18ccd35fac9bd38b8c22e97f0427572daca4ab0540b1c8b"
+    }
+  ],
+  "historicalUnknownCharges": 22,
+  "independentQualityAccepted": false,
+  "performanceGatePassed": false,
+  "userVisibleTimingAvailable": false,
+  "conclusion": "Diagnostic smoke only. Independent quality/holdout review and broader fixtures remain required before claiming overall latency/cost improvement.",
+  "productionChanged": false
+}
