@@ -1,0 +1,31 @@
+{
+  "version": "v9-network-phase-audit",
+  "rows": [
+    {
+      "task": "P10-A-1",
+      "traceHash": "38ce8693966cef223c84015241b78711e142f9f70cb0fb1992b16704399e3796",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P10-B-1",
+      "traceHash": "fa5166b5d22ca0d5c4265a896726acbd266707c965b91e602a97fcf441792b96",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P10-C-1",
+      "traceHash": "b95a9c0abeba53a78e523e956bca8326e223d71e6ea610306293bbe175cd7401",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}

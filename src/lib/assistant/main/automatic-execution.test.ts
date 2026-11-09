@@ -18,6 +18,9 @@ it('freezes the opt-in quick interpreter profile without changing capabilities o
  expect(candidate.automatic!.capabilityMode).toBe('deep');
  expect(automaticModelSelection(prior,[programDecisionHint('interpreter')])!.profile.mode).toBe('standard');
  expect(automaticModelSelection(candidate,[programDecisionHint('interpreter'),{role:'tool',content:JSON.stringify(result(null,{status:'partial'}))}])!.profile.mode).toBe('deep');
+ vi.stubEnv('HYBRID_INTERPRETER_PROFILE','deep');
+ expect(automaticModelConfig().automatic!.profiles.interpreter).toEqual(modeModelConfig('deep').profile);
+ expect(candidate.automatic!.profiles.interpreter.mode).toBe('quick');
  vi.stubEnv('HYBRID_INTERPRETER_PROFILE','unrecognized');
  expect(automaticModelConfig().automatic!.profiles.interpreter.mode).toBe('standard');
 });

@@ -1,0 +1,7 @@
+# V10 preregistered quality and comparison
+
+Review first-repeat 18 answers before permitting the remaining 36. Grade every saved output, including partial/failed outcomes; preserve original scores. One blind independent-context request per business task, three smoke answers or six subsequent answers, no tools/fallback/retry. Include actual read inputs/outputs and wrapper receipt identifiers/results; duplicate wrapper leaf copies may be omitted because original leaf rows are included. No model/arm/cost/time in packets. Source facts and original rubric/hard gates remain fixed.
+
+Mechanical checks independently verify P10 exact interval/pagination/unique IDs/counts and P09 required rows/source IDs/order. Latest-progress/unspecified-deadline tasks must read the relevant last/request mail and correctly limit unknowns; P24 requires both versions. Compare all requested outputs and actual read scope, not a literal string checklist for prose. Any reviewer dispute is preserved and requires separately identified adjudication, never silent replacement.
+
+First-repeat gate: >=95% complete correct terminals, zero critical violations, C versus A quality decrease <=5pp, mechanical task checks passed. Cost/time does not erase quality failures. Final subset uses all 54 submissions, complete current billing, same gates plus >=20% total C/A cost and paired median latency reduction, P95 <=+10%; report task-cluster bootstrap intervals. Broad full-24/live-external/browser qualification is separate and remains incomplete.

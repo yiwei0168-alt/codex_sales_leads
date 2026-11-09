@@ -1,0 +1,171 @@
+[
+  {
+    "id": "P01",
+    "group": "fixed",
+    "prompt": "查看 Harbor Circuit 最新进展",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "companyId": "c1",
+      "latestMailId": "c1-m4",
+      "latestFact": "Confirmed receipt; purchase date not committed",
+      "doNotInventPurchaseDate": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P02",
+    "group": "fixed",
+    "prompt": "查看 Juniper Link 最新进展",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "companyId": "c2",
+      "latestMailId": "c2-m4",
+      "latestFact": "Confirmed receipt; purchase date not committed",
+      "doNotInventPurchaseDate": true,
+      "coverage": {
+        "timelineEvents": 4,
+        "bodiesReadByDefaultWorkflow": 3,
+        "hasMore": false,
+        "mustSeparateUnreadBodiesAndPages": true
+      }
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P02",
+    "revision": "v5"
+  },
+  {
+    "id": "P09",
+    "group": "program",
+    "prompt": "逐家读取全部 12 家公司的最后往来日期，按旧到新排列，同日按公司 ID 排序，附邮件来源。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "expectedRows": 12,
+      "sortKeys": [
+        "latestMail.date ASC",
+        "company.id ASC"
+      ],
+      "latestMailIds": [
+        "c1-m4",
+        "c2-m4",
+        "c3-m4",
+        "c4-m4",
+        "c5-m4",
+        "c6-m4",
+        "c7-m4",
+        "c8-m4",
+        "c9-m4",
+        "c10-m4",
+        "c11-m4",
+        "c12-m4"
+      ]
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P10",
+    "group": "program",
+    "prompt": "按北京时间统计 2026 年 11 月 2 日至 2026 年 11 月 5 日含首尾的全部已导入邮件数量，分页读完，列出每日数量和总数。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "dates": [
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05"
+      ],
+      "counts": [
+        8,
+        12,
+        12,
+        8
+      ],
+      "total": 40,
+      "mustReachLastPage": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P10",
+    "revision": "v5"
+  },
+  {
+    "id": "P23",
+    "group": "dynamic",
+    "prompt": "Juniper Link 要求我们最迟哪天提交样品报价？请给出邮件依据，没有明确日期就说明。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "mailId": "c2-m3",
+      "explicitDeadline": null,
+      "mustStateUnspecified": true,
+      "inventedDeadlines": 0
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P24",
+    "group": "dynamic",
+    "prompt": "在已登记资料中对照 NX410 v1 历史规格与 NX410 v2 当前已批准规格，列出两版端口数及原文来源。端口数变化是硬件升级还是资料修订？没有原因证据就明确无法确认，不要猜。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "model": "NX410",
+      "oldVersion": "v1",
+      "oldPorts": 5,
+      "currentVersion": "v2",
+      "currentPorts": 8,
+      "rootCauseUnknown": true,
+      "sources": [
+        "fixture://products/p1/v1#page=2",
+        "fixture://products/p1/v2#page=2"
+      ]
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P24",
+    "revision": "v5"
+  }
+]

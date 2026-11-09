@@ -1,0 +1,74 @@
+{
+  "version": "model-assisted-blind-quality-v9",
+  "identity": "2d8df0c264f623c92c7ac1f07ac88f065056c7a8eb4fa14183cdcc9187c90acd",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794247697-pUReQQAaa8mUiZ2f0TqM",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 3,
+  "passed": 3,
+  "knownReviewCostUsd": 0.1644,
+  "rows": [
+    {
+      "reviewId": "14239546782053ae47b1",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 16,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The daily counts (8/12/12/8) and the total of 40 are correct.",
+        "It states that both pages were read and that the last page returned hasMore=false.",
+        "It cites the two call receipt IDs, not per-message source URLs. That is acceptable for an aggregate count."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v9",
+      "taskId": "P10",
+      "arm": "B",
+      "runId": "ffa3fca5-02a6-4b13-b45e-eebf9028bd1b"
+    },
+    {
+      "reviewId": "3c35f0ae5b72690ac0bf",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 16,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The counts and total are correct.",
+        "It reports 2 pages with hasMore=false and no duplicates.",
+        "It cites the two page receipt IDs. A first program attempt failed, but the retry succeeded and the answer is unaffected."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v9",
+      "taskId": "P10",
+      "arm": "C",
+      "runId": "6ddfa41c-7cf9-44f4-a236-916c851ade13"
+    },
+    {
+      "reviewId": "49a4bcf441ebe55bcf67",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 15,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "The counts and total are correct.",
+        "It states that both pages were read and that the last page has no further pages.",
+        "It gives no call IDs. Each date links to a single sample message URL, which is loosely used as the date's source.",
+        "The labels 'sample' and 'provenance example' make clear the links do not cover the whole day."
+      ],
+      "total": 95,
+      "passed": true,
+      "version": "v9",
+      "taskId": "P10",
+      "arm": "A",
+      "runId": "3e3a92cd-ba1b-4cb0-b82b-36fa9d5ca0eb"
+    }
+  ]
+}

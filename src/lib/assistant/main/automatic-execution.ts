@@ -17,7 +17,8 @@ export type AutomaticRoute = keyof AutomaticExecutionConfig['profiles'];
 /** Pin the model choices at enqueue time; a router suggestion never grants permissions. */
 export function automaticModelConfig(scope: 'business'|'knowledge' = 'business'): ModelConfig {
   const base = modeModelConfig(scope === 'knowledge' ? 'quick' : 'deep');
-  const interpreterTier=process.env.HYBRID_INTERPRETER_PROFILE==='quick'?'quick':'standard';
+  const interpreterTier=process.env.HYBRID_INTERPRETER_PROFILE==='quick'?'quick'
+    :process.env.HYBRID_INTERPRETER_PROFILE==='deep'?'deep':'standard';
   return {...base, automatic: automaticConfigSchema.parse({version: AUTOMATIC_EXECUTION_VERSION,
     capabilityMode: scope === 'knowledge' ? 'quick' : 'deep', profiles: {
       fixed_workflow: modeModelConfig('quick').profile,

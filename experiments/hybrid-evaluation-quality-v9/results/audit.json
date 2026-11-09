@@ -1,0 +1,123 @@
+{
+  "version": "v9-p10-quality-cost-latency-audit",
+  "rows": [
+    {
+      "arm": "A",
+      "paginationPassed": true,
+      "pages": 2,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "uniqueMessages": 40,
+      "qualityPassed": true,
+      "qualityScore": 95,
+      "taskId": "P10",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 27230,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.0487322,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "38ce8693966cef223c84015241b78711e142f9f70cb0fb1992b16704399e3796",
+      "observationHash": "931f13ad7b33d03ed33244888b7f809592bd86e656200df34d014f08b5a59dbe",
+      "routerContextReady": null
+    },
+    {
+      "arm": "B",
+      "paginationPassed": true,
+      "pages": 2,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "uniqueMessages": 40,
+      "qualityPassed": true,
+      "qualityScore": 96,
+      "taskId": "P10",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 16152,
+      "modelAttempts": 3,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 1,
+      "successfulPrograms": 1,
+      "actualRoutes": [
+        "interpreter"
+      ],
+      "knownCostUsd": 0.032129412,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "fa5166b5d22ca0d5c4265a896726acbd266707c965b91e602a97fcf441792b96",
+      "observationHash": "175b16d19e85e6b7fc7238b359f2b38da68db657ca042cfaf37d46f76e6c5a5e",
+      "routerContextReady": 1
+    },
+    {
+      "arm": "C",
+      "paginationPassed": true,
+      "pages": 2,
+      "counts": {
+        "2026-11-02": 8,
+        "2026-11-03": 12,
+        "2026-11-04": 12,
+        "2026-11-05": 8
+      },
+      "uniqueMessages": 40,
+      "qualityPassed": true,
+      "qualityScore": 96,
+      "taskId": "P10",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 39496,
+      "modelAttempts": 5,
+      "models": [
+        "openai/gpt-6-luna",
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 3,
+      "successfulPrograms": 2,
+      "actualRoutes": [
+        "interpreter"
+      ],
+      "knownCostUsd": 0.022813107,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "b95a9c0abeba53a78e523e956bca8326e223d71e6ea610306293bbe175cd7401",
+      "observationHash": "7949296ee6a795ffed4be6a238ccf4a57e32156a1cf548963e970b7ae2ab4940",
+      "routerContextReady": 1
+    }
+  ],
+  "comparison": {
+    "cToACostReduction": 0.5318679025367212,
+    "cToALatencyReduction": -0.4504590525156078,
+    "bToACostReduction": 0.34069440739387913,
+    "bToALatencyReduction": 0.40683070143224387
+  },
+  "routeIntegrationPassed": true,
+  "numericalPilotGatesPassed": false,
+  "sampleBusinessTasks": 1,
+  "repetitions": 1,
+  "p95Qualification": false,
+  "overallAcceptancePassed": false,
+  "knownTaskCostUsd": 0.103674719,
+  "unknownTaskCharges": 0,
+  "historicalUnknownCharges": 26,
+  "knownReviewCostUsd": 0.1644,
+  "productionChanged": false,
+  "limitations": "Single diagnostic business task; no broad/repeated-task or browser-visible latency claim. Preserve older failures, candidates and charge uncertainty."
+}
