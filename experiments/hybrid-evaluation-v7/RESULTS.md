@@ -1,0 +1,7 @@
+# V7 P10 integration — quality passed, efficiency failed
+
+All three once-only P10 tasks answered and passed blind model-assisted quality and mechanical verification: 40 unique messages, two complete pages, Beijing daily counts 8/12/12/8. All current task receipts are complete. Known task cost USD 0.205045824; blind review USD 0.089156. The 26 historical unknown charges remain unresolved. This is one synthetic business task, not human Gold or full acceptance.
+
+C correctly selected Sonnet 5.5 for interpreter execution, but its first program used unsupported `Date` and failed after reading both pages. Recovery used Sol and reused the saved leaf receipts; it did not repeat the mail reads. C used four main-model calls and two program attempts, cost USD 0.118228112, and took 30.767 seconds enqueue-to-terminal. A cost USD 0.0418827 and took 32.385 seconds. C cost increased 182.28% and latency improved only 5.00%, failing both unchanged 20% targets. B cost increased 7.29% and latency improved 35.05% relative to A.
+
+The failure motivates an explicit timezone-aware calendar-day helper and an opt-in shorter discovery catalog, retaining full tool schemas and permissions. These changes will receive a new preregistered run; v7 results and freezes are not rewritten. Production remains unchanged. Repeated and broader task comparisons, reliability, complete historical billing and user-visible latency remain unqualified.

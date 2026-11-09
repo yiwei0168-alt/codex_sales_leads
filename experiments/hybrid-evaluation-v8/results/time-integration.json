@@ -1,0 +1,11 @@
+{
+  "version": "date-grouping-v2-real-wasm-db",
+  "passed": true,
+  "realDatabase": true,
+  "realWasm": true,
+  "pages": 2,
+  "total": 40,
+  "modelCalls": 0,
+  "fixtureMutations": 0,
+  "scope": "Deterministic date helper integration, not model-generated code acceptance."
+}

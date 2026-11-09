@@ -1,0 +1,72 @@
+{
+  "version": "model-assisted-blind-quality-v7",
+  "identity": "25d13a6d9195b39cd257faf6d4fe756b2f578ef34a945da900b5628748ec7fdd",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794246389-AlJgvJK0U8uYemgK9mkC",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 3,
+  "passed": 3,
+  "knownReviewCostUsd": 0.089156,
+  "rows": [
+    {
+      "reviewId": "31a63913a38097c7e55b",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 15,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Daily counts 8/12/12/8 and total 40 match the data. Both pages were read, and the last page has hasMore=false.",
+        "Cites the two call IDs, which match the packet. The tool returned no sources, so there are no per-row source URLs."
+      ],
+      "total": 95,
+      "passed": true,
+      "version": "v7",
+      "taskId": "P10",
+      "arm": "C",
+      "runId": "585d90c2-d7ab-489e-8c48-25c6ac22b636"
+    },
+    {
+      "reviewId": "83beb38e257e89bc61ff",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 9,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Counts and total are correct. The answer says all 2 pages were read and the last page has no further data.",
+        "Gives no call IDs or source references, so the pagination claim can't be traced to a receipt.",
+        "Scope exclusions (purged mail, mail without a timestamp) are stated."
+      ],
+      "total": 89,
+      "passed": true,
+      "version": "v7",
+      "taskId": "P10",
+      "arm": "A",
+      "runId": "6933f018-eecc-44ea-8d17-8a00e7de3075"
+    },
+    {
+      "reviewId": "e43cec5c11a4608fb940",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 15,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Counts and total are correct. Pagination is complete, and the answer says message IDs were deduplicated.",
+        "Call IDs match the packet. The tool returned no sources, so there are no per-row source URLs.",
+        "States that no mailbox sync was run."
+      ],
+      "total": 95,
+      "passed": true,
+      "version": "v7",
+      "taskId": "P10",
+      "arm": "B",
+      "runId": "669e8e97-a37c-4baa-852f-22a0e0caa097"
+    }
+  ]
+}

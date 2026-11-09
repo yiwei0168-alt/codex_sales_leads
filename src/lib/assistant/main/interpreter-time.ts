@@ -1,5 +1,5 @@
 /** Guest-only helper: never return a Date object or expose the native clock. */
-export const INTERPRETER_ABI = 'interpreter-time-receipts-v1';
+export const INTERPRETER_ABI = 'interpreter-time-receipts-v2';
 export const INTERPRETER_TIME_SETUP = String.raw`
   const NativeDate = Date;
   const utc = NativeDate.UTC.bind(NativeDate);
@@ -7,8 +7,11 @@ export const INTERPRETER_TIME_SETUP = String.raw`
   const getYear = Function.prototype.call.bind(NativeDate.prototype.getUTCFullYear);
   const getMonth = Function.prototype.call.bind(NativeDate.prototype.getUTCMonth);
   const getDay = Function.prototype.call.bind(NativeDate.prototype.getUTCDate);
-  const time = (text) => {
+  const isInteger = Number.isInteger;
+  const time = (text, offsetMinutes) => {
     if (typeof text !== 'string') throw Error('time requires an explicit timestamp with timezone');
+    if(offsetMinutes!==undefined&&(!isInteger(offsetMinutes)||offsetMinutes < -840||offsetMinutes > 840))
+      throw Error('Grouping offset must be explicit integer minutes from -840 to 840');
     const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?(Z|([+-])(\d{2})(?::?(\d{2}))?)$/.exec(text);
     if (!m) throw Error('Use YYYY-MM-DDTHH:mm:ss[.SSS]Z or an explicit numeric timezone offset');
     const y=+m[1], month=+m[2], day=+m[3], h=+m[4], min=+m[5], s=+m[6];
@@ -19,6 +22,12 @@ export const INTERPRETER_TIME_SETUP = String.raw`
     const d=new NativeDate(local);
     if(getYear(d)!==y || getMonth(d)!==month-1 || getDay(d)!==day) throw Error('Invalid calendar date');
     const epochMs=local-(m[9]==='-'?-1:1)*(oh*60+om)*60000;
-    return Object.freeze({epochMs,utcIso:iso(new NativeDate(epochMs))});
+    const normalized={epochMs,utcIso:iso(new NativeDate(epochMs))};
+    if(offsetMinutes!==undefined){
+      const shifted=new NativeDate(epochMs+offsetMinutes*60000);
+      if(getYear(shifted)<100||getYear(shifted)>9999)throw Error('Grouping date outside supported calendar');
+      return Object.freeze({...normalized,offsetMinutes,localDate:iso(shifted).slice(0,10)});
+    }
+    return Object.freeze(normalized);
   };
 `;
