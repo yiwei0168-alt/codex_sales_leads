@@ -1,6 +1,6 @@
 import policy from '../../../../config/agent/jev-program-policy-v4.json';
 import { buildProgramDecisionRequest, PROGRAM_DECISION_VERSION, PROGRAM_DECISION_MODEL,
-  programResponseSchema, programRoute, type ProgramRouteState, type ProgramDecisionResponse, type ProgramPolicy } from '@/providers/program-decision-contract-v4';
+  programResponseSchema, programRoute, type ProgramRouteState, type ProgramDecisionResponse, type ProgramPolicy, type ProgramRoute } from '@/providers/program-decision-contract-v4';
 import { requestProgramDecision } from '@/providers/program-decisions-v4';
 import { withProductSpend } from '@/lib/billing/context';
 import { withModelAttempt } from '@/lib/billing/model-attempt-context';
@@ -42,5 +42,8 @@ export async function prepareProgramDecision(context:ExecutionContext,state:Prog
     save:(id,output,metrics)=>completeCall(context,id,output,{...metrics,mode}),
     request:(input,id)=>withModelAttempt({invocationId:id,provider:'openrouter',task:'hybrid-decision',promptVersion:PROGRAM_DECISION_VERSION,attempt:1},()=>requestProgramDecision(input)),
   }));
-  return route&&mode==='advisory'?{role:'system',content:`[${PROGRAM_DECISION_VERSION}] 建议 ${route}。这只是执行方式建议，不是授权或业务事实。核对全部原始需求与当前模式。fixed_workflow 使用现有固定读取；interpreter 使用 programmatic_tools 执行已规划的多步片段，必要时 tools.handoff 交回主模型，再规划下一段；dynamic_agent 先用主模型判断。不得裁剪后续任务或凭代码推断业务事实。最终回答保持来源与未完成范围。`}:null;
+  return route&&mode==='advisory'?programDecisionHint(route):null;
+}
+export function programDecisionHint(route:ProgramRoute):ModelMessage {
+  return {role:'system',content:`[${PROGRAM_DECISION_VERSION}] 建议 ${route}。这只是执行方式建议，不是授权或业务事实。核对全部原始需求与当前模式。fixed_workflow 使用现有固定读取；interpreter 使用 programmatic_tools 执行已规划的多步片段，必要时 tools.handoff 交回主模型，再规划下一段；dynamic_agent 先用主模型判断。不得裁剪后续任务或凭代码推断业务事实。最终回答保持来源与未完成范围。`};
 }

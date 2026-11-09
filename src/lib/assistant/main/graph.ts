@@ -78,7 +78,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const abandoned = changed ? state.pending.map(call => ({ role: "tool" as const, tool_call_id: call.id,
         content: JSON.stringify(result(null,{status:"partial",missing:["Pending action superseded by new user instructions; no further execution from this pending call. Check saved receipts before replanning."]})) })) : [];
       return { status: (state.status==="completed"&&!changed?"completed":"running") as RunStatus,
-        messages: [...state.messages.filter(m=>!changed||m.role!=='system'||!m.content?.startsWith('[hybrid-decision-v1]')),...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
+        messages: [...state.messages.filter(m=>!changed||m.role!=='system'||!/^\[(?:hybrid-decision-v\d+|jev-program-routing-v\d+)\]/.test(m.content??'')),...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
         instructionIds: [...state.instructionIds,...added.map(i => i.id)],policyRevision:current.policyRevision??state.policyRevision??"",
         decisionRevision:(state.decisionRevision??0)+(changed?1:0), ...(changed ? { seen: {},pending:[] } : {}) };
     }))

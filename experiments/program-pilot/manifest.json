@@ -1,0 +1,22 @@
+{
+  "version": "program-pilot-v1",
+  "sources": {
+    "experiments/program-pilot/run.ts": "754301fd7f02f7b8079b1795b8f8850156cda20083e1c8c40548396eba4ad1ee",
+    "src/lib/assistant/main/graph.ts": "afe667ad771cba926fb4da0085311ff1c094f67207ecf07c284891314ecba63b",
+    "src/lib/assistant/main/programmatic-execution.ts": "7e74c5216db7116b397ee93d91b469903aa81ba3b204054f2e435d4dfe148b44",
+    "src/lib/assistant/main/program-decision-routing-v4.ts": "d018aa7a35ea6450fcb74894fa0defd3d1393d001d8a90bcfb323a4b9691baff",
+    "src/providers/program-decision-contract-v4.ts": "2ff2ffbf548745845423c30580821570de67fa8044a02ed4e96a6da40485bc63",
+    "config/agent/jev-program-policy-v4.json": "ff305a29040b74d1b9fe02b7f6ef253a4ab44b46609878c74267289ab18e1364"
+  },
+  "request": "分别读取 Atlas（candidateId=fixture-atlas）、Birch（candidateId=fixture-birch）、Cedar（candidateId=fixture-cedar）已有的公司记录，按已保存分数从高到低列出名称、分数、更新时间，每家公司保留对应来源链接。不要生成新评分，不做原因解释或写入。",
+  "model": {
+    "model": "openai/gpt-6-luna",
+    "effort": "none"
+  },
+  "maxModelCalls": 12,
+  "maxJevCalls": 1,
+  "retries": 0,
+  "fixtureDataOnly": true,
+  "productionSwitch": false,
+  "qualityGate": "all three facts, dates, URLs; descending order; hybrid must execute a real WASM program"
+}

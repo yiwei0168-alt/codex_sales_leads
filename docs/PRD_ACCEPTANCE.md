@@ -2020,3 +2020,11 @@ Status: implemented; focused automated verification and live follow-up are recor
 - 验证：相关 143 项测试通过，类型检查/lint 通过；模拟父回执写入中断时复用完成的并发子调用。多判断题使用独立计费请求契约，不放宽历史单题契约，不修改用户预算。
 - 完成边界：代码与合成路由验收完成，运行实例开关未变，不等于已部署或真实业务整项任务质量/总时长/省费验收完成。
 - 文档：[PROGRAMMATIC_SEGMENTS_2026-11-09.md](PROGRAMMATIC_SEGMENTS_2026-11-09.md)；提示快照：[JEV_PROGRAM_ROUTING_V4_PROMPT.md](JEV_PROGRAM_ROUTING_V4_PROMPT.md)；证据：[jev-program-v4-validation-2026-11-09.json](evidence/jev-program-v4-validation-2026-11-09.json)。
+
+
+### HYBRID-07 后续联调准备（2026-11-09）
+
+- 用户明确要求：“进行下一步”。承接现有混合策略实施，先进行隔离执行链联调与本机验收准备，不把此确认当作真实业务质量通过。
+- 本机六组件健康，但仍指向旧构建；尚未启用 Jev v4。已修复用户中途改要求时新版本路由建议未清除的问题，44 项相关测试与类型检查通过。
+- 冻结隔离探针：真实主模型与 Jev，三个合成公司数据，baseline/hybrid 对比；最多 12 次主模型、1 次 Jev，不重试未知结果，不接触真实业务数据库。完整性、引用、排序和实际 WASM 执行为硬性检查，不据单题推断全产品收益。
+- 详情：[PROGRAM_PILOT_2026-11-09.md](PROGRAM_PILOT_2026-11-09.md)。本机切换和自然业务验收尚待后续证据。
