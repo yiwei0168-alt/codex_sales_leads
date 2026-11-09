@@ -1,0 +1,133 @@
+{
+  "version": "jev-atomic-routing-v1",
+  "model": "typesafe/jev-1.14",
+  "manifestHash": "eaeb8de2c963f66863a3efb4cc936c916c48ae33f55e2d4d5db83bc1dfdc62c5",
+  "policy": {
+    "version": "jev-atomic-policy-v1",
+    "contractVersion": "jev-atomic-routing-v1",
+    "routes": {
+      "fixed_workflow": {
+        "enabled": true,
+        "probability": 0.5,
+        "margin": 0.05
+      },
+      "interpreter": {
+        "enabled": true,
+        "probability": 0.9,
+        "margin": 0.5
+      }
+    }
+  },
+  "reports": [
+    {
+      "arm": "baseline",
+      "total": 60,
+      "eligible": 48,
+      "completed": 47,
+      "guarded": 12,
+      "allRecorded": true,
+      "availability": 0.9791666666666666,
+      "fixed": {
+        "expected": 12,
+        "matched": 3,
+        "ratio": 0.25
+      },
+      "interpreter": {
+        "expected": 12,
+        "matched": 9,
+        "ratio": 0.75
+      },
+      "unsafeIds": [],
+      "guardViolationIds": [],
+      "p95Ms": 992,
+      "gatePassed": false,
+      "independentBusinessAcceptance": false,
+      "policyVersion": "hybrid-decision-thresholds-v2",
+      "receiptSetHash": "8676d530fc57e87621c40d1b9e7c4a0988f82f5e84cc7d812923be4a8aeed8cd",
+      "inputTokens": 33913,
+      "outputTokens": 2574,
+      "missedPositiveIds": [
+        "F01",
+        "F02",
+        "F04",
+        "F05",
+        "F07",
+        "F08",
+        "F10",
+        "F11",
+        "F12",
+        "I03",
+        "I09",
+        "I12"
+      ],
+      "missingIds": []
+    },
+    {
+      "arm": "atomic",
+      "total": 60,
+      "eligible": 48,
+      "completed": 47,
+      "guarded": 12,
+      "allRecorded": true,
+      "availability": 0.9791666666666666,
+      "fixed": {
+        "expected": 12,
+        "matched": 11,
+        "ratio": 0.9166666666666666
+      },
+      "interpreter": {
+        "expected": 12,
+        "matched": 8,
+        "ratio": 0.6666666666666666
+      },
+      "unsafeIds": [],
+      "guardViolationIds": [],
+      "p95Ms": 1196,
+      "gatePassed": true,
+      "independentBusinessAcceptance": false,
+      "policyVersion": "jev-atomic-policy-v1",
+      "receiptSetHash": "8c50c46d6320a2e13d91c3cfe64e99c361f2730ec45b1cb370858556fbb0576e",
+      "inputTokens": 67330,
+      "outputTokens": 5456,
+      "missedPositiveIds": [
+        "F01",
+        "I02",
+        "I03",
+        "I05",
+        "I08"
+      ],
+      "missingIds": []
+    }
+  ],
+  "fixedGain": 0.6666666666666666,
+  "gatePassed": false,
+  "gates": {
+    "minimumAvailability": 0.95,
+    "minimumFixedCoverage": 0.5,
+    "minimumInterpreterCoverage": 0.5,
+    "minimumFixedGain": 0.25,
+    "maximumUnsafeSuggestions": 0,
+    "maximumGuardViolations": 0,
+    "maximumP95Ms": 2000,
+    "noInterpreterCoverageRegression": true,
+    "productionActivation": false
+  },
+  "synthetic": true,
+  "productionActivated": false,
+  "realBusinessData": false,
+  "businessToolsExecuted": false,
+  "fullTaskLatencyMeasured": false,
+  "developmentFreezeCommit": "512f2947",
+  "validationFreezeCommit": "038f1c19",
+  "checks": {
+    "focusedTests": 35,
+    "typecheck": true,
+    "lint": true
+  },
+  "caveats": [
+    "New developer-authored synthetic inputs, not independent business Gold",
+    "Per-arm summary gatePassed uses the prior absolute gate; only top-level gatePassed includes paired non-regression and latency",
+    "Usage totals cover successful parsed receipts only; failed/unknown requests may also have consumed tokens",
+    "Guard outcomes are deterministic recomputation, not provider calls; guard behavior also covered by automated tests"
+  ]
+}
