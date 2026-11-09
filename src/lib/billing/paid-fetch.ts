@@ -20,6 +20,7 @@ import {modelRoutedTransport} from "@/lib/network/model-transport";
 import {isModeStreamRequest,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 import {decisionModelSchema,parseDecisionResponse,validDecisionRequest} from '@/providers/decision-contract';
 import {validProgramDecisionRequest,programResponseSchema} from '@/providers/program-decision-contract';
+import {validProgramDecisionRequest as validProgramV4,programResponseSchema as programResponseV4} from '@/providers/program-decision-contract-v4';
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -131,7 +132,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
       let invalidDecision=false;
       if(decisionRoute&&response.ok){try{
-        if(validProgramDecisionRequest(parsed))programResponseSchema.parse(result);
+        if(validProgramV4(parsed))programResponseV4.parse(result);
+        else if(validProgramDecisionRequest(parsed))programResponseSchema.parse(result);
         else parseDecisionResponse(result,decisionModelSchema.parse(parsed.model));
       }catch{invalidDecision=true;}}
       const outputIncomplete=response.ok&&(invalidDecision||textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"

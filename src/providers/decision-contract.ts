@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {validProgramDecisionRequest} from './program-decision-contract';
+import {validProgramDecisionRequest as validProgramV4} from './program-decision-contract-v4';
 
 export const DECISION_VERSION = 'hybrid-decision-v1';
 export const DECISION_URL = 'https://openrouter.ai/api/alpha/decisions';
@@ -31,7 +32,7 @@ export function buildDecisionRequest(model: DecisionModel, state: RouteState) {
 }
 /** Restrict the paid wire surface to the one reviewed, text-only question. */
 export function validDecisionRequest(value: unknown): boolean {
-  if(validProgramDecisionRequest(value))return true;
+  if(validProgramDecisionRequest(value)||validProgramV4(value))return true;
   const parsed = z.object({model: decisionModelSchema, state: routeStateSchema,
     questions: z.object({route: z.unknown()}).strict(),
     provider: z.object({require_parameters: z.literal(true), data_collection: z.literal('deny'),

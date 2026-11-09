@@ -17,7 +17,7 @@ export function decisionRoutingConfig():{mode:'shadow'|'advisory';model:Decision
 
 /** No summaries or archive content are sent. Never truncate a request to make it look simpler. */
 export function decisionState(messages: ModelMessage[], hasPolicy: boolean): RouteState | null {
-  if(hasPolicy || !messages.some(m=>m.role==='system'&&/^\[hybrid-v[12]:eligible\]/.test(m.content??''))
+  if(hasPolicy || !messages.some(m=>m.role==='system'&&/^\[hybrid-v[124]:eligible\]/.test(m.content??''))
     || messages.some(m=>m.role==='assistant'||m.role==='tool') || hybridFirstAction(messages)) return null;
   const users=messages.filter(m=>m.role==='user');
   if(users.length!==1) return null;
@@ -73,6 +73,10 @@ export async function prepareDecisionRoute(context:ExecutionContext,messages:Mod
   const config=decisionRoutingConfig();
   if(!hybridEnabled()||context.evaluationArm||!config)return null;
   const state=decisionState(messages,hasPolicy);if(!state)return null;
+  if(config.model==='typesafe/jev-1.14'&&messages.some(m=>m.role==='system'&&m.content?.startsWith('[hybrid-v4:eligible]'))){
+    const {prepareProgramDecision}=await import('./program-decision-routing-v4');
+    return prepareProgramDecision(context,{...state,mode:context.mode??'deep'},config.mode);
+  }
   if(config.model==='typesafe/jev-1.14'&&messages.some(m=>m.role==='system'&&m.content?.startsWith('[hybrid-v2:eligible]'))){
     const {prepareProgramDecision}=await import('./program-decision-routing');
     return prepareProgramDecision(context,{...state,mode:context.mode??'deep'},config.mode);

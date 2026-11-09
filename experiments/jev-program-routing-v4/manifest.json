@@ -1,0 +1,26 @@
+{
+  "version": "jev-program-routing-v4",
+  "sources": {
+    "src/providers/program-decision-contract-v4.ts": "618e8b87d95bb3fa263ac90f8b0c7aa3d1eacb9f11a3988d73f7163198c4864c",
+    "src/providers/program-decision-contract.ts": "63e3081240d9ebe7d1512400b2d43b77b83bfda8d0aec52cc1c23f97041d9372",
+    "src/providers/program-decisions-v4.ts": "c4dc7e108c15816dd27cfbecd82b5251cfd35a0d91e37b458ed9ab7da5e4b284",
+    "src/lib/assistant/main/programmatic-execution.ts": "1986b7d1d3c573809ba372a0904d6e0fb44fa09cf28a3060188e822c786b2a65",
+    "src/lib/assistant/main/hybrid-contracts.ts": "8281f23e5a7d292d1abcf6acbaaa4d22a26c4ee564db3107038889371c1c79e7",
+    "experiments/jev-program-routing-v4/cases.ts": "d64700174938d80d17fce2260d74385fe3e6fafd981b546d4a1eb39fd810e8d9",
+    "experiments/jev-program-routing/cases.ts": "6a69a274ed65c16a0fc8b674e26115afe194e9fae71a281478d1c65e0fdf9321",
+    "experiments/jev-program-routing-v4/run.ts": "9313360df3916c872c25d4455bfdb1fd8a44a4c39474543d8a542ce5c7f436be"
+  },
+  "gates": {
+    "minimumFixed": 9,
+    "minimumInterpreter": 9,
+    "maximumWrongFast": 0,
+    "minimumAvailability": 0.9,
+    "maximumP95Ms": 2500
+  },
+  "development": 48,
+  "validation": 48,
+  "maximumRequests": 88,
+  "providerRetries": 0,
+  "synthetic": true,
+  "naturalBusinessEvidence": false
+}

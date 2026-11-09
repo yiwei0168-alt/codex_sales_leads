@@ -1,0 +1,16 @@
+{
+  "version": "jev-program-policy-v4-pending",
+  "contractVersion": "jev-program-routing-v4",
+  "routes": {
+    "fixed_workflow": {
+      "enabled": false,
+      "probability": 1,
+      "margin": 1
+    },
+    "interpreter": {
+      "enabled": false,
+      "probability": 1,
+      "margin": 1
+    }
+  }
+}
