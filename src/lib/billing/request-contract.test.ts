@@ -75,8 +75,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.14.0");
-  expect(billingPolicy.rules).toHaveLength(14);
+  expect(billingPolicy.version).toBe("request-bounds-v1.14.0+decision-routing-v1");
+  expect(billingPolicy.rules).toHaveLength(16);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
     expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);

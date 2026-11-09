@@ -18,6 +18,7 @@ import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 import {createHash} from "node:crypto";
 import {modelRoutedTransport} from "@/lib/network/model-transport";
 import {isModeStreamRequest,ModelReceiptError} from '@/lib/assistant/main/model-stream';
+import {decisionModelSchema,parseDecisionResponse,validDecisionRequest} from '@/providers/decision-contract';
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -47,6 +48,10 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
+    const decisionRoute=url.origin==='https://openrouter.ai'&&url.pathname==='/api/alpha/decisions';
+    // Enforce the wire contract even in financial-observation mode or with a custom tariff policy.
+    if(decisionRoute&&(request.method!=='POST'||url.search||!validDecisionRequest(parsed)||bytes>32768))
+      throw new BudgetDeniedError('request-out-of-bounds');
     let native: Awaited<ReturnType<typeof nativeModelBound>> = null;
     const attempt=currentModelAttempt();
     const playbookSol=attempt?.task==="lead-playbook"&&quote.origin==="https://openrouter.ai"
@@ -123,7 +128,9 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     try{
       const text=responseText;let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
-      const outputIncomplete=response.ok&&(textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"
+      let invalidDecision=false;
+      if(decisionRoute&&response.ok){try{parseDecisionResponse(result,decisionModelSchema.parse(parsed.model));}catch{invalidDecision=true;}}
+      const outputIncomplete=response.ok&&(invalidDecision||textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"
         ||embeddingOutputCompletion(attempt?.task,result,parsed)==="incomplete");
       await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens??usage.total_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result,{httpStatus:response.status,generationId:response.headers.get("x-generation-id")})});
       const report=openRouterInlineCostReport({url,method:request.method,httpStatus:response.status,request:parsed,response:result});

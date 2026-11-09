@@ -9,6 +9,34 @@ import {hybridFirstAction} from './hybrid-routing';
 const call = (id: string, tool: string): ModelToolCall => ({ id, type: "function", function: { name: "execute_tool", arguments: JSON.stringify({ tool, arguments: {} }) } });
 const initial = () => ({ messages: [{ role: "user" as const, content: "先查现有资料，再对照保存的公司决定，指出差异" }], pending: [], steps: 0, status: "running" as const, reply: "", seen: {}, instructionIds: [] });
 describe("open main Agent graph", () => {
+  it('uses a route hint once while retaining the original request and selected main model',async()=>{
+    const prepareRoute=vi.fn(async():Promise<ModelMessage>=>({role:'system',content:'[hybrid-decision-v1] interpreter advisory'}));
+    const replies:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[call('read','company_search')]},{role:'assistant',content:'Complete answer'}];
+    const model=vi.fn(async(messages:ModelMessage[])=>{
+      expect(messages.some(m=>m.content===initial().messages[0].content)).toBe(true);
+      expect(messages.some(m=>m.content?.includes('interpreter advisory'))).toBe(true);
+      return replies.shift()!;
+    });
+    const tool=vi.fn(async()=>result({read:true}));
+    const out=await buildMainAgentGraph({prepareRoute,boundary:async()=>({control:null,instructions:[]}),model,tool},false).invoke(initial());
+    expect(out.status).toBe('completed');expect(prepareRoute).toHaveBeenCalledOnce();expect(model).toHaveBeenCalledTimes(2);
+  });
+  it('uses the unchanged dynamic path when the optional decision has no usable result',async()=>{
+    const prepareRoute=vi.fn(async()=>null),model=vi.fn(async()=>({role:'assistant' as const,content:'Normal answer'}));
+    const out=await buildMainAgentGraph({prepareRoute,boundary:async()=>({control:null,instructions:[]}),model,tool:vi.fn()},false).invoke(initial());
+    expect(out.status).toBe('completed');expect(model.mock.calls).toHaveLength(1);expect(prepareRoute).toHaveBeenCalledOnce();
+  });
+  it('removes stale routing advice and skips routing when new instructions arrive',async()=>{
+    const prepareRoute=vi.fn();
+    const model=vi.fn(async(messages:ModelMessage[])=>{
+      expect(messages.some(m=>m.content?.startsWith('[hybrid-decision-v1]'))).toBe(false);
+      expect(messages.some(m=>m.content==='Changed request')).toBe(true);
+      return {role:'assistant' as const,content:'Replanned'};
+    });
+    await buildMainAgentGraph({prepareRoute,boundary:async()=>({control:null,instructions:[{id:'new',content:'Changed request'}]}),model,tool:vi.fn()},false)
+      .invoke({...initial(),messages:[...initial().messages,{role:'system',content:'[hybrid-decision-v1] stale'}]});
+    expect(prepareRoute).not.toHaveBeenCalled();
+  });
   it('runs an exact read recipe without a planning model and then uses one answer turn',async()=>{
     const model=vi.fn(async(messages:ModelMessage[]):Promise<ModelMessage>=>{
       expect(messages.some(m=>m.role==='user'&&m.content==='查看 Atlas 最新进展')).toBe(true);

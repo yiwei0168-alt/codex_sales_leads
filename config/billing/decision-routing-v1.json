@@ -1,0 +1,33 @@
+{
+  "version": "decision-routing-v1",
+  "rules": [
+    {
+      "key": "openrouter-jev-1.14-decision-route",
+      "origin": "https://openrouter.ai",
+      "pathname": "/api/alpha/decisions",
+      "model": "typesafe/jev-1.14",
+      "maximumChargeMicros": 2753,
+      "maximumRequestBytes": 32768,
+      "maximumOutputTokens": 0,
+      "requestContract": "openrouter-decision-route-v1",
+      "boundDescription": "Single fixed four-choice routing question, text state <=6000 characters and request <=32768 bytes; conservative 65536 input-token envelope including question serialization at USD 0.042/M, rounded up. Output is free. No images, assets, extra questions, plugins, cache-write controls, model/provider fallback or user-controlled provider settings.",
+      "reference": "https://openrouter.ai/typesafe/jev-1.14",
+      "verifiedAt": "2026-11-09T00:00:00Z",
+      "expiresAt": "2026-11-16T00:00:00Z"
+    },
+    {
+      "key": "openrouter-luna-decisions-route",
+      "origin": "https://openrouter.ai",
+      "pathname": "/api/alpha/decisions",
+      "model": "openai/gpt-6-luna-decisions",
+      "maximumChargeMicros": 6554,
+      "maximumRequestBytes": 32768,
+      "maximumOutputTokens": 0,
+      "requestContract": "openrouter-decision-route-v1",
+      "boundDescription": "Single fixed four-choice routing question, text state <=6000 characters and request <=32768 bytes; conservative 65536 input-token envelope including question serialization at USD 0.10/M, rounded up. Output is free. No images, assets, extra questions, plugins, cache-write controls, model/provider fallback or user-controlled provider settings.",
+      "reference": "https://openrouter.ai/openai/gpt-6-luna-decisions",
+      "verifiedAt": "2026-11-09T00:00:00Z",
+      "expiresAt": "2026-11-16T00:00:00Z"
+    }
+  ]
+}

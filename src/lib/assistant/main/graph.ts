@@ -23,6 +23,7 @@ import {recordConsumedToolOutputs} from "./consumption";
 import {toolModelView} from './tool-model-view';
 import {hybridFirstAction,hybridEnabled} from './hybrid-routing';
 import {hybridDataSchema} from './hybrid-contracts';
+import {prepareDecisionRoute} from './decision-routing';
 import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
 import {assertCurrentMemoryMessages,withCurrentDecisionMemory,MemoryContextChangedError,MEMORY_CHANGED_REPLY} from './memory-message-guard';
@@ -41,6 +42,7 @@ export interface MainGraphDependencies {
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
   firstAction?: (messages: ModelMessage[]) => ModelMessage|null;
+  prepareRoute?: (messages: ModelMessage[]) => Promise<ModelMessage|null>;
   tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
 }
 const PLACEHOLDER_UUIDS = new Set([
@@ -76,7 +78,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const abandoned = changed ? state.pending.map(call => ({ role: "tool" as const, tool_call_id: call.id,
         content: JSON.stringify(result(null,{status:"partial",missing:["Pending action superseded by new user instructions; no further execution from this pending call. Check saved receipts before replanning."]})) })) : [];
       return { status: (state.status==="completed"&&!changed?"completed":"running") as RunStatus,
-        messages: [...state.messages,...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
+        messages: [...state.messages.filter(m=>!changed||m.role!=='system'||!m.content?.startsWith('[hybrid-decision-v1]')),...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
         instructionIds: [...state.instructionIds,...added.map(i => i.id)],policyRevision:current.policyRevision??state.policyRevision??"",
         decisionRevision:(state.decisionRevision??0)+(changed?1:0), ...(changed ? { seen: {},pending:[] } : {}) };
     }))
@@ -85,10 +87,12 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       try {
         await deps.validateEvidence?.(state.messages);
         const prepared=state.steps===0&&!(state.decisionRevision??0)?deps.firstAction?.(state.messages):null;
-        const response = prepared??await deps.model(toolModelView(state.messages), state.steps,state.decisionRevision??0);
+        const hint=!prepared&&state.steps===0&&!(state.decisionRevision??0)?await deps.prepareRoute?.(state.messages):null;
+        const routedMessages=hint?[...state.messages,hint]:state.messages;
+        const response = prepared??await deps.model(toolModelView(routedMessages), state.steps,state.decisionRevision??0);
         await deps.validateEvidence?.(state.messages);
-        if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
-        return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
+        if (response.tool_calls?.length) return { messages: [...routedMessages, response], pending: response.tool_calls, steps: state.steps + 1 };
+        return { messages: [...routedMessages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
       } catch(error) {
         // A transport failure may race with source revocation. Check the saved
         // context again before describing the failure as a model outage.
@@ -247,6 +251,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   let allowPreparedRead=false;
   const graph = buildMainAgentGraph({
     firstAction:messages=>hybridEnabled()&&allowPreparedRead?hybridFirstAction(messages):null,
+    prepareRoute:messages=>prepareDecisionRoute(context,messages,!allowPreparedRead),
     validateEvidence:validateContext,
     boundary: async () => {
       const current=await boundary(context),memories=await loadDecisionMemory(userId);

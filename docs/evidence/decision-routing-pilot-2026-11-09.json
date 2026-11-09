@@ -1,0 +1,261 @@
+{
+  "date": "2026-11-09",
+  "rule": "HYBRID-02",
+  "stage": "engineering-and-synthetic-pilot",
+  "authorization": "User accepted the visible Jev-first / OpenAI comparison proposal; no change to selected answer model.",
+  "engineering": {
+    "focusedTests": {
+      "files": 9,
+      "tests": 127,
+      "passed": true
+    },
+    "typecheck": true,
+    "focusedLint": true,
+    "initialFailures": [
+      "PowerShell npx wrapper blocked; used Node entrypoint.",
+      "Vitest temp-file rename denied; project-local child TEMP/TMP passed.",
+      "Request contract regression expected the previous tariff count/version; updated expected additive version/count.",
+      "Sandbox Turbopack junction creation denied; isolated candidate build retried with authorized elevation.",
+      "Candidate build found an implicit-array type in the new reporting script; explicit row types fixed it and the subsequent full build passed."
+    ],
+    "nodeBundleSmoke": true,
+    "productionCandidateBuild": {
+      "passed": true,
+      "nextVersion": "16.3.4",
+      "buildId": "j_An3vh0GCGf_k1UN8WLm",
+      "directory": ".local-runtime/decision-next-20261109",
+      "source": "working-tree-candidate-not-fixed-release",
+      "typescript": true,
+      "runtimeActivated": false
+    },
+    "databaseRecoveryTest": "mock-only",
+    "nodeBundles": [
+      {
+        "file": ".local-runtime/decision-candidate-20261109/main.mjs",
+        "sha256": "de944a8d5adb226fe77e7b847c4c136ad6d488350264ee68ee0da200ce0e3345"
+      },
+      {
+        "file": ".local-runtime/decision-candidate-20261109/decision.mjs",
+        "sha256": "7ca706e2ac87dc9f716d3c9580b65c2f8946be0a7457352d7000162c9c0c2f2b"
+      }
+    ]
+  },
+  "inference": {
+    "successfulResponses": 255,
+    "commonComparisonResponses": 254,
+    "openaiExtraPreflightResponses": 1,
+    "initialJevUnresolvedAttempts": 1,
+    "initialJevReplayed": false,
+    "rawReceipts": "local-only .local-runtime/decision-routing-eval-20261109/",
+    "networkProbe": {
+      "sandbox": "public GET EACCES",
+      "authorizedOutsideSandbox": "public GET HTTP 200"
+    },
+    "timingNote": "Two model evaluations ran concurrently on this machine through the existing local proxy. Includes network and response parsing; not full business task latency.",
+    "comparison": {
+      "kind": "synthetic-template-family-regression",
+      "sameSamples": 127,
+      "reports": [
+        {
+          "model": "typesafe/jev-1.14",
+          "contractHash": "42a92fd69d671b1801293dfb49ab0fabf155582e83b9e440d11bdc428f9bd10e",
+          "groups": [
+            {
+              "split": "all",
+              "completed": 127,
+              "rawLabelAgreement": 118,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 0,
+              "interpreterSuggestions": 18,
+              "dynamicFallbacks": 109,
+              "p95Ms": 499
+            },
+            {
+              "split": "development",
+              "completed": 63,
+              "rawLabelAgreement": 58,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 0,
+              "interpreterSuggestions": 12,
+              "dynamicFallbacks": 51,
+              "p95Ms": 499
+            },
+            {
+              "split": "holdout",
+              "completed": 64,
+              "rawLabelAgreement": 60,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 0,
+              "interpreterSuggestions": 6,
+              "dynamicFallbacks": 58,
+              "p95Ms": 495
+            }
+          ],
+          "receiptSetHash": "ff30596799f138c62448b896bdea949273ee4c607d1b63c11a22817cf1d8bb5d",
+          "mismatches": [
+            {
+              "id": "recent-2",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-3",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-4",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-5",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-8",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "negated-write-1",
+              "expected": "dynamic_agent",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "negated-write-4",
+              "expected": "dynamic_agent",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "negated-write-5",
+              "expected": "dynamic_agent",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "negated-write-7",
+              "expected": "dynamic_agent",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            }
+          ]
+        },
+        {
+          "model": "openai/gpt-6-luna-decisions",
+          "contractHash": "42a92fd69d671b1801293dfb49ab0fabf155582e83b9e440d11bdc428f9bd10e",
+          "groups": [
+            {
+              "split": "all",
+              "completed": 127,
+              "rawLabelAgreement": 121,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 2,
+              "interpreterSuggestions": 3,
+              "dynamicFallbacks": 122,
+              "p95Ms": 760
+            },
+            {
+              "split": "development",
+              "completed": 63,
+              "rawLabelAgreement": 62,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 2,
+              "interpreterSuggestions": 3,
+              "dynamicFallbacks": 58,
+              "p95Ms": 806
+            },
+            {
+              "split": "holdout",
+              "completed": 64,
+              "rawLabelAgreement": 59,
+              "falseFixedWorkflowSuggestions": 0,
+              "fixedWorkflowSuggestions": 0,
+              "interpreterSuggestions": 0,
+              "dynamicFallbacks": 64,
+              "p95Ms": 642
+            }
+          ],
+          "receiptSetHash": "0e09c75a214c58b68a15af3dace05461efc58e572b7e250c990f1893153b0287",
+          "mismatches": [
+            {
+              "id": "recent-6",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-paraphrase-2",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-paraphrase-3",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-paraphrase-5",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-paraphrase-6",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            },
+            {
+              "id": "recent-paraphrase-7",
+              "expected": "fixed_workflow",
+              "raw": "uncertain",
+              "applied": "dynamic_agent"
+            }
+          ]
+        }
+      ],
+      "threshold": {
+        "topProbability": 0.9,
+        "topTwoMargin": 0.2,
+        "calibrated": false
+      },
+      "businessAcceptance": false,
+      "endToEndLatencyMeasured": false,
+      "productionEnabled": false
+    }
+  },
+  "release": {
+    "productionActivated": false,
+    "defaultMode": "off",
+    "defaultCandidate": "typesafe/jev-1.14",
+    "runtimeConfigurationModified": false,
+    "realMailRead": false,
+    "mailSent": false,
+    "selectedAnswerModelChanged": false,
+    "independentBusinessGoldAccepted": false
+  },
+  "remaining": [
+    "Calibrate thresholds using development cases; current fixed-workflow yield is insufficient.",
+    "Freeze policy and collect new unseen natural-business samples.",
+    "Validate bounded context for history/policies.",
+    "Compare complete-task requirements/citations/latency and total calls before activation.",
+    "Package fixed release and execute limited shadow/advisory acceptance."
+  ],
+  "sources": [
+    "https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request",
+    "https://openrouter.ai/typesafe/jev-1.14",
+    "https://openrouter.ai/openai/gpt-6-luna-decisions",
+    "https://developers.openai.com/api/docs/guides/decisions"
+  ]
+}

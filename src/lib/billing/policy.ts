@@ -2,6 +2,7 @@ import { z } from "zod";
 import {tariffValidity} from "./tariff-validity";
 import baseConfiguration from "../../../config/billing/request-bounds-v1.10.0.json";
 import activeDelta from "../../../config/billing/request-bounds-v1.14.0.json";
+import decisionRouting from "../../../config/billing/decision-routing-v1.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
@@ -40,7 +41,7 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1","openrouter-sol-openai-playbook-v2","openrouter-sol-rag-answer-text-v1","openrouter-sol-rag-answer-primary-v2","openrouter-sol-rag-answer-bedrock-v1","openrouter-terra-review-json-v1","openrouter-terra-review-json-v2","openrouter-sol-judge-json-v1","openrouter-sol-judge-json-v2"]).optional(),
+  requestContract:z.enum(["openrouter-decision-route-v1","deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1","openrouter-sol-openai-playbook-v2","openrouter-sol-rag-answer-text-v1","openrouter-sol-rag-answer-primary-v2","openrouter-sol-rag-answer-bedrock-v1","openrouter-terra-review-json-v1","openrouter-terra-review-json-v2","openrouter-sol-judge-json-v1","openrouter-sol-judge-json-v2"]).optional(),
 }).strict();
 const delta=z.object({version:z.string().min(1),baseVersion:z.literal("request-bounds-v1.10.0"),ruleOverrides:z.array(z.object({
   key:z.string().min(1),requestContract:tariffSchema.shape.requestContract.unwrap(),
@@ -49,9 +50,9 @@ if(baseConfiguration.version!==delta.baseVersion)throw new Error("Billing policy
 const overriddenKeys=new Set(delta.ruleOverrides.map(item=>item.key));
 if(overriddenKeys.size!==delta.ruleOverrides.length||baseConfiguration.rules.filter(rule=>overriddenKeys.has(rule.key)).length!==overriddenKeys.size)
   throw new Error("Billing policy delta target mismatch");
-export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse({version:delta.version,
+export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse({version:`${delta.version}+${decisionRouting.version}`,
   rules:[...baseConfiguration.rules.map(rule=>({...rule,...delta.ruleOverrides.find(item=>item.key===rule.key)})),
-    ...delta.additionalRules]});
+    ...delta.additionalRules,...decisionRouting.rules]});
 export type RequestBound=z.infer<typeof tariffSchema>;
 export function rateReviewHoldKeys(tariffKey:string):string[]{
   return tariffKey==="openrouter-sol-openai-playbook-credits"||tariffKey==="openrouter-sol-judge-credits-standard-json"
@@ -86,7 +87,7 @@ export function quoteRequest(input:{origin:string;pathname:string;model:string;r
     if(rule.maximumChargeMicros<required)throw new BudgetDeniedError("missing-tariff");
   }
   if(input.requestBytes>rule.maximumRequestBytes||!Number.isSafeInteger(input.requestBytes)||input.requestBytes<0
-    ||(rule.model!==""&&!rule.pathname.endsWith("/embeddings")&&rule.maximumOutputTokens===0)
+    ||(rule.model!==""&&!rule.pathname.endsWith("/embeddings")&&rule.maximumOutputTokens===0&&rule.requestContract!=="openrouter-decision-route-v1")
     ||(rule.maximumOutputTokens>0&&(input.outputTokens===null||!Number.isSafeInteger(input.outputTokens)||input.outputTokens>rule.maximumOutputTokens||input.outputTokens<=0)))throw new BudgetDeniedError("request-out-of-bounds");
   return rule;
 }

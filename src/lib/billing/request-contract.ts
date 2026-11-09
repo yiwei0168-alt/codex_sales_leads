@@ -1,5 +1,6 @@
 import {BudgetDeniedError,type RequestBound} from "./policy";
 import {isBeijingEmbeddingOrigin} from "./embedding-model-bound";
+import {validDecisionRequest} from '@/providers/decision-contract';
 
 function record(value:unknown):value is Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value);}
 function keys(value:Record<string,unknown>,allowed:string[]){return Object.keys(value).every(key=>allowed.includes(key));}
@@ -9,6 +10,10 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==='openrouter-decision-route-v1'){
+    valid=method==='POST'&&rule.origin==='https://openrouter.ai'&&rule.pathname==='/api/alpha/decisions'
+      &&query===''&&body.model===rule.model&&validDecisionRequest(body);
+  }
   if(rule.requestContract==="openrouter-sol-standard-json-v1"||rule.requestContract==="openrouter-sol-openai-playbook-v1"
     ||rule.requestContract==="openrouter-sol-openai-playbook-v2"){
     const playbookV2=rule.requestContract==="openrouter-sol-openai-playbook-v2";

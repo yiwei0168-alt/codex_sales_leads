@@ -5,6 +5,7 @@ vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.
 vi.mock("./reconciliation",()=>({recordVerifiedCostObservation:mocks.reconcile}));
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
+import {buildDecisionRequest,DECISION_URL} from '@/providers/decision-contract';
 import {withModeStream,ModelWaitError,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 import {withSpendContext} from "./context";
 import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
@@ -34,6 +35,24 @@ it('blocks mode fallback when failed-attempt accounting cannot be saved',async()
   await expect(withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(async()=>{throw new ModelWaitError('total');})('https://openrouter.ai/api/v1/chat/completions',modeInit)))).rejects.toBeInstanceOf(ModelReceiptError);
 });
 afterEach(()=>vi.unstubAllEnvs());
+
+it('records Decisions input/output usage and rejects malformed successful decisions as incomplete',async()=>{
+  const rule=billingPolicy.rules.find(r=>r.key==='openrouter-jev-1.14-decision-route')!;mocks.quote.mockReturnValue(rule);
+  const body=buildDecisionRequest('typesafe/jev-1.14',{request:'Synthetic routing question',hasHistory:false,hasAttachments:false,hasPolicy:false,hasKnowledgeScope:false});
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({model:body.model,id:'gen-dec-test',
+    usage:{input_tokens:100,output_tokens:20,cost:0.0000042},answers:{}}));
+  await withSpendContext(scope,()=>budgetedFetch(transport)(DECISION_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}));
+  expect(mocks.settle).toHaveBeenCalledWith(scope.userId,expect.anything(),expect.objectContaining({inputTokens:100,outputTokens:20,outputIncomplete:true,succeeded:false}));
+});
+
+it('never bypasses Decisions data policy or permits extra questions in observation mode',async()=>{
+  vi.stubEnv('PRODUCT_FINANCIAL_POLICY','observe');
+  const body=buildDecisionRequest('typesafe/jev-1.14',{request:'Synthetic routing question',hasHistory:false,hasAttachments:false,hasPolicy:false,hasKnowledgeScope:false});
+  const transport=vi.fn();
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)(DECISION_URL,{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({...body,provider:{...body.provider,data_collection:'allow'}})}))).rejects.toThrow('request-out-of-bounds');
+  expect(transport).not.toHaveBeenCalled();
+});
 
 it.each(["missing-tariff","expired-tariff"] as const)("MA05 records %s without denying ordinary transport",async code=>{
   vi.stubEnv("PRODUCT_FINANCIAL_POLICY","observe");
