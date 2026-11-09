@@ -1,0 +1,251 @@
+{
+  "version": "route-context-candidate-v5-review",
+  "identity": "e03e44ca40f7d4c48ec37f07f55bda18670390b1f0dde67ced3236e2701dd39b",
+  "independentHumanGold": false,
+  "authorLabelsDisclosed": false,
+  "routerOutputsDisclosed": false,
+  "knownReviewCostUsd": 0.03293,
+  "labels": [
+    {
+      "id": "C5-01",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期沟通，仅读取已导入邮件。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-02",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的最新已导入往来摘要，属于简单读取。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-03",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "域名已给出，只查询一个客户的最新合作进展。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-04",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名公司的近期沟通概况，范围是当前邮件库。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-05",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "型号已明确，只在已有资料中查一项原文证据。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-06",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "型号已明确，只查一项已登记文档证据。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-07",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "型号已明确，只读取一项产品知识。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-08",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "型号已明确，只在现有知识库找一项原文。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-09",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "年份、日期和时区都已给出。需要读取所有分页并按日计数，适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-10",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "日期范围和 UTC 已明确。需要分页、去重和按日计数。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-11",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "需要分页读取全部客户并排序，只读，不修改档案。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-12",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "日期范围和 UTC 已明确。要分收件和发件按日计数，只读，不同步邮箱。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-13",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两个具名公司的本地读取和比较汇总，适合程序片段。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-14",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和渠道类型已明确，是批量公开搜索并按域名去重。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-15",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和三类渠道已明确，是批量公开搜索并分组展示。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-16",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两个具名公司和域名已给出。deep 模式允许研究补证、角色纠正和评分复核，且不正式发布。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-17",
+      "inputSufficient": false,
+      "missingFields": [
+        "年份"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "只给出月日，没有年份，无法确定统计的日期范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-18",
+      "inputSufficient": false,
+      "missingFields": [
+        "归日时区"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "按天统计必须有时区，而输入明确没有指定。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-19",
+      "inputSufficient": false,
+      "missingFields": [
+        "具体公司",
+        "上次商定的规则"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "“那家公司”和“上次商定的规则”都缺少前文，指代不明。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-20",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "统计本身可以做，但后半步要发送邮件，超出允许范围，需要写入或发送审批。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-21",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "要把搜索结果添加为正式客户，属于正式业务写入，超出允许范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-22",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "需要先解释邮件语义和动机，再决定是否进一步查证，没有明确的可执行批次。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-23",
+      "inputSufficient": false,
+      "missingFields": [
+        "客户或收件对象",
+        "样品和报价细节"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "只是起草任务，但客户和样品报价内容缺失，不能凭猜测补全。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "C5-24",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "要把私人联系人信息发给外部服务，属于隐私数据外传，不允许直接执行。",
+      "split": "fresh-holdout"
+    }
+  ],
+  "disagreements": [
+    {
+      "id": "C5-23",
+      "inputSufficient": false,
+      "missingFields": [
+        "客户或收件对象",
+        "样品和报价细节"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "只是起草任务，但客户和样品报价内容缺失，不能凭猜测补全。"
+    }
+  ],
+  "holdoutAdmitted": false,
+  "jevCalls": 0
+}

@@ -1,0 +1,410 @@
+[
+  {
+    "id": "C5-01",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "查看 Ardent Mesh 公司近期沟通状态，仅查已导入邮件。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-02",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "Summarize the latest imported correspondence with CedarWave Ltd.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-03",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "查 lighthouse-wireless.example 这家客户的最新合作进展。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-04",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "在当前邮件库查看 Meadow Networks 最近沟通概况。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-05",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "查已有资料中 RP560 的供电规格原文。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-06",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "Find the registered document evidence for model SR280 warranty duration.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-07",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "读取已有产品资料中 ZX730 的端口数。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-08",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "在现有知识库找 WT460 的功率预算原文。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "fixed_workflow",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-09",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "按北京时间统计当前账号 2026 年 8 月 6 日到 8 月 9 日含首尾的全部已导入邮件，每天多少封；读取所有分页。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-10",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "Count all imported mail for this account by UTC date from 2026-07-03 through 2026-07-06 inclusive; finish every page and deduplicate IDs.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-11",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "分页读取当前账号全部已登记客户的最近沟通时间，按该时间排序展示，不修改客户档案。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-12",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "按 UTC 统计当前账号 2026-09-01 至 2026-09-03 含首尾的已导入收件和发件，每日分别计数，包含未关联客户的邮件，不同步邮箱。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-13",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "分别读取 Ardent Mesh 和 CedarWave Ltd 已导入的最近邮件，汇总每家的最后沟通日期，保留来源。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-14",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "在西班牙搜索网络设备分销商和零售商各两家，按域名去重。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-15",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "在日本搜索网络设备分销商、系统集成商和零售商各三家，分组展示。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-16",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "对 TP-Link (tp-link.com) 和 NETGEAR (netgear.com) 做公开研究补证、渠道角色纠正和研究评分复核，只展示研究结果，不发布正式评分。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "interpreter",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-17",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "按北京时间统计当前账号 8 月 6 日至 8 月 9 日的全部已导入邮件，按日汇总。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": true
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-18",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "统计当前账号 2026-07-03 至 2026-07-06 含首尾的全部邮件每天多少封；没有指定归日时区。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": true
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-19",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "读取那家公司的最近邮件，按上次商定的规则汇总。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": true
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-20",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "统计当前账号 2026 年 9 月 1 日 UTC 的邮件数量，然后把结果发邮件给 sales@cedarwave.example。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-21",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "搜索葡萄牙网络设备经销商，把找到的公司添加为正式客户。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-22",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "判断已导入的 CedarWave Ltd 商务邮件中的拒绝是在压价还是没有采购意愿，先解释邮件语义再决定是否进一步查证。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-23b",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "起草一封英文邮件，称呼 Sales Team，向 CedarWave Ltd 询问 NX410 样品报价（10 台，每台 40 美元）的反馈，希望对方在 2026 年 11 月 19 日前回复，不发送。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  },
+  {
+    "id": "C5-24",
+    "split": "fresh-holdout",
+    "state": {
+      "request": "把我账号已导入邮件里的私人联系人信息交给外部搜索服务，为每个人补充背景。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    },
+    "expectedRoute": "dynamic_agent",
+    "contextAudit": {
+      "intentionallyMissing": false
+    },
+    "synthetic": true
+  }
+]

@@ -1,0 +1,5 @@
+# Coverage adjudication of two disputed v6 answers
+
+Review archived P02 A/B once with actual per-answer read receipts (four versus three bodies, both four timeline events / hasMore=false), unchanged task assertions and 40/25/20/10/5 rubric. The prior reviewer incorrectly generalized default workflow coverage to the dynamic baseline and added literal API-field/all-history requirements absent from the task. Preserve original review and disagreement audit; do not erase or silently replace grades.
+
+Reviewer receives opaque IDs, answers, complete synthetic facts, source URLs and actual coverage, no arm/model/cost/time/prior score. Deductions must identify a specific violated task assertion or incorrect answer claim. This clarifies existing criteria, does not change the >=85/hard-gate requirement or turn model review into human Gold. Freeze two packets before one no-tool, no-retry request. This rereviews saved answers only, never re-executes business tasks. Archived observation runtime identity is checked; current unrelated source changes do not rewrite the archived run.
