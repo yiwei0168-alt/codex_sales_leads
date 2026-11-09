@@ -6,6 +6,8 @@ vi.mock("@/lib/assistant/main/repository", () => ({ enqueueRun: mocks.enqueue })
 vi.mock("@/lib/assistant/repository", () => ({ getConversation: mocks.conversation }));
 
 import { POST } from "./route";
+import { agentModeOptions, DEFAULT_AGENT_MODE } from '@/lib/assistant/main/mode-contract';
+import { MODE_PROMPT_VERSION } from '@/lib/assistant/main/mode-prompts';
 
 describe("assistant message entry", () => {
   beforeEach(() => {
@@ -56,13 +58,15 @@ describe("assistant message entry", () => {
 describe("mode profile entry",()=>{
 beforeEach(()=>{vi.resetAllMocks();mocks.session.mockResolvedValue({userId:'owner'});mocks.enqueue.mockResolvedValue({id:'run',conversation_id:'conversation',status:'queued'});mocks.conversation.mockResolvedValue({id:'conversation'});});
 const request=(data:unknown)=>new Request('http://localhost/api/assistant/messages',{method:'POST',body:JSON.stringify(data)});
-it.each([undefined,'quick','standard','deep'])('pins the server profile for selection %s',async mode=>{
+it.each([undefined,...agentModeOptions.map(option=>option.value)])('pins the server profile for composer selection %s',async mode=>{
   expect((await POST(request({content:'synthetic task',mode}))).status).toBe(202);
   expect(mocks.enqueue.mock.calls[0][0]).toBe('owner');
-  expect(mocks.enqueue.mock.calls[0][2].profile).toMatchObject({mode:mode??'standard',version:'agent-modes-v1',promptVersion:'agent-mode-prompts-v1.0.0'});
+  expect(mocks.enqueue.mock.calls[0][1].mode).toBe(mode);
+  expect(mocks.enqueue.mock.calls[0][2].profile).toMatchObject({mode:mode??DEFAULT_AGENT_MODE,version:'agent-modes-v1',promptVersion:MODE_PROMPT_VERSION});
   expect(mocks.enqueue.mock.calls[0][2].profile.routes).toHaveLength(3);
 });
-it.each([{mode:'automatic'},{mode:null},{mode:'deep',model:'attacker'},{mode:'quick',role:'admin'}])('rejects caller-controlled profile or identity %j',async extra=>{
+it.each([{mode:'automatic'},{mode:null},{mode:'fixed_workflow'},{mode:'interpreter'},{mode:'dynamic_agent'},
+  {mode:'deep',model:'attacker'},{mode:'quick',role:'admin'},{mode:'quick',executionPath:'interpreter'}])('rejects execution routes as modes and caller-controlled profile or identity %j',async extra=>{
   expect((await POST(request({content:'synthetic task',...extra}))).status).toBe(400);
   expect(mocks.enqueue).not.toHaveBeenCalled();
 });

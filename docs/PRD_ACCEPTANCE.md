@@ -2036,3 +2036,10 @@ Status: implemented; focused automated verification and live follow-up are recor
 - 已激活本机验收实例：业务源码 `215a4365`，Build ID `tJFTQgMMuESdVijnmjSrB`；六个服务健康，会话保持完整。开关为 `ENABLE_HYBRID_EXECUTION=1`、`HYBRID_DECISION_MODE=advisory`、`HYBRID_DECISION_MODEL=typesafe/jev-1.14`，覆盖本机实例账号，保留原有资格/权限/预算检查。入口 http://localhost:3001。
 - 旧包、配置与私有环境备份保留；切换新增任务/模型尝试/付费预留均为 0，无数据库迁移。构建与临时 Web 验证通过；依赖复用现有安装，不认定为隔离生产交付验证。
 - 验收状态：实现与隔离联调通过；真实业务完整性、实际路由与总体效率待下一条事前登记的自然问题验证。详见 [PROGRAM_PILOT_2026-11-09.md](PROGRAM_PILOT_2026-11-09.md) 及其中两份新证据。
+
+### HYBRID-08：任务模式与自动执行路径保持前后端一致（2026-11-09）
+
+- 用户明确要求：“我看到前端界面上仍然写着快速问答、标准工作和深入研究三个路径，是不是前端没有根据后端更新，检查一下，确保前后端一致”。范围为核对并修正界面与实际后端流程的一致性；不将此理解为用户授权取消模式权限或改成手动选择 interpreter。
+- 核对结果：quick/standard/deep 是现有主模型、超时与工具权限配置；fixed_workflow/interpreter/dynamic_agent 是其范围内的自动执行方式，没有一一对应关系。保留原有默认 standard、模型和权限；Jev 建议不扩大模式权限。
+- 实现：前端选项、默认值、消息接口 mode 校验和后端模型配置改用共享 mode-contract；界面明确标注“任务模式”和可展开的“执行方式由系统自动选择”。说明为能力解释，不冒充单次任务已经执行的路径或 Jev 在线状态。
+- 验证：105 项模式入口、提示词、模型运行、程序执行和路由检查通过；TypeScript 与 ESLint 通过。桌面 1100px / 手机 390px 隔离真实组件展示可展开、无横向溢出。更新前端构建后再记录实际本机版本；本段不是自然业务质量验收通过。

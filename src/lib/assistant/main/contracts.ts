@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import type { AgentMode } from './mode-prompts';
+import { AGENT_MODES, type AgentMode } from './mode-contract';
 import type { ModeConfig } from './mode-config';
 
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
@@ -41,7 +41,7 @@ export const messageInputSchema = z.object({
   requestKey: z.string().min(8).max(120),
   attachments: z.array(z.object({ assetId: z.uuid() }).strict()).max(20).default([]),
   knowledgeScope: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional(),
-  mode: z.enum(['quick','standard','deep']).optional(),
+  mode: z.enum(AGENT_MODES).optional(),
 }).strict();
 export type MessageInput = z.infer<typeof messageInputSchema>;
 export interface ModelConfig { model: string; providers: string[]; version: string; profile?: ModeConfig }

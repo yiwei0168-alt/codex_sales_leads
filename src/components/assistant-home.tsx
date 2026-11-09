@@ -10,8 +10,8 @@ import type {
   AssistantActionDto, AssistantConversationDto, AssistantMessageDto,
 } from "@/lib/assistant/types";
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
-import type { AgentMode } from '@/lib/assistant/main/mode-prompts';
-import {AgentModePicker,agentModeDescriptions} from './agent-mode-picker';
+import { DEFAULT_AGENT_MODE, type AgentMode } from '@/lib/assistant/main/mode-contract';
+import {AgentModePicker,AgentModeHint} from './agent-mode-picker';
 
 const pendingInputs = new Map<string, string>();
 const subscribeGreeting = () => () => {};
@@ -43,7 +43,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
   function setInput(value: string) { pendingInputs.set(draftKey, value); updateInput(value); }
   const [attachments,setAttachments]=useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  const [mode,setMode]=useState<AgentMode>('standard');
+  const [mode,setMode]=useState<AgentMode>(DEFAULT_AGENT_MODE);
   const [confirmingId, setConfirmingId] = useState<string>();
   const [error, setError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -183,7 +183,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
           <AgentModePicker value={mode} onChange={setMode} disabled={busy} describedBy="agent-mode-hint"/>
           <button className="ai-composer-send" disabled={busy || !input.trim()} aria-label="发送">↑</button>
         </div>
-        <p className="agent-mode-hint" id="agent-mode-hint" aria-live="polite">{agentModeDescriptions[mode]}<span>仅用于新任务</span></p>
+        <AgentModeHint mode={mode} id="agent-mode-hint"/>
       </form>
     </section>
     {taskId&&<TaskDetailView key={taskId} id={taskId} kind="search" onClose={()=>setTaskId(undefined)}/>}

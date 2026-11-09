@@ -13,7 +13,13 @@
 .conversation-theme .agent-mode-picker:disabled { opacity:.55; }
 .conversation-theme .agent-mode-picker:disabled .agent-mode-option { cursor:wait; }
 .conversation-theme .ai-composer-toolbar > .ai-composer-send { flex:0 0 38px; width:38px; height:38px; margin-left:auto; }
-.conversation-theme .ai-composer > .agent-mode-hint { margin:0; padding:2px 15px 10px; color:var(--muted); font-size:12px; line-height:1.5; }
+.conversation-theme .agent-mode-guidance { padding:2px 15px 10px; color:var(--muted); font-size:12px; line-height:1.5; }
+.conversation-theme .agent-mode-hint { margin:0; }
+.conversation-theme .agent-mode-hint > strong { font-weight:500; }
+.conversation-theme .agent-execution-hint { margin-top:4px; }
+.conversation-theme .agent-execution-hint > summary { cursor:pointer; width:fit-content; }
+.conversation-theme .agent-execution-hint > summary:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+.conversation-theme .agent-execution-hint > p { margin:5px 0 0; max-width:70ch; }
 .conversation-theme .agent-mode-hint > span { margin-left:10px; padding-left:10px; border-left:1px solid var(--line-strong); color:var(--muted); font-size:12px; white-space:nowrap; }
 @media(max-width:600px) {
   .conversation-theme .ai-composer > .ai-composer-toolbar { flex-wrap:wrap; gap:6px; padding:4px 10px; }
@@ -21,5 +27,5 @@
   .conversation-theme .agent-mode-option { flex:1; }
   .conversation-theme .agent-mode-option > span { width:100%; min-height:40px; padding:0 7px; font-size:14px; }
   .conversation-theme .ai-composer-toolbar > .ai-composer-send { width:40px; height:40px; flex-basis:40px; }
-  .conversation-theme .ai-composer > .agent-mode-hint { padding:2px 12px 9px; }
+  .conversation-theme .agent-mode-guidance { padding:2px 12px 9px; }
 }
