@@ -1,0 +1,93 @@
+[
+  {
+    "id": "P02",
+    "group": "fixed",
+    "prompt": "查看 Juniper Link 最新进展",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "companyId": "c2",
+      "latestMailId": "c2-m4",
+      "latestFact": "Confirmed receipt; purchase date not committed",
+      "doNotInventPurchaseDate": true,
+      "coverage": {
+        "timelineEvents": 4,
+        "bodiesReadByDefaultWorkflow": 3,
+        "hasMore": false,
+        "mustSeparateUnreadBodiesAndPages": true
+      }
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P02",
+    "revision": "v5"
+  },
+  {
+    "id": "P10",
+    "group": "program",
+    "prompt": "按北京时间统计 2026 年 11 月 2 日至 2026 年 11 月 5 日含首尾的全部已导入邮件数量，分页读完，列出每日数量和总数。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "dates": [
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05"
+      ],
+      "counts": [
+        8,
+        12,
+        12,
+        8
+      ],
+      "total": 40,
+      "mustReachLastPage": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P10",
+    "revision": "v5"
+  },
+  {
+    "id": "P24",
+    "group": "dynamic",
+    "prompt": "在已登记资料中对照 NX410 v1 历史规格与 NX410 v2 当前已批准规格，列出两版端口数及原文来源。端口数变化是硬件升级还是资料修订？没有原因证据就明确无法确认，不要猜。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "model": "NX410",
+      "oldVersion": "v1",
+      "oldPorts": 5,
+      "currentVersion": "v2",
+      "currentPorts": 8,
+      "rootCauseUnknown": true,
+      "sources": [
+        "fixture://products/p1/v1#page=2",
+        "fixture://products/p1/v2#page=2"
+      ]
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P24",
+    "revision": "v5"
+  }
+]

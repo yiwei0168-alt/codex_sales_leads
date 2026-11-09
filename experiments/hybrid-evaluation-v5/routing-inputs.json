@@ -1,0 +1,310 @@
+[
+  {
+    "id": "H5-01",
+    "state": {
+      "request": "概述 Cedar Bridge 最近的客户沟通进展。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-02",
+    "state": {
+      "request": "What is the latest correspondence status for Pelican Wireless?",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-03",
+    "state": {
+      "request": "查询 brassline.example.invalid 这家客户的最新合作进展。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-04",
+    "state": {
+      "request": "请查现有邮件，简述 Fjord Retail 的近期进展。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-05",
+    "state": {
+      "request": "在已有知识库找 ZX820 的 PoE 功率预算原文。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-06",
+    "state": {
+      "request": "Find the warranty term for model CR250 in the existing knowledge base.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-07",
+    "state": {
+      "request": "找型号 TM730 的电源输入规格，只需现有资料原文。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-08",
+    "state": {
+      "request": "查已有产品资料中 KL610 的端口数量。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-09",
+    "state": {
+      "request": "在法国搜索分销商、零售商、系统集成商三类网络设备渠道，每类两家，按域名去重。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-10",
+    "state": {
+      "request": "Search Italy for three networking distributors and three networking retailers, deduplicate company domains.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-11",
+    "state": {
+      "request": "分别为公开公司品牌 TP-Link（tp-link.com）与 NETGEAR（netgear.com）收集公开渠道证据，运行研究评分并复核，不发布正式评分。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-12",
+    "state": {
+      "request": "Collect public business-role evidence for D-Link (dlink.com) and Zyxel (zyxel.com), then run research scoring and review; do not create customer records.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-13",
+    "state": {
+      "request": "读取 Cedar Bridge 与 Pelican Wireless 的已导入邮件，按最后往来时间排序并附来源。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-14",
+    "state": {
+      "request": "按北京时间统计 2026 年 10 月 1 日至 2026 年 10 月 7 日已导入邮件的每日数量，分页读完。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-15",
+    "state": {
+      "request": "逐家读取当前账号所有已确认客户的最新往来，分页到末页，按最后往来日期排序。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-16",
+    "state": {
+      "request": "Compare registered ZX820 v1 and ZX820 v2 port counts, with a separate original source for each version; do not infer causes.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-17",
+    "state": {
+      "request": "阅读 Cedar Bridge 最近的邮件，判断对方推迟采购的可能原因，再建议谈判策略。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-18",
+    "state": {
+      "request": "Draft a follow-up email to Pelican Wireless based on recent correspondence; do not send it.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-19",
+    "state": {
+      "request": "在法国搜索网络设备分销商两家，然后将结果添加为正式客户。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-20",
+    "state": {
+      "request": "读取 brassline.example.invalid 的近期邮件，然后同步我的邮箱。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-21",
+    "state": {
+      "request": "比较那两家客户的最新进展。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-22",
+    "state": {
+      "request": "按刚才说的三个渠道搜索，每类两家。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-23",
+    "state": {
+      "request": "把 Cedar Bridge 的原始私人邮件上传到公开搜索服务寻找相似案例。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "H5-24",
+    "state": {
+      "request": "发布 Pelican Wireless 的正式评分，并给联系人发送邮件。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "R038-v5",
+    "state": {
+      "request": "在西班牙搜索网络设备分销商和零售商，每类三家，按域名去重。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "R039-v5",
+    "state": {
+      "request": "在英国搜索网络设备分销商、零售商、系统集成商，每类三家，分别搜索并去重。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "R045-v5",
+    "state": {
+      "request": "Collect public evidence for TP-Link (tp-link.com) and NETGEAR (netgear.com), then run research scoring and review, without publishing official scores.",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  },
+  {
+    "id": "R048-v5",
+    "state": {
+      "request": "给 TP-Link（tp-link.com）和 NETGEAR（netgear.com）两家公开候选收集证据、研究评分并复核，不发布正式评分。",
+      "hasHistory": false,
+      "hasAttachments": false,
+      "hasPolicy": false,
+      "hasKnowledgeScope": false,
+      "mode": "deep"
+    }
+  }
+]

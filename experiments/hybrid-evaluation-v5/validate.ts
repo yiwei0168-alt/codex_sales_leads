@@ -1,0 +1,33 @@
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {programStateSchema} from '../../src/providers/program-decision-contract-v4';
+import {KNOWLEDGE_RESPONSE_POLICY} from '../../src/lib/assistant/main/knowledge-response-policy';
+const root='experiments/hybrid-evaluation-v5';
+const read=async(path:string)=>JSON.parse(await readFile(path,'utf8'));
+const cases=await read(`${root}/routing-cases.json`),inputs=await read(`${root}/routing-inputs.json`);
+const old=await read('experiments/hybrid-evaluation-v1/routing-inputs.json');
+assert.equal(cases.length,28);assert.equal(new Set(cases.map((c:{id:string})=>c.id)).size,28);
+assert.deepEqual(inputs,cases.map((c:{id:string;state:unknown})=>({id:c.id,state:c.state})));
+for(const c of cases){
+ programStateSchema.parse(c.state);
+ for(const ref of c.contextAudit.requiredReferents)assert(c.state.request.includes(ref),`Missing visible referent: ${c.id}`);
+ if(c.contextAudit.intentionallyMissing)assert.equal(c.expectedRoute,'dynamic_agent');
+ if(c.split==='fresh-holdout')assert(!old.some((o:{state:{request:string}})=>o.state.request===c.state.request));
+}
+for(const route of ['fixed_workflow','interpreter','dynamic_agent'])assert.equal(cases.filter((c:{split:string;expectedRoute:string})=>c.split==='fresh-holdout'&&c.expectedRoute===route).length,8);
+const tasks=await read(`${root}/performance-tasks.json`),taskInputs=await read(`${root}/performance-inputs.json`);
+assert.equal(tasks.length,3);assert.deepEqual(taskInputs,tasks.map((t:{id:string;prompt:string})=>({id:t.id,prompt:t.prompt})));
+const time=tasks.find((t:{id:string})=>t.id==='P10');
+assert(time.prompt.includes('2026 年 11 月 2 日')&&time.prompt.includes('2026 年 11 月 5 日')&&time.prompt.includes('北京时间'));
+const fixture=await read('experiments/hybrid-evaluation-v1/business-fixtures.json');
+const date=(s:string)=>new Date(Date.parse(s)+8*3600000).toISOString().slice(0,10);
+const counts=time.assertions.dates.map((d:string)=>fixture.mails.filter((m:{date:string})=>date(m.date)===d).length);
+assert.deepEqual(counts,time.assertions.counts);assert.equal(counts.reduce((s:number,n:number)=>s+n,0),40);
+const version=tasks.find((t:{id:string})=>t.id==='P24');
+assert(version.prompt.includes('NX410 v1')&&version.prompt.includes('NX410 v2'));
+assert(KNOWLEDGE_RESPONSE_POLICY.includes('涉及新版且版本不明时询问版本'));
+assert.equal(fixture.products.find((p:{model:string})=>p.model==='NX410').ports,8);
+assert.equal(fixture.products.find((p:{model:string})=>p.model==='NX410').historical.ports,5);
+const schedule=await read('experiments/hybrid-evaluation-v1/paired-schedule.json');
+assert.equal(schedule.filter((b:{taskId:string;repetition:number})=>tasks.some((t:{id:string})=>t.id===b.taskId)&&b.repetition===1).length,3);
+console.log(JSON.stringify({valid:true,freshRouting:24,historicalRegression:4,performanceTasks:3,modelCalls:0,semanticLabelsIndependentlyApproved:false}));
