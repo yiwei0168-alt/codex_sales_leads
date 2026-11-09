@@ -1,0 +1,93 @@
+{
+  "protocol": "automatic-execution-local-v1",
+  "cutover": {
+    "switchedAt": "2026-11-09T06:29:53.014Z",
+    "sourceCommit": "9bbbe5ec6057e516c1f1b248031bc853100423a5",
+    "buildId": "oaBsoT6o9x4kL91XpzYOT",
+    "flags": {
+      "ENABLE_HYBRID_EXECUTION": "1",
+      "HYBRID_DECISION_MODE": "advisory",
+      "HYBRID_DECISION_MODEL": "typesafe/jev-1.14"
+    },
+    "scope": "local acceptance instance, all accounts using this instance; existing eligibility and permission guards apply",
+    "healthyComponents": [
+      "bge",
+      "api",
+      "web",
+      "worker",
+      "mailbox",
+      "lead"
+    ],
+    "oldConfigAndPackagesRetained": true,
+    "privateEnvironmentBackupRetained": true,
+    "apiStateFilesCopied": 3,
+    "apiStateBytes": 8545,
+    "apiStateCopyManifestSha256": "3ba1f7e1170c5c56a8e0f5155ae2f759ec448079d493814711844b5bd945a026",
+    "apiThreadInventoryPreserved": true,
+    "bgeUnchanged": true,
+    "newTasks": 0,
+    "newModelAttempts": 0,
+    "newPaidReservations": 0,
+    "databaseSchemaChanged": false,
+    "rollbackExecuted": false,
+    "realBusinessAcceptance": "pending",
+    "productionQualified": false
+  },
+  "packaging": {
+    "sourceCommit": "9bbbe5ec6057e516c1f1b248031bc853100423a5",
+    "buildId": "oaBsoT6o9x4kL91XpzYOT",
+    "comparedSourceInputs": 727,
+    "sealedFiles": 4079,
+    "standaloneWasm": true,
+    "nodeArtifacts": 5,
+    "dependencyInstallVerified": false,
+    "productionQualified": false,
+    "activated": true
+  },
+  "preview": {
+    "automaticUiAsset": true,
+    "checkedAt": "2026-11-09T06:25:44.826Z",
+    "buildId": "oaBsoT6o9x4kL91XpzYOT",
+    "sessionAnonymous": true,
+    "protectedReadStatus": 401,
+    "staticAssets": 11,
+    "passed": true
+  },
+  "visual": {
+    "fixture": "server-rendered production AssistantHome component, synthetic style frame, no task submitted",
+    "rows": [
+      {
+        "width": 1100,
+        "manualModeControls": 0,
+        "automaticLabelVisible": true,
+        "noHorizontalOverflow": true
+      },
+      {
+        "width": 390,
+        "manualModeControls": 0,
+        "automaticLabelVisible": true,
+        "noHorizontalOverflow": true
+      }
+    ]
+  },
+  "active": {
+    "checkedAt": "2026-11-09T06:32:17.414Z",
+    "sourceCommit": "9bbbe5ec6057e516c1f1b248031bc853100423a5",
+    "buildId": "oaBsoT6o9x4kL91XpzYOT",
+    "asset": "/_next/static/chunks/30y0ryc1b7aly.js",
+    "assetSha256": "4e7b4b90e9947eb790f250fa26d32f6aededad57c2a52b22f811235f56138cea",
+    "servedAssetMatchesPackage": true,
+    "manualModeLabels": 0,
+    "automaticUi": true,
+    "passed": true
+  },
+  "checks": {
+    "tests": 153,
+    "typecheck": true,
+    "eslint": true,
+    "privateBuildDependencyCount": 0,
+    "buildManifests": 178
+  },
+  "realBusinessAcceptance": "pending",
+  "newLiveProviderProbe": false
+}
