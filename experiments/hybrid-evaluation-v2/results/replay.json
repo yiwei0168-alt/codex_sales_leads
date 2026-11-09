@@ -1,0 +1,15 @@
+{
+  "version": "interpreter-receipt-regression-v2",
+  "traceHash": "58e30ab4fd42d95d100d93c411825a19496ceedc088d48a1c0b550aceb9af39b",
+  "codeHash": "00f44606a8a9d08eabcd8ab8497ee27c5c28d9a67d26f364aff22088e2ead3f4",
+  "status": "success",
+  "rows": 12,
+  "uniqueCompanies": 12,
+  "sorted": true,
+  "serverSnapshotReceipts": 13,
+  "validationPasses": 14,
+  "modelCalls": 0,
+  "newToolDispatches": 0,
+  "databaseCalls": 0,
+  "limitation": "Offline snapshot validation; live journal permissions are tested separately."
+}

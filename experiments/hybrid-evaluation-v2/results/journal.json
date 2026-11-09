@@ -1,0 +1,11 @@
+{
+  "version": "interpreter-journal-regression-v2",
+  "runId": "af886c03-a977-40be-abf0-f8737a89d0b0",
+  "sameRunReuse": true,
+  "originalToolCalls": 1,
+  "crossRunRejected": true,
+  "crossAccountRejected": true,
+  "knowledgeScopeRejected": true,
+  "modelCalls": 0,
+  "productionDatabaseAccess": false
+}

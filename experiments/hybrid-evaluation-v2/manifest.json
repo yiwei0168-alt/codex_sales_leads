@@ -1,0 +1,22 @@
+{
+  "version": "hybrid-evaluation-amendment-v2",
+  "priorManifest": "824db0b9813aab81fba5a1769ac804ad74c62653f8147a4123e48c6ba4ba82f5",
+  "sha256": {
+    "experiments/hybrid-evaluation-v1/design.mjs": "484c2a2286d9d8a2b6b5fcdf2326d0ccc2512d3151a20af440dd23e9549626ed",
+    "experiments/hybrid-evaluation-v1/validate.ts": "fb4291bb4dd61975abdff23f4cb43f7b807ca8434cb71f5e992eeb8a30e9aa2d",
+    "experiments/hybrid-evaluation-v1/validation.json": "1905343adb234e7d6758ab999a44054c8dbcedf72d53c429734e45431c31a720",
+    "experiments/hybrid-evaluation-v1/README.md": "209983763103c255e83b4a618d33a8faa1d287f129ba1de91d59051c4574be9c",
+    "experiments/hybrid-evaluation-v1/observations.schema.json": "7f5c8c459d35369e1b90667918a9ea6547e243d2772e3e2fe1b7b20a1f8d8540",
+    "experiments/hybrid-evaluation-v1/freeze.mjs": "21be6bab8dd05d1a0c14b41f89b1704e0ea33704399586bcc2ae1768c8d3d83d",
+    "experiments/hybrid-evaluation-v1/protocol.json": "79d9386f8510abfdeef65b9a6894467eb0d1483c97e9adc1b3ac37a33f2c6481",
+    "experiments/hybrid-evaluation-v1/routing-cases.json": "ce3df634384ff245e2d5c15359fcd7b608c33a945935c5d5a2e829e8580fc144",
+    "experiments/hybrid-evaluation-v1/routing-inputs.json": "163f9743855d73a41e82a664c002a03e029cf8b3d7ea3401eee08880c3e01720",
+    "experiments/hybrid-evaluation-v1/business-fixtures.json": "fa56ca7283c2a7343aa88e7d96ff96518c38eb98261af089f12fd46ee9be8e25",
+    "experiments/hybrid-evaluation-v1/performance-tasks.json": "104ce28eaa24b57c4f7f7cd7f40ebfa42094b36ceefd62c028eabcc1bcf190fb",
+    "experiments/hybrid-evaluation-v1/performance-inputs.json": "4bc41f0154a2c57680d1aa07e117f47ce685f19510ec025dde0ea3c01f228f55",
+    "experiments/hybrid-evaluation-v1/paired-schedule.json": "af8a2fb62da626b4de5123d2f572c924188c9e92cf4b352d848cedb9ef6b965e",
+    "experiments/hybrid-evaluation-v1/live-external-tasks.json": "d19af270488748443c508eedf802997bfb07ff3cef588cda763171cc86da196a",
+    "experiments/hybrid-evaluation-v1/manifest.json": "824db0b9813aab81fba5a1769ac804ad74c62653f8147a4123e48c6ba4ba82f5",
+    "experiments/hybrid-evaluation-v2/README.md": "4e8b1c60b048dfc80f8635fe8c5f326b96667b808e95bb248341456affce3a59"
+  }
+}

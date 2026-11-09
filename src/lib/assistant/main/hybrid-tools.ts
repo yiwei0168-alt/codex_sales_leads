@@ -3,6 +3,9 @@ import { workflowInput, programInput, HYBRID_LEAVES, PROGRAM_LEAVES, type Hybrid
 import { executeHybridRead } from './hybrid-execution';
 import { executeProgrammatic } from './programmatic-execution';
 import type { ExecutionContext, ModelMessage } from './contracts';
+import { readInterpreterReceipt } from './interpreter-receipts';
+
+const interpreterHelp = ' Date and clocks are unavailable. Use tools.time(timestamp) -> {epochMs,utcIso} for deterministic sorting or UTC dates. Supply YYYY-MM-DD[T or space]HH:mm:ss[.SSS] with Z or an explicit numeric offset (+HH, +HHmm, +HH:mm); no timezone guessing. Example: tools.time(event.time).epochMs. To recompute from previously saved evidence, use tools.receipt(originalLeafCallId) -> full ToolResult, including successful leaves inside a partial program. Only same-account, same-task, current permitted leaf receipts are accepted and revalidated. Never paste copied results as proof; receipt lookup does not repeat the original tool or provider call. Reused evidence counts toward the segment evidence limit.';
 
 async function dependencies(context: ExecutionContext, capabilities = HYBRID_LEAVES) {
   const [{ dispatchTool }, { availableTools }, { assertCurrentKnowledgeMessages,KnowledgeSourceChangedError }, { assertCurrentMemoryMessages },{assertCurrentPrivateReplayMessages}] = await Promise.all([
@@ -10,6 +13,7 @@ async function dependencies(context: ExecutionContext, capabilities = HYBRID_LEA
     import('./private-replay-guard'),
   ]);
   return { dispatch: dispatchTool,
+    readReceipt: (callId: string) => readInterpreterReceipt(context, callId, capabilities, () => availableTools(context)),
     allowed: new Set(availableTools(context).filter(t => capabilities.has(t.id) &&
       (t.effect === 'read' || (t.id === 'evidence_collect' && t.effect === 'reversible'))).map(t => t.id)),
     validate: async (leaves: HybridLeaf[]) => {
@@ -36,4 +40,4 @@ export const hybridTools = [
   defineTool({ id: 'programmatic_read', recovery: 'composite', input: programInput,
     description: `Run bounded synchronous JavaScript in an isolated QuickJS WASM interpreter for batch local reads/filtering/joins. Use tools.call(toolId,args) -> full ToolResult and tools.workflow(recipeArgs); return a JSON value with original evidence IDs/versions/quotes. Describe needed leaf schemas first. No await, imports, network, files, shell, clocks, randomness or writes. At most 16 local reads. Allowed tools (still subject to mode/scope): ${[...HYBRID_LEAVES].join(', ')}. Unknown/failed reads stop execution. Semantic uncertainty still needs normal planning. Code does not override user scope or tool permissions.`,
     execute: async (input, context) => executeHybridRead('interpreter', input, context, await dependencies(context)) }),
-];
+].map(tool => tool.id === 'workflow_read' ? tool : {...tool, version: '2', description: tool.description + interpreterHelp});

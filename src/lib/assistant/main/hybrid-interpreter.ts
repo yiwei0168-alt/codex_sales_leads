@@ -1,11 +1,13 @@
 import { newAsyncContext } from 'quickjs-emscripten';
 import { HybridStop } from './hybrid-workflows';
+import { INTERPRETER_TIME_SETUP } from './interpreter-time';
 
 /** Fresh WASM heap per invocation. Only JSON bridges; no host objects, imports or I/O. */
 export async function interpretReadProgram(code: string,
   bridge: (kind: 'call' | 'workflow', payload: string) => Promise<string>,
   limits = { memoryBytes: 16 * 1024 * 1024, activeMs: 2000, wallMs: 60000 },
-  extended?: (kind: 'parallel' | 'handoff', payload: string) => Promise<string>) {
+  extended?: (kind: 'parallel' | 'handoff', payload: string) => Promise<string>,
+  receipt?: (payload: string) => Promise<string>) {
   const vm = await newAsyncContext();
   const started = Date.now();
   let ioMs = 0;
@@ -14,7 +16,7 @@ export async function interpretReadProgram(code: string,
   vm.runtime.setMaxStackSize(512 * 1024);
   vm.runtime.setInterruptHandler(() => Date.now() - started > limits.wallMs || Date.now() - started - ioMs > limits.activeMs);
   try {
-    for (const kind of ['call', 'workflow', ...(extended ? ['parallel', 'handoff'] as const : [])] as const) {
+    for (const kind of ['call', 'workflow', ...(extended ? ['parallel', 'handoff'] as const : []), ...(receipt ? ['receipt'] as const : [])] as const) {
       const handle = vm.newAsyncifiedFunction(`_${kind}`, async payload => {
         if (failure) return {error:vm.newError('Execution stopped')};
         const before = Date.now();
@@ -22,7 +24,7 @@ export async function interpretReadProgram(code: string,
           if (before - started > limits.wallMs) throw new HybridStop('Interpreter time limit reached.');
           const text = vm.getString(payload);
           if (text.length > 32000) throw new HybridStop('Tool input exceeds the interpreter limit.');
-          return vm.newString(await (kind === 'parallel' || kind === 'handoff' ? extended!(kind, text) : bridge(kind, text)));
+          return vm.newString(await (kind === 'receipt' ? receipt!(text) : kind === 'parallel' || kind === 'handoff' ? extended!(kind, text) : bridge(kind, text)));
         } catch (error) {
           failure = error;
           return {error:vm.newError('Tool execution stopped; use the saved server receipts.')};
@@ -35,7 +37,11 @@ export async function interpretReadProgram(code: string,
     const setup = vm.evalCode(`(() => {
       const call = _call, workflow = _workflow, parse = JSON.parse, stringify = JSON.stringify;
       const parallel = globalThis._parallel, handoff = globalThis._handoff;
+      const receipt = globalThis._receipt;
+      ${INTERPRETER_TIME_SETUP}
       globalThis.tools = Object.freeze({
+        time,
+        ...(receipt ? {receipt: (callId) => parse(receipt(stringify(callId)))} : {}),
         call: (tool, args) => parse(call(stringify({tool, arguments: args}))),
         workflow: (args) => parse(workflow(stringify(args))),
         ...(parallel ? {
@@ -45,6 +51,7 @@ export async function interpretReadProgram(code: string,
       });
       delete globalThis._call; delete globalThis._workflow;
       delete globalThis._parallel; delete globalThis._handoff;
+      delete globalThis._receipt;
       globalThis.Date = undefined; Math.random = () => { throw Error('Randomness unavailable'); };
     })()`);
     vm.unwrapResult(setup).dispose();

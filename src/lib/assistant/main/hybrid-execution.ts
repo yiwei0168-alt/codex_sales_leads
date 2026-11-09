@@ -3,18 +3,21 @@ import { digest, result, type ExecutionContext, type ModelToolCall, type ToolRes
 import { HYBRID_LEAVES, HYBRID_VERSION, type HybridLeaf } from './hybrid-contracts';
 import { HybridStop, runReadWorkflow } from './hybrid-workflows';
 import { interpretReadProgram } from './hybrid-interpreter';
+import { receiptReader } from './interpreter-receipts';
+import { INTERPRETER_ABI } from './interpreter-time';
 
 export interface HybridDependencies {
   dispatch: (call: ModelToolCall, context: ExecutionContext) => Promise<ToolResult>;
   allowed: ReadonlySet<string>;
   validate: (leaves: HybridLeaf[]) => Promise<void>;
+  readReceipt?: (callId: string) => Promise<HybridLeaf>;
 }
 /** Parent and every leaf have separate durable receipts. Only local, allowlisted reads. */
 export async function executeHybridRead(route: 'workflow' | 'interpreter', input: unknown,
   context: ExecutionContext, deps: HybridDependencies): Promise<ToolResult> {
   if (!context.callId) return result(null, { status: 'unavailable', missing: ['Persisted parent call required'] });
   const leaves: HybridLeaf[] = [], coverage: string[] = [], missing: string[] = [];
-  const scope = digest({ version: HYBRID_VERSION, route, input });
+  const scope = digest({ version: HYBRID_VERSION, ...(route === 'interpreter' ? {abi: INTERPRETER_ABI} : {}), route, input });
   let bytes = 0, halted = false;
   const call = async (tool: string, args: Record<string, unknown>) => {
     if (halted) throw new HybridStop('Execution already stopped.');
@@ -28,7 +31,7 @@ export async function executeHybridRead(route: 'workflow' | 'interpreter', input
     const output = await deps.dispatch({ id: key, type: 'function',
       function: { name: 'execute_tool', arguments: JSON.stringify({ tool, arguments: args }) } }, context);
     leaves.push({ key, tool, arguments: args, output });
-    bytes += JSON.stringify(output).length;
+    bytes = JSON.stringify(leaves).length;
     await deps.validate(leaves);
     if (bytes > 1_000_000) { halted = true; throw new HybridStop('Evidence limit reached; saved reads must be narrowed before further processing.'); }
     if (!['success', 'partial'].includes(output.status)) {
@@ -47,7 +50,7 @@ export async function executeHybridRead(route: 'workflow' | 'interpreter', input
         if (kind === 'workflow') return JSON.stringify(await runReadWorkflow(parsed, call, coverage));
         const request = z.object({ tool: z.string(), arguments: z.record(z.string(), z.unknown()) }).strict().parse(parsed);
         return JSON.stringify(await call(request.tool, request.arguments));
-      });
+      }, undefined, undefined, receiptReader(leaves, deps, HYBRID_LEAVES, 16));
       coverage.push('Program output is a computed projection, not new evidence. Full original leaf receipts are retained for source validation.');
       if (!leaves.length) missing.push('No tool evidence was read; computed output alone cannot establish business facts.');
     }

@@ -4,6 +4,8 @@ import { PROGRAM_LEAVES, PROGRAM_VERSION, programInput, type HybridLeaf } from '
 import { HybridStop, runReadWorkflow } from './hybrid-workflows';
 import { interpretReadProgram } from './hybrid-interpreter';
 import type { HybridDependencies } from './hybrid-execution';
+import { receiptReader } from './interpreter-receipts';
+import { INTERPRETER_ABI } from './interpreter-time';
 
 const requestSchema = z.object({ tool: z.string(), arguments: z.record(z.string(), z.unknown()) }).strict();
 type Request = z.infer<typeof requestSchema>;
@@ -16,13 +18,13 @@ export async function executeProgrammatic(input: unknown, context: ExecutionCont
   deps: HybridDependencies): Promise<ToolResult> {
   if (!context.callId) return result(null, { status: 'unavailable', missing: ['Persisted parent call required'] });
   const leaves: HybridLeaf[] = [], coverage: string[] = [], missing: string[] = [];
-  const scope = digest({ version: PROGRAM_VERSION, input });
+  const scope = digest({ version: PROGRAM_VERSION, abi: INTERPRETER_ABI, input });
   const started = Date.now();
   let submitted = 0, bytes = 0, stopped = false;
   let value: unknown = null, handoff: string | null = null;
   const check = (requests: Request[]) => {
     if (stopped || Date.now() - started > 180000) throw new HybridStop('Segment stopped or time budget reached. Continue from saved receipts.');
-    if (submitted + requests.length > 24) throw new HybridStop('Segment limit is 24 calls. Continue from saved receipts.');
+    if (leaves.length + requests.length > 24) throw new HybridStop('Segment limit is 24 evidence calls. Continue from saved receipts.');
     if (requests.some(r => !PROGRAM_LEAVES.has(r.tool) || !deps.allowed.has(r.tool)))
       throw new HybridStop('Tool is outside this segment capability list or current user/mode/scope.');
   };
@@ -45,7 +47,7 @@ export async function executeProgrammatic(input: unknown, context: ExecutionCont
       // Drain all in-flight calls before returning or propagating lease/source failures.
       for (const item of settled) if (item.status === 'fulfilled') {
         leaves.push(item.value);
-        bytes += JSON.stringify(item.value.output).length;
+        bytes = JSON.stringify(leaves).length;
         outputs.push(item.value.output);
       }
       const failure = settled.find(item => item.status === 'rejected');
@@ -74,7 +76,7 @@ export async function executeProgrammatic(input: unknown, context: ExecutionCont
       if (kind === 'parallel') return JSON.stringify(await batch(z.array(requestSchema).min(1).max(24).parse(JSON.parse(payload))));
       const transfer = z.object({ reason: z.string().trim().min(1).max(2000), value: z.unknown() }).strict().parse(JSON.parse(payload));
       throw new Handoff(transfer.reason, transfer.value);
-    });
+    }, receiptReader(leaves, deps, PROGRAM_LEAVES, 24));
   } catch (error) {
     if (!(error instanceof HybridStop || error instanceof z.ZodError)) throw error;
     handoff = error instanceof HybridStop ? error.reason : 'Invalid program arguments; review schemas before continuing.';
