@@ -20,6 +20,7 @@ describe("legacy knowledge question endpoint", () => {
       body: JSON.stringify({ question: "比较两款产品", filters: { collections: ["product"] } }) }));
     expect(response.status).toBe(202);
     expect(mocks.enqueue.mock.calls[0][1].knowledgeScope).toEqual(["product"]);
+    expect(mocks.enqueue.mock.calls[0][2].automatic).toMatchObject({version:'hybrid-auto-v1',capabilityMode:'quick'});
     expect((await response.json()).run.status).toBe("queued");
   });
 

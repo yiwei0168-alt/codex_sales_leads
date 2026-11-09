@@ -6,7 +6,7 @@ vi.mock("@/lib/assistant/main/repository", () => ({ enqueueRun: mocks.enqueue })
 vi.mock("@/lib/assistant/repository", () => ({ getConversation: mocks.conversation }));
 
 import { POST } from "./route";
-import { agentModeOptions, DEFAULT_AGENT_MODE } from '@/lib/assistant/main/mode-contract';
+import { AGENT_MODES } from '@/lib/assistant/main/mode-contract';
 import { MODE_PROMPT_VERSION } from '@/lib/assistant/main/mode-prompts';
 
 describe("assistant message entry", () => {
@@ -26,7 +26,7 @@ describe("assistant message entry", () => {
     expect(mocks.enqueue).toHaveBeenCalledWith(
       "00000000-0000-4000-8000-000000000001",
       expect.objectContaining({ content: "请查看现有线索", attachments: [] }),
-      expect.objectContaining({ model: "anthropic/claude-sonnet-5.5" }),
+      expect.objectContaining({ automatic: expect.objectContaining({version:'hybrid-auto-v1',capabilityMode:'deep'}) }),
     );
     expect((await response.json()).run).toEqual({ id: "run-1", status: "queued" });
   });
@@ -51,18 +51,22 @@ describe("assistant message entry", () => {
     }));
     expect(response.status).toBe(202);
     expect(mocks.enqueue.mock.calls[0][1].knowledgeScope).toEqual(["product"]);
+    expect(mocks.enqueue.mock.calls[0][2].automatic.capabilityMode).toBe('quick');
   });
 });
 
 
-describe("mode profile entry",()=>{
+describe("automatic execution entry",()=>{
 beforeEach(()=>{vi.resetAllMocks();mocks.session.mockResolvedValue({userId:'owner'});mocks.enqueue.mockResolvedValue({id:'run',conversation_id:'conversation',status:'queued'});mocks.conversation.mockResolvedValue({id:'conversation'});});
 const request=(data:unknown)=>new Request('http://localhost/api/assistant/messages',{method:'POST',body:JSON.stringify(data)});
-it.each([undefined,...agentModeOptions.map(option=>option.value)])('pins the server profile for composer selection %s',async mode=>{
+it.each([undefined,...AGENT_MODES])('pins automatic profiles regardless of stale client mode %s',async mode=>{
   expect((await POST(request({content:'synthetic task',mode}))).status).toBe(202);
   expect(mocks.enqueue.mock.calls[0][0]).toBe('owner');
   expect(mocks.enqueue.mock.calls[0][1].mode).toBe(mode);
-  expect(mocks.enqueue.mock.calls[0][2].profile).toMatchObject({mode:mode??DEFAULT_AGENT_MODE,version:'agent-modes-v1',promptVersion:MODE_PROMPT_VERSION});
+  expect(mocks.enqueue.mock.calls[0][2].profile).toMatchObject({mode:'deep',version:'agent-modes-v1',promptVersion:MODE_PROMPT_VERSION});
+  expect(mocks.enqueue.mock.calls[0][2].automatic).toMatchObject({version:'hybrid-auto-v1',capabilityMode:'deep',profiles:{
+    fixed_workflow:{mode:'quick'},interpreter:{mode:'standard'},dynamic_agent:{mode:'deep'},
+  }});
   expect(mocks.enqueue.mock.calls[0][2].profile.routes).toHaveLength(3);
 });
 it.each([{mode:'automatic'},{mode:null},{mode:'fixed_workflow'},{mode:'interpreter'},{mode:'dynamic_agent'},

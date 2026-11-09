@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { AGENT_MODES, type AgentMode } from './mode-contract';
 import type { ModeConfig } from './mode-config';
+import type { AutomaticExecutionConfig } from './automatic-execution';
 
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
@@ -44,7 +45,7 @@ export const messageInputSchema = z.object({
   mode: z.enum(AGENT_MODES).optional(),
 }).strict();
 export type MessageInput = z.infer<typeof messageInputSchema>;
-export interface ModelConfig { model: string; providers: string[]; version: string; profile?: ModeConfig }
+export interface ModelConfig { model: string; providers: string[]; version: string; profile?: ModeConfig; automatic?: AutomaticExecutionConfig }
 export interface AgentRun {
   id: string; user_id: string; conversation_id: string; status: RunStatus;
   input: MessageInput; result: { reply: string } | null; model_config: ModelConfig;

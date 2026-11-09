@@ -2,7 +2,7 @@ import { requireApiSession } from "@/lib/auth/session";
 import { getConversation } from "@/lib/assistant/repository";
 import { enqueueRun } from "@/lib/assistant/main/repository";
 import { messageInputSchema } from "@/lib/assistant/main/contracts";
-import { modeModelConfig } from "@/lib/assistant/main/mode-config";
+import { automaticModelConfig } from "@/lib/assistant/main/automatic-execution";
 import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "问题或检索范围无效" }, { status: 400 });
   }
   try {
-    const run = await enqueueRun(session.userId, input.data, modeModelConfig('quick'));
+    const run = await enqueueRun(session.userId, input.data, automaticModelConfig('knowledge'));
     return Response.json({ conversation: await getConversation(session.userId, run.conversation_id),
       run: { id: run.id, status: run.status } }, { status: 202 });
   } catch {

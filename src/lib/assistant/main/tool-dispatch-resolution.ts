@@ -23,7 +23,7 @@ export function resolveToolDispatch(call:ModelToolCall,context:Context,tools=pro
  const p=invocation.safeParse(parsed);
  if(call.function.name!=='execute_tool'||!p.success)return reject('invalid-execution-input',result(null,{status:'missing_input',missing:['execute_tool requires tool and arguments; server identity cannot be supplied']}));
  if(p.data.tool==='workspace_mode_update')return reject('capability-removed',result({code:'capability_removed'},{status:'unavailable',cost:'known',missing:['全局市场模式能力已移除；此历史调用未执行。请使用具体任务的业务目标。']}));
- if(!modeAllowsTool(context.mode,p.data.tool))return reject('tool-not-accessible',result(null,{status:'unavailable',missing:['当前模式不支持此操作，请手动切换模式后新建任务。']}));
+ if(!modeAllowsTool(context.mode,p.data.tool))return reject('tool-not-accessible',result(null,{status:'unavailable',missing:['当前任务的能力范围不支持此操作；请在业务对话中明确所需任务。模型或执行路径的切换不能扩大权限。']}));
  const tool=allowed.find(t=>t.id===p.data.tool);
  if(!tool)return reject('tool-not-accessible',result(null,{status:'unavailable',missing:['Registered accessible tool']}));
  const input=tool.input.safeParse(p.data.arguments);

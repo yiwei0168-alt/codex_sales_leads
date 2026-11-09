@@ -24,6 +24,7 @@ import {toolModelView} from './tool-model-view';
 import {hybridFirstAction,hybridEnabled} from './hybrid-routing';
 import {hybridDataSchema} from './hybrid-contracts';
 import {prepareDecisionRoute} from './decision-routing';
+import {automaticConfigSchema, automaticModelSelection} from './automatic-execution';
 import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
 import {assertCurrentMemoryMessages,withCurrentDecisionMemory,MemoryContextChangedError,MEMORY_CHANGED_REPLY} from './memory-message-guard';
@@ -160,7 +161,8 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
   const memories = await loadDecisionMemory(context.userId);
   const currentMessages: ModelMessage[] = [messages[0], decisionMemoryMessage(memories), ...messages.slice(1)];
   if(config.profile){
-    const profile=modeConfigSchema.parse(config.profile);
+    const automatic=automaticModelSelection(config,messages,revision);
+    const profile=automatic?.profile??modeConfigSchema.parse(config.profile);
     const attemptIds=new Map<number,string>();
     const selected=await runJournaledModeModel({
       callScope:index=>({run:context.runId,step,revision,index}),
@@ -171,7 +173,8 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
         attemptIds.set(index,saved.id);return saved;
       },
       request:async index=>{
-        await event(context,'model_attempt',{step,index,mode:profile.mode,model:profile.routes[index].model});
+        await event(context,'model_attempt',{step,index,mode:profile.mode,model:profile.routes[index].model,
+          ...(automatic?{automatic:true,executionAdvice:automatic.route,selectionVersion:automatic.version}:{})});
         const response=taskTransportSigningConfigured()
           ?await (await createConfiguredTaskModeRequest(context,{callId:attemptIds.get(index)!,callKey:`mode-model:${step}:${revision}:${index}`}))(currentMessages,profile,index)
           :await requestModeModel(currentMessages,profile,index);
@@ -182,9 +185,11 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
           ...(outcome.rejectedCompletedResponse!==undefined?{rejectedCompletedResponse:outcome.rejectedCompletedResponse}:{}),
           ...(outcome.transportFailureReceipt!==undefined?{transportFailureReceipt:outcome.transportFailureReceipt}:{})},{status:'unavailable',missing:['Model attempt failed; no tool executed']}),{
           requestedModel:profile.routes[index].model,mode:profile.mode,attempt:index+1,
+          ...(automatic?{automatic:true,executionAdvice:automatic.route,selectionVersion:automatic.version}:{}),
           ...(outcome.status==='success'?{provider:outcome.value.provider,generationId:outcome.value.generationId,usage:outcome.value.usage}:{retryable:outcome.retryable,reason:outcome.reason}),
         });
         await event(context,outcome.status==='success'?'model_selected':'model_attempt_failed',{step,index,mode:profile.mode,model:profile.routes[index].model,
+          ...(automatic?{automatic:true,executionAdvice:automatic.route,selectionVersion:automatic.version}:{}),
           ...(outcome.status==='success'?{provider:outcome.value.provider}:{retryable:outcome.retryable,reason:outcome.reason})});
       },
     });
@@ -239,6 +244,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     throw new Error("MA24 evaluation execution requires a dedicated admitted runner");
   context.knowledgeScope = run.input.knowledgeScope;
   if(run.model_config.profile)context.mode=modeConfigSchema.parse(run.model_config.profile).mode;
+  if(run.model_config.automatic)context.mode=automaticConfigSchema.parse(run.model_config.automatic).capabilityMode;
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const validateContext=async(messages:ModelMessage[])=>{
     await assertCurrentSkillMessages(context,messages);

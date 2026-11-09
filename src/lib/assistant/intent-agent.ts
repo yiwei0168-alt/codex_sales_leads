@@ -9,7 +9,7 @@ export async function planAssistantRequest(
   void _history;
   return {
     intent: "clarification", confidence: 0, externalQuestions: [],
-    reply: "旧版任务入口已停用。请在对话页选择快速问答、标准工作或深入研究模式后重新提交。",
+    reply: "旧版任务入口已停用。请在对话页直接描述问题或任务，系统会自动选择模型与处理方式。",
     plannerModel: "none", plannerSource: "disabled", plannerCalls: [],
     warnings: ["legacy-intent-disabled"],
   };
