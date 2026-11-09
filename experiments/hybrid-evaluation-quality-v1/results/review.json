@@ -1,0 +1,337 @@
+{
+  "version": "model-assisted-blind-quality-v1",
+  "identity": "80b385caa9c08c0e9c38369094867a51f25a1dfceefe5d8ab5e3c4b49b807b53",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794231528-1nAAGOBUh42XSGodNo4D",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 18,
+  "passed": 10,
+  "knownReviewCostUsd": 0.090758,
+  "rows": [
+    {
+      "reviewId": "0d712fe4bcd2b483a05e",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Rows, dates, order and mail links all match the fixtures. UUID tie-break is a reasonable reading of 'company ID'."
+      ],
+      "total": 97,
+      "passed": true,
+      "version": "v3",
+      "taskId": "P09",
+      "arm": "B",
+      "runId": "0157aa47-7724-4577-b525-ab18d342346e"
+    },
+    {
+      "reviewId": "222beaf88b700e98fee0",
+      "facts": 39,
+      "completeness": 25,
+      "citations": 19,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correctly says no explicit deadline and cites c2-m3 and c2-m4. The quoted 'No explicit deadline stated' text may come from tool output."
+      ],
+      "total": 98,
+      "passed": true,
+      "version": "v4",
+      "taskId": "P23",
+      "arm": "A",
+      "runId": "ec0e1156-3a39-40c9-914a-b51077ba8587"
+    },
+    {
+      "reviewId": "241b9c72bcfe9c2c7375",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "All 12 rows and the sort order are correct, with correct mail links."
+      ],
+      "total": 97,
+      "passed": true,
+      "version": "v3",
+      "taskId": "P09",
+      "arm": "C",
+      "runId": "d90a7e9f-caf3-4736-a5fc-483d0414aa7a"
+    },
+    {
+      "reviewId": "24fe5b9b68898059f870",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "Model-unavailable message. No task content and no sources."
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P01",
+      "arm": "C",
+      "runId": "9afb5b45-ebb4-4cf5-aab8-f42992aa888a"
+    },
+    {
+      "reviewId": "2531086654ce7f8dc20b",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "Model-unavailable message. No task content and no sources."
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P24",
+      "arm": "A",
+      "runId": "bf2a5f38-3567-4e34-813a-1db892fc60db"
+    },
+    {
+      "reviewId": "2adbfb50e1b322cd72c2",
+      "facts": 38,
+      "completeness": 23,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Latest mail c2-m4 and the 'purchase date not committed' fact are correct. The owner is flagged as an inference."
+      ],
+      "total": 94,
+      "passed": true,
+      "version": "v4b",
+      "taskId": "P02",
+      "arm": "B",
+      "runId": "c7ff07f9-1496-4d78-b770-759a15d9d620"
+    },
+    {
+      "reviewId": "34871921bfb6071e7275",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "Model-unavailable message. No task content and no sources."
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P01",
+      "arm": "B",
+      "runId": "1387fa51-96bf-45de-b612-48ace0c667c0"
+    },
+    {
+      "reviewId": "5cb68e2f20d556017dd1",
+      "facts": 0,
+      "completeness": 2,
+      "citations": 0,
+      "scope": 4,
+      "readability": 4,
+      "hardGatePass": false,
+      "issues": [
+        "Only asks for clarification, although the NX410 v1 and v2 sources are uniquely identifiable. It gives no 5-to-8 port comparison."
+      ],
+      "total": 10,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P24",
+      "arm": "C",
+      "runId": "0e943086-6e33-469e-8855-9c4d609223c1"
+    },
+    {
+      "reviewId": "8629cb41b6a5b0e85197",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correctly states there is no explicit deadline and cites the right mails."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v4",
+      "taskId": "P23",
+      "arm": "C",
+      "runId": "3a492dab-95e5-492c-887f-926d1537d742"
+    },
+    {
+      "reviewId": "882a1bb1a9cf4ef0dc51",
+      "facts": 0,
+      "completeness": 0,
+      "citations": 0,
+      "scope": 0,
+      "readability": 1,
+      "hardGatePass": false,
+      "issues": [
+        "Model-unavailable message. No counts given. The year is missing from the question."
+      ],
+      "total": 1,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P10",
+      "arm": "C",
+      "runId": "22150be8-d0d6-40e7-9a96-043cbc23d162"
+    },
+    {
+      "reviewId": "8e3a625209e47b05f8bf",
+      "facts": 0,
+      "completeness": 3,
+      "citations": 0,
+      "scope": 6,
+      "readability": 5,
+      "hardGatePass": false,
+      "issues": [
+        "Only asks for the year, so none of the 8/12/12/8 counts or the total of 40 is given. The missing-year context is a validity concern."
+      ],
+      "total": 14,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P10",
+      "arm": "B",
+      "runId": "6fa7255f-9874-4803-a50f-9ed021d4484f"
+    },
+    {
+      "reviewId": "9030e91467b2479b6ea5",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 18,
+      "scope": 9,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Rows and order are correct. Link text uses the subject line, which is fine."
+      ],
+      "total": 97,
+      "passed": true,
+      "version": "v3",
+      "taskId": "P09",
+      "arm": "A",
+      "runId": "f0b02264-a107-4b80-a9c4-b4ca06708be8"
+    },
+    {
+      "reviewId": "a87632c2bbbacaec933a",
+      "facts": 0,
+      "completeness": 3,
+      "citations": 0,
+      "scope": 6,
+      "readability": 5,
+      "hardGatePass": false,
+      "issues": [
+        "Only asks for the year, so no counts are given. The missing-year context is a validity concern."
+      ],
+      "total": 14,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P10",
+      "arm": "A",
+      "runId": "eb4cad35-7d5a-4053-b9a2-462dfb6c018d"
+    },
+    {
+      "reviewId": "aa4fe1adec8bc2a75cce",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correct latest fact, timeline and cited mail IDs. The owner is flagged as unspecified."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v4b",
+      "taskId": "P02",
+      "arm": "C",
+      "runId": "c6e2d1e4-47b5-46a7-8ab3-2c54d2999404"
+    },
+    {
+      "reviewId": "c9a30f1a5c667c48e532",
+      "facts": 0,
+      "completeness": 2,
+      "citations": 0,
+      "scope": 4,
+      "readability": 4,
+      "hardGatePass": false,
+      "issues": [
+        "Only asks for clarification, although the sources are uniquely identifiable. It gives no port comparison."
+      ],
+      "total": 10,
+      "passed": false,
+      "version": "v4b",
+      "taskId": "P24",
+      "arm": "B",
+      "runId": "07123ef1-b9c4-4264-91fd-1a4ef1b98faf"
+    },
+    {
+      "reviewId": "e288e0a6a724f077249a",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correctly reports the 2026-11-12 deadline from c1-m3 and the latest fact from c1-m4. The owner is flagged as an inference."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v4b",
+      "taskId": "P01",
+      "arm": "A",
+      "runId": "efe9d8eb-4b13-4611-9be7-fc3b6ac7a695"
+    },
+    {
+      "reviewId": "ebef2f0031580cae059c",
+      "facts": 39,
+      "completeness": 24,
+      "citations": 18,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correct latest mail and facts, with no invented purchase date."
+      ],
+      "total": 96,
+      "passed": true,
+      "version": "v4b",
+      "taskId": "P02",
+      "arm": "A",
+      "runId": "73e12223-afc0-43f2-87b5-2cb7e2b3d237"
+    },
+    {
+      "reviewId": "f7a60cb2a92a71bbadbb",
+      "facts": 39,
+      "completeness": 25,
+      "citations": 19,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [
+        "Correctly states there is no explicit deadline and cites c2-m3 and c2-m4."
+      ],
+      "total": 98,
+      "passed": true,
+      "version": "v4",
+      "taskId": "P23",
+      "arm": "B",
+      "runId": "501300f1-6439-44d3-9729-72d69f5c38da"
+    }
+  ]
+}
