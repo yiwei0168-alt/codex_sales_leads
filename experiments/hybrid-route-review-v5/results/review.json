@@ -1,0 +1,270 @@
+{
+  "version": "route-context-and-policy-review-v5",
+  "identity": "59261c21cbe64b978fa0b859567d68506d7494eb3c724187b0259abafa8d625d",
+  "independentHumanGold": false,
+  "authorLabelsDisclosed": false,
+  "routerOutputsDisclosed": false,
+  "knownReviewCostUsd": 0.03644,
+  "labels": [
+    {
+      "id": "H5-01",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期沟通进展，属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-02",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的最新往来状态，属于固定读取流程。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-03",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "请求给出了一个域名客户，只查询最新合作进展。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-04",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的现有邮件近期进展，只读。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-05",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "请求给出了型号 ZX820，只在已有知识库中查一项原文证据。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-06",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "请求给出了型号 CR250，只在已有知识库中查一项保修条款。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-07",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "请求给出了型号 TM730，只需要一项现有资料原文。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-08",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "fixed_workflow",
+      "reason": "请求给出了型号 KL610，只查一项产品知识。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-09",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和渠道类型已明确，是批量公开搜索并去重。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-10",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和渠道类型已明确，是批量公开搜索并去重。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-11",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两家公司和域名已明确，deep 模式允许研究评分与复核，且不发布正式评分。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-12",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两家公司和域名已明确，deep 模式允许补证、评分和复核，且不创建客户记录。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-13",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求涉及两个具名客户的本地多对象读取、排序和来源整理。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-14",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求涉及日期范围、分页读取和按日计数。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-15",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求涉及逐家读取、分页和排序，是本地批量读取。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-16",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "请求涉及两个版本的独立读取和比较，并要求各自的原始来源。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-17",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "需要先阅读邮件，再判断原因并给出策略，属于语义分析和建议。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-18",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求是基于往来起草邮件，不发送，需要由主模型起草。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-19",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求要求把搜索结果添加为正式客户，这是写入动作，超出允许的效果范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-20",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求要求同步邮箱，超出允许的效果范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-21",
+      "inputSufficient": false,
+      "missingFields": [
+        "那两家客户的具体名称"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "“那两家客户”指代缺失，且没有可见的前文。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-22",
+      "inputSufficient": false,
+      "missingFields": [
+        "三个渠道类型",
+        "国家"
+      ],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "“刚才说的三个渠道”指代缺失，国家也未给出。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-23",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求要把私人邮件上传到外部服务，属于隐私数据外传，超出允许范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "H5-24",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "dynamic_agent",
+      "reason": "请求要求发布正式评分并发送邮件，超出允许的效果范围。",
+      "split": "fresh-holdout"
+    },
+    {
+      "id": "R038-v5",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和渠道类型已明确，是批量公开搜索并去重。",
+      "split": "historical-regression"
+    },
+    {
+      "id": "R039-v5",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "国家和渠道类型已明确，是批量公开搜索并去重。",
+      "split": "historical-regression"
+    },
+    {
+      "id": "R045-v5",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两家公司和域名已明确，deep 模式允许研究评分与复核，且不发布正式评分。",
+      "split": "historical-regression"
+    },
+    {
+      "id": "R048-v5",
+      "inputSufficient": true,
+      "missingFields": [],
+      "policyConflict": false,
+      "route": "interpreter",
+      "reason": "两家公司和域名已明确，deep 模式允许研究评分与复核，且不发布正式评分。",
+      "split": "historical-regression"
+    }
+  ],
+  "disagreements": [],
+  "holdoutAdmitted": true,
+  "jevCalls": 0
+}
