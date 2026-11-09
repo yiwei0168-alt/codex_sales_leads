@@ -1,0 +1,15 @@
+{
+  "version": "compact-program-projection-replay-v3",
+  "sourceTraceHash": "d2853668948c1285fa47e48a2abd51ce9f0f436e29786c34cd591905d684d049",
+  "codeHash": "5dd2c9b7ae0de02631d4ad8a9d66f588e259ad238ebf47bf70bb8944292dd97a",
+  "reusedReceipts": 13,
+  "rows": 12,
+  "allDatesOrderAndMailIdsCorrect": true,
+  "eventsCovered": 48,
+  "originalValueChars": 37969,
+  "compactValueChars": 3734,
+  "newModelCalls": 0,
+  "newToolDispatches": 0,
+  "storedEvidencePreserved": true,
+  "scope": "Offline regression only; character reduction is not measured token, latency or cost savings."
+}

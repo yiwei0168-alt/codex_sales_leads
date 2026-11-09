@@ -57,7 +57,7 @@ describe('mode runtime boundaries',()=>{
     const save=vi.fn();
     await expect(orderedModeDecision({begin:async()=>({id:'attempt',fresh:true}),request,save})).rejects.toThrow('invalid model stream');
     expect(request).toHaveBeenCalledOnce();
-    expect(save).toHaveBeenCalledWith('attempt',0,{status:'unavailable',retryable:false,reason:'requires-reconciliation-or-configuration'});
+    expect(save).toHaveBeenCalledWith('attempt',0,expect.objectContaining({status:'unavailable',retryable:false,reason:'requires-reconciliation-or-configuration',failureDiagnostic:expect.any(Object)}));
   });
   it('saves a failed route before advancing and reuses saved success on recovery',async()=>{
     const saved=new Map<number,{status:string;data:unknown}>(),calls:number[]=[],events:string[]=[];

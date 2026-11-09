@@ -2,6 +2,22 @@ import { expect, it } from "vitest";
 import { result, type ModelMessage } from "./contracts";
 import { toolModelView } from "./tool-model-view";
 import {PROGRAM_VERSION} from './hybrid-contracts';
+import {PROGRAM_PROJECTION_CHAR_LIMIT} from './program-projection-policy';
+
+it.each(['interpreter','workflow'] as const)('bounds interpreter value without dropping stored evidence or altering %s workflows',route=>{
+ const callId='11111111-1111-4111-8111-111111111111';
+ const value={body:'x'.repeat(PROGRAM_PROJECTION_CHAR_LIMIT+1),requiredFact:'last row'};
+ const data=route==='interpreter'?{kind:PROGRAM_VERSION,route,handoff:null,value,coverage:['48 events read'],leaves:[] as unknown[]}:
+  {kind:'hybrid-v1',route,value,coverage:['48 events read'],leaves:[] as unknown[]};
+ data.leaves.push({key:'leaf',tool:'customer_timeline',arguments:{},output:result({requiredFact:'last row'},{callId})});
+ const out=result(data),messages:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'p',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:route==='interpreter'?'programmatic_tools':'workflow_read',arguments:{}})}}]},
+  {role:'tool',tool_call_id:'p',content:JSON.stringify(out)}];
+ const original=JSON.stringify(messages),view=JSON.parse(toolModelView(messages)[1].content!);
+ expect(JSON.stringify(messages)).toBe(original);
+ expect(view.data.reads[0].callId).toBe(callId);expect(view.data.coverage).toEqual(['48 events read']);
+ if(route==='interpreter'){expect(view.status).toBe('partial');expect(view.data.value).toBeNull();expect(view.missing.join(' ')).toContain('not truncated');}
+ else{expect(view.status).toBe('success');expect(view.data.value).toEqual(value);}
+});
 
 it('preserves bounded evidence previews on interrupted research without repeating provider calls',()=>{
   const output=result({kind:PROGRAM_VERSION,route:'interpreter',value:null,handoff:'Review conflicting evidence',coverage:[],leaves:[

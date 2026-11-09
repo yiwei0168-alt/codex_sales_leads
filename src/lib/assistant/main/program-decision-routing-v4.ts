@@ -6,6 +6,7 @@ import { withProductSpend } from '@/lib/billing/context';
 import { withModelAttempt } from '@/lib/billing/model-attempt-context';
 import { beginCall, completeCall } from './repository';
 import { result, type ExecutionContext, type ModelMessage, type ToolResult } from './contracts';
+import { failureDiagnostic } from '@/lib/network/failure-diagnostic';
 
 export interface ProgramJournal {
   begin:(input:unknown)=>Promise<{id:string;fresh:boolean;status:string;output:ToolResult|null}>;
@@ -26,9 +27,9 @@ export async function journaledProgramDecision(state:ProgramRouteState,journal:P
   }else{
     const start=Date.now();
     try{response=await journal.request(state,saved.id);}
-    catch{
+    catch(error){
       await journal.save(saved.id,result(null,{status:'unknown',missing:['Optional router unavailable. Continue dynamically; no router retry.']}),
-        {model:PROGRAM_DECISION_MODEL,latencyMs:Date.now()-start,retry:false});
+        {model:PROGRAM_DECISION_MODEL,latencyMs:Date.now()-start,retry:false,failureDiagnostic:failureDiagnostic(error)});
       return null;
     }
     await journal.save(saved.id,result({response,policyVersion:thresholds.version}),{model:PROGRAM_DECISION_MODEL,

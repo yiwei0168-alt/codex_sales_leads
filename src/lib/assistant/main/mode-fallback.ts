@@ -2,6 +2,7 @@ import { OpenRouterRequestError } from '@/providers/openrouter-batch';
 import { ModelWaitError } from './model-stream';
 import { isRetryableModeReceipt } from './mode-failure-reasons';
 import {modeTransportFailure} from './mode-transport-failure';
+import {failureDiagnostic} from '@/lib/network/failure-diagnostic';
 export class ModeModelsUnavailable extends Error {constructor(){super('Mode model routes exhausted or require reconciliation');}}
 export function modeFailureCode(error:unknown):string {
   if(error instanceof ModelWaitError)return `timeout-${error.kind}`;
@@ -19,7 +20,7 @@ export async function orderedModeDecision<T>(deps:{
   signal?:AbortSignal;
   begin:(index:number)=>Promise<{id:string;fresh:boolean;output?:{status:string;data?:unknown}|null}>;
   request:(index:number)=>Promise<T>;
-  save:(id:string,index:number,value:{status:'success';value:T}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown;rejectedCompletedResponse?:unknown})=>Promise<void>;
+  save:(id:string,index:number,value:{status:'success';value:T}|{status:'unavailable';retryable:boolean;reason:string;failureDiagnostic?:ReturnType<typeof failureDiagnostic>;transportFailureReceipt?:unknown;rejectedCompletedResponse?:unknown})=>Promise<void>;
 }):Promise<T>{
   for(let index=0;index<3;index++){
     deps.signal?.throwIfAborted();
@@ -35,6 +36,7 @@ export async function orderedModeDecision<T>(deps:{
       const cancelled=deps.signal?.aborted===true;
       const retryable=!cancelled&&mayFallback(error),receipt=modeTransportFailure(error);
       await deps.save(prior.id,index,{status:'unavailable',retryable,reason:cancelled?'execution-cancelled':modeFailureCode(error),
+       failureDiagnostic:failureDiagnostic(error),
        ...(!cancelled&&receipt!==undefined?{transportFailureReceipt:receipt}:{})});
       deps.signal?.throwIfAborted();
       if(retryable)continue;throw error;

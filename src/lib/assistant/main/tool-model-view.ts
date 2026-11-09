@@ -1,5 +1,6 @@
 import type { ModelMessage } from "./contracts";
 import {hybridDataSchema,HYBRID_TOOLS,PROGRAM_VERSION} from './hybrid-contracts';
+import {PROGRAM_PROJECTION_CHAR_LIMIT} from './program-projection-policy';
 
 const roleBlock = /<\s*(system|developer|assistant|user|tool)(?:\s+[^<>]*?)?\s*>[\s\S]*?(?:<\s*\/\s*\1\s*>|$)/gi;
 const chatMlBlock = /(?:<\|im_start\|>|\[im_start\])\s*(?:system|developer|assistant|user|tool)\b[\s\S]*?(?:<\|im_end\|>|\[im_end\]|(?=<\|im_start\|>|\[im_start\])|$)/gi;
@@ -27,10 +28,13 @@ export function toolModelView(messages: ModelMessage[]): ModelMessage[] {
         const parsed=hybridDataSchema.safeParse(original.data);
         if(parsed.success){
           const {leaves,...projected}=parsed.data;
+          const oversized=parsed.data.route==='interpreter'&&JSON.stringify(redact(projected.value??null)).length>PROGRAM_PROJECTION_CHAR_LIMIT;
           const interrupted=parsed.data.kind===PROGRAM_VERSION&&'status' in original&&original.status==='partial';
-          original={...original,data:{...projected,reads:leaves.map(leaf=>({tool:leaf.tool,arguments:leaf.arguments,
+          original={...original,...(oversized?{status:'partial',missing:[...('missing' in original&&Array.isArray(original.missing)?original.missing:[]),
+            `Program value exceeds ${PROGRAM_PROJECTION_CHAR_LIMIT} characters and was withheld, not truncated. Use tools.receipt(originalLeafCallId) to filter/aggregate/sort and return required fields with citations and coverage; do not rerun saved reads.`]}:{}),
+            data:{...projected,...(oversized?{value:null,projectionOmitted:true}:{}),reads:leaves.map(leaf=>({tool:leaf.tool,arguments:leaf.arguments,
             callId:leaf.output.callId,status:leaf.output.status,sources:leaf.output.sources,missing:leaf.output.missing,
-            ...(interrupted&&leaf.output.data!=null?{preview:JSON.stringify(redact(leaf.output.data)).slice(0,2000),
+            ...(!oversized&&interrupted&&leaf.output.data!=null?{preview:JSON.stringify(redact(leaf.output.data)).slice(0,2000),
               previewScope:'At most 2000 characters of this saved result; not complete evidence.'}:{})}))}};
           if(JSON.stringify(original).length>90000)original={status:'partial',data:{kind:parsed.data.kind,route:parsed.data.route,
             coverage:parsed.data.coverage,reads:leaves.map(leaf=>({tool:leaf.tool,arguments:leaf.arguments,callId:leaf.output.callId,status:leaf.output.status}))},
