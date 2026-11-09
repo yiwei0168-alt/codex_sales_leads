@@ -1,0 +1,16 @@
+{
+  "version": "openrouter-metadata-read-probe-v1",
+  "sourceReceiptHash": "4d7052182363ce5926cc24fe1ca05530acf7c4c0fe8a6106f70c0043638859ae",
+  "newModelRequests": 0,
+  "metadataRequests": 1,
+  "productionChanged": false,
+  "httpStatus": 200,
+  "identityMatched": true,
+  "providerCostUsd": 0.132356,
+  "inlineCostUsd": 0.132356,
+  "costMatched": true,
+  "terminalFinish": "stop",
+  "cancelled": false,
+  "isByok": false,
+  "latencyMs": 1244
+}

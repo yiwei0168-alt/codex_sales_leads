@@ -5,7 +5,7 @@ export const HYBRID_VERSION = 'hybrid-v1';
 export const HYBRID_TOOLS = ['workflow_read', 'programmatic_read', 'programmatic_tools'] as const;
 // An explicit capability list, not an effect=read shortcut: other read tools can spend money.
 export const HYBRID_LEAVES = new Set([
-  'company_search', 'company_read', 'customer_timeline', 'company_correspondence_list',
+  'company_search', 'company_list', 'company_read', 'customer_timeline', 'company_correspondence_list',
   'company_assessment_read', 'mail_read', 'mailbox_message_list', 'knowledge_search', 'knowledge_facts',
   'knowledge_compare', 'knowledge_originals', 'memory_read', 'memory_history_search',
 ]);

@@ -9,6 +9,7 @@ import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/rev
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
 import {listKnowledgeUploadJobs} from "@/lib/knowledge/upload";
 import { searchOwnedCompanies } from './company-search';
+import {listOwnedSalesCompanies,companyListInput,companyListData} from '@/lib/sales/company-list';
 import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
 import {memoryEditorSchema} from "@/lib/outreach/memory-editor";
 import {saveManualMemory} from "@/lib/outreach/memory-save";
@@ -148,7 +149,10 @@ export const productTools: ProductTool[] = [
     execute: async (i,c) => {const {decideFactReview}=await import("@/lib/knowledge/review-repository");await decideFactReview(c.userId,i);return result({updated:true,reviewId:i.reviewId,decision:i.decision},{cost:"known"});} }),
   knowledgeOriginalsTool,
   knowledgeCompareTool,
-  defineTool({ id: "company_search", description: "Search owned sales companies AND mailbox customers by full name, partial name or domain/URL, with optional country. Returns candidates, not confirmed identities. For mailboxCustomers use their id with customer_timeline; for companies use candidate id with company_read. Clarify ambiguous candidates; never infer absence of mail from an empty sales-company list alone. No model, external lookup or merge.",
+  defineTool({id:'company_list',description:'Page through all current-account saved sales company/market memberships, optionally by country. data.items contains id, name, domain, countryCode and saved roles; follow nextOffset until hasMore=false before counting all companies. Use IDs with company_read or company_assessment_read. No model, search, scoring or merge.',
+    version:'1',input:companyListInput,output:toolResultSchema.extend({data:companyListData.nullable().optional()}),cost:'known',
+    execute:async(i,c)=>result(await listOwnedSalesCompanies(c.userId,i),{cost:'known'})}),
+  defineTool({ id: "company_search",version:'2', description: "Search owned sales companies AND mailbox customers by full name, partial name or domain/URL, with optional country. Returns candidates, not confirmed identities. For mailboxCustomers use their id with customer_timeline; for companies use candidate id with company_read. Clarify ambiguous candidates; never infer absence of mail from an empty sales-company list alone. No model, external lookup or merge.",
     input: z.object({ query: z.string().max(180), countryCode: z.string().regex(/^[A-Z]{2}$/).optional() }).strict(),
     execute: async (i, c) => result(await searchOwnedCompanies(c.userId,i), { cost: "known" }) }),
   defineTool({ id: "company_read", description: "Read the account's company/market state and saved evidence, without generating a score or re-running discovery.",

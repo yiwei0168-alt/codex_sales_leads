@@ -18,9 +18,9 @@ export async function runReadWorkflow(input: unknown, call: HybridCall, coverage
     return evidence;
   }
   const search = await call('company_search', { query: plan.query });
-  const found = z.object({ matching: z.object({ requiresSelection: z.boolean() }),
+  const found = z.object({ matching: z.object({ requiresSelection: z.boolean(),mailboxTimelineUnambiguous:z.boolean().optional() }),
     mailboxCustomers: z.object({ items: z.array(z.object({ id: z.uuid() }).passthrough()), hasMore: z.boolean() }) }).passthrough().safeParse(search.data);
-  if (!found.success || found.data.matching.requiresSelection || found.data.mailboxCustomers.hasMore || found.data.mailboxCustomers.items.length !== 1)
+  if (!found.success || (found.data.matching.requiresSelection&&!found.data.matching.mailboxTimelineUnambiguous) || found.data.mailboxCustomers.hasMore || found.data.mailboxCustomers.items.length !== 1)
     throw new HybridStop('Company identity is missing or ambiguous. Reuse company_search candidates and clarify; no company was merged or selected automatically.');
   const timeline = await call('customer_timeline', { customerId: found.data.mailboxCustomers.items[0].id, offset: 0 });
   const page = z.object({ events: z.array(z.object({ id: z.uuid() }).passthrough()), hasMore: z.boolean() }).passthrough().safeParse(timeline.data);

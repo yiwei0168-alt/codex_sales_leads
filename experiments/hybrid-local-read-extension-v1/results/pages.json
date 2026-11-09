@@ -1,0 +1,29 @@
+{
+  "version": "company-list-real-db-wasm-v1",
+  "temporaryCompanyRows": 25,
+  "pageSizes": [
+    20,
+    5
+  ],
+  "programPages": 2,
+  "programResultTotal": 25,
+  "finalPageConfirmed": true,
+  "countryFilterPassed": true,
+  "crossOwnerReadBlocked": true,
+  "rollbackRestoredCompanies": 12,
+  "quoteDocumentsSearchable": 2,
+  "privateQuoteIsolationPassed": true,
+  "dualStoreTimelineReadPassed": true,
+  "dualStoreWorkflowCalls": [
+    "company_search",
+    "customer_timeline",
+    "mail_read",
+    "mail_read",
+    "mail_read"
+  ],
+  "companyMergePerformed": false,
+  "newModelCalls": 0,
+  "externalRequests": 0,
+  "productionChanged": false,
+  "passed": true
+}

@@ -1,0 +1,60 @@
+{
+  "version": "hybrid-local-read-extension-v1",
+  "fixtureHash": "fa56ca7283c2a7343aa88e7d96ff96518c38eb98261af089f12fd46ee9be8e25",
+  "workspaceId": "fa96d2a5-6cdc-46fd-89c8-cbe7e299e0f2",
+  "salesCandidateIds": {
+    "c1": "eval-sales-c1",
+    "c2": "eval-sales-c2",
+    "c3": "eval-sales-c3",
+    "c4": "eval-sales-c4",
+    "c5": "eval-sales-c5",
+    "c6": "eval-sales-c6",
+    "c7": "eval-sales-c7",
+    "c8": "eval-sales-c8",
+    "c9": "eval-sales-c9",
+    "c10": "eval-sales-c10",
+    "c11": "eval-sales-c11",
+    "c12": "eval-sales-c12"
+  },
+  "quotations": [
+    {
+      "id": "q1",
+      "documentId": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+      "sourceUrl": "fixture://quotes/q1",
+      "contentHash": "0eca9c9536ff09aed2760f59149bfae718ccbb66afccb8bdde177fcd28af1e46"
+    },
+    {
+      "id": "q2",
+      "documentId": "c2684dd0-b094-4e9b-af54-cf0636210321",
+      "sourceUrl": "fixture://quotes/q2",
+      "contentHash": "2ce14f1443e5ae32735035442c214e510c4f76fe2763cb3592a4157c8a637a1d"
+    }
+  ],
+  "groups": {
+    "GB/Distributor": 3,
+    "DE/Distributor": 3,
+    "GB/Retailer": 3,
+    "GB/SI": 3
+  },
+  "scores": [
+    {
+      "company": "c1",
+      "score": 63
+    },
+    {
+      "company": "c2",
+      "score": 88
+    },
+    {
+      "company": "c3",
+      "score": 74
+    }
+  ],
+  "savedCompanies": 12,
+  "quoteDocuments": 2,
+  "crossOwnerReadBlocked": true,
+  "newScoringCalls": 0,
+  "externalRequests": 0,
+  "productionChanged": false,
+  "publicResearchFixturesReady": false
+}

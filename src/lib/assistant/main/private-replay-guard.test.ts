@@ -6,6 +6,7 @@ vi.mock('@/lib/mailbox/repository',()=>({getMailboxMessageForReview:mocks.mail})
 vi.mock('@/lib/mailbox/customer-timeline',()=>({listMailboxCustomers:mocks.list,readCustomerTimeline:mocks.timeline}));
 import {assertCurrentPrivateReplayMessages as guard} from './private-replay-guard';
 import {listImportedMailMetadata} from '@/lib/mailbox/message-list';
+import {listOwnedSalesCompanies} from '@/lib/sales/company-list';
 const id='00000000-0000-4000-8000-000000000001';
 const messages=(tool:string,args:unknown,data:unknown):ModelMessage[]=>[
   {role:'assistant',content:null,tool_calls:[{id:'read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool,arguments:args})}}]},
@@ -43,4 +44,11 @@ it('rechecks account-wide mail pages and refuses changed IDs or coverage',async(
  await expect(guard('owner',messages('mailbox_message_list',input,{...data,hasMore:true}))).rejects.toThrow('changed');
  mocks.query.mockResolvedValue([]);
  await expect(guard('other',messages('mailbox_message_list',input,data))).rejects.toThrow('changed');
+});
+it('rechecks saved-company pages under the current account and rejects changed membership or roles',async()=>{
+ const row={id:'candidate-1',name:'Synthetic company',domain:'company.invalid',countryCode:'GB',roles:['Distributor']};
+ mocks.query.mockResolvedValue([row]);const data=await listOwnedSalesCompanies('owner',{});
+ await guard('owner',messages('company_list',{},data));
+ mocks.query.mockResolvedValue([{...row,roles:['SI']}]);await expect(guard('owner',messages('company_list',{},data))).rejects.toThrow('changed');
+ mocks.query.mockResolvedValue([]);await expect(guard('other',messages('company_list',{},data))).rejects.toThrow('changed');
 });

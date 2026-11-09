@@ -15,7 +15,7 @@ export async function measuredProductActionCompanies(userId:string,plan:ProductA
 export async function findProductActionCompanies(userId:string,plan:ProductActionPlan){
   // Escape LIKE metacharacters: user/company text is a literal, not a wildcard program.
   const patterns=companyQueryPatterns(plan.companyQuery);
-  const rows=await tenantQuery<{id:string;name:string;countryCode:string}>(userId,`select wc.candidate_id as id,coalesce(wc.record->>'displayName',c.canonical_name) as name,wc.market_country_code as "countryCode"
+  const rows=await tenantQuery<{id:string;name:string;domain:string;countryCode:string}>(userId,`select wc.candidate_id as id,coalesce(wc.record->>'displayName',c.canonical_name) as name,c.domain,wc.market_country_code as "countryCode"
     from sales_company c join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
     where w.owner_id=$1 and w.slug='global-sales' and (c.canonical_name ilike any($2::text[]) or c.domain ilike any($2::text[]) or wc.record->>'displayName' ilike any($2::text[]))
     and ($3::text is null or wc.market_country_code=$3)
