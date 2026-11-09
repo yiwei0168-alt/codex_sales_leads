@@ -19,6 +19,7 @@ import {createHash} from "node:crypto";
 import {modelRoutedTransport} from "@/lib/network/model-transport";
 import {isModeStreamRequest,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 import {decisionModelSchema,parseDecisionResponse,validDecisionRequest} from '@/providers/decision-contract';
+import {validProgramDecisionRequest,programResponseSchema} from '@/providers/program-decision-contract';
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -129,7 +130,10 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       const text=responseText;let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
       let invalidDecision=false;
-      if(decisionRoute&&response.ok){try{parseDecisionResponse(result,decisionModelSchema.parse(parsed.model));}catch{invalidDecision=true;}}
+      if(decisionRoute&&response.ok){try{
+        if(validProgramDecisionRequest(parsed))programResponseSchema.parse(result);
+        else parseDecisionResponse(result,decisionModelSchema.parse(parsed.model));
+      }catch{invalidDecision=true;}}
       const outputIncomplete=response.ok&&(invalidDecision||textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"
         ||embeddingOutputCompletion(attempt?.task,result,parsed)==="incomplete");
       await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens??usage.total_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result,{httpStatus:response.status,generationId:response.headers.get("x-generation-id")})});

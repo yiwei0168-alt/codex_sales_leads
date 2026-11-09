@@ -1,15 +1,17 @@
 import { defineTool } from './tool-definition';
-import { workflowInput, programInput, HYBRID_LEAVES, type HybridLeaf } from './hybrid-contracts';
+import { workflowInput, programInput, HYBRID_LEAVES, PROGRAM_LEAVES, type HybridLeaf } from './hybrid-contracts';
 import { executeHybridRead } from './hybrid-execution';
+import { executeProgrammatic } from './programmatic-execution';
 import type { ExecutionContext, ModelMessage } from './contracts';
 
-async function dependencies(context: ExecutionContext) {
+async function dependencies(context: ExecutionContext, capabilities = HYBRID_LEAVES) {
   const [{ dispatchTool }, { availableTools }, { assertCurrentKnowledgeMessages,KnowledgeSourceChangedError }, { assertCurrentMemoryMessages },{assertCurrentPrivateReplayMessages}] = await Promise.all([
     import('./executor'), import('./tools'), import('./knowledge-message-guard'), import('./memory-message-guard'),
     import('./private-replay-guard'),
   ]);
   return { dispatch: dispatchTool,
-    allowed: new Set(availableTools(context).filter(t => HYBRID_LEAVES.has(t.id) && t.effect === 'read').map(t => t.id)),
+    allowed: new Set(availableTools(context).filter(t => capabilities.has(t.id) &&
+      (t.effect === 'read' || (t.id === 'evidence_collect' && t.effect === 'reversible'))).map(t => t.id)),
     validate: async (leaves: HybridLeaf[]) => {
       if(!leaves.length)return;
       const messages: ModelMessage[] = leaves.flatMap(leaf => [
@@ -25,6 +27,9 @@ async function dependencies(context: ExecutionContext) {
   };
 }
 export const hybridTools = [
+  defineTool({ id: 'programmatic_tools', effect: 'reversible', cost: 'unknown', recovery: 'composite', input: programInput,
+    description: `Execute a bounded multi-tool segment in isolated synchronous JavaScript. Main model selects the strategy and describes leaf schemas first. tools.call(id,args) returns a full ToolResult; tools.parallel([{tool,arguments},...]) runs independent requests with concurrency 3 in input order; tools.workflow(args) runs local recipes. tools.handoff(reason,value) immediately stops and returns evidence to the main model for semantic decisions, conflicting evidence or new strategy; it cannot be caught to continue. Return compact JSON retaining source IDs/quotes/callIds. Up to 24 calls, 180 seconds between boundaries, no await/Promise, network/files/shell/secrets. Each leaf enforces account, mode, journal and budget independently. Allowed: ${[...PROGRAM_LEAVES].join(', ')}. Research pipeline: company_research -> evidence_collect -> role_correct -> company_score -> score_review, passing each saved sourceCallId. Stop at partial/missing/unknown outcomes and reuse receipts. Specialist tools retain model costs. No send, customer mutation, official score publication or nested jobs. Code handles loops/joins/parallelism; main model handles new semantic decisions and final answer.`,
+    execute: async (input, context) => executeProgrammatic(input, context, await dependencies(context, PROGRAM_LEAVES)) }),
   defineTool({ id: 'workflow_read', recovery: 'composite', input: workflowInput,
     description: 'Reviewed local read recipes: customer_recent resolves one unambiguous company, reads its first timeline page and up to 8 latest original mails; knowledge_evidence retrieves up to 8 evidence blocks. Reuse returned reads, disclose unread scope and continue with dynamic tools for unmet requirements. Never sends, syncs, merges or scores.',
     execute: async (input, context) => executeHybridRead('workflow', input, context, await dependencies(context)) }),

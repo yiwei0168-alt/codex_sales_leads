@@ -20,7 +20,7 @@ export function hybridFirstAction(messages: ModelMessage[]): ModelMessage | null
   const users = messages.filter(message => message.role === 'user');
   if (users.length !== 1 || messages.some(message => message.role === 'assistant')) return null;
   // Only a freshly initialized, enabled production context receives this server marker.
-  if (!messages.some(message => message.role === 'system' && message.content?.startsWith('[hybrid-v1:eligible]'))) return null;
+  if (!messages.some(message => message.role === 'system' && /^\[hybrid-v[12]:eligible\]/.test(message.content ?? ''))) return null;
   const route = suggestHybridRoute(users[0].content ?? '');
   if (!route.workflow) return null;
   return { role: 'assistant', content: null, tool_calls: [{ id: `hybrid_route_${digest(route.workflow).slice(0,32)}`,

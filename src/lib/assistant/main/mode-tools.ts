@@ -6,7 +6,7 @@ const research = new Set(`lead_workflow relationship_analyze contacts_lookup con
 const indirect = new Set(['skill_script','schedule_create','schedule_control']);
 export function modeAllowsTool(mode: AgentMode | undefined, id: string): boolean {
   // Wrappers recheck every leaf through the ordinary dispatcher and same mode.
-  if(id==='workflow_read'||id==='programmatic_read')return true;
+  if(id==='workflow_read'||id==='programmatic_read'||id==='programmatic_tools')return true;
   if (!mode || mode==='deep') return true; // Historical jobs retain their original contract.
   if (mode==='quick') return quick.has(id)||id==='knowledge_compare';
   return !research.has(id)&&!indirect.has(id);
