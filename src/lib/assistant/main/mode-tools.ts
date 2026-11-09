@@ -7,6 +7,7 @@ const indirect = new Set(['skill_script','schedule_create','schedule_control']);
 export function modeAllowsTool(mode: AgentMode | undefined, id: string): boolean {
   // Wrappers recheck every leaf through the ordinary dispatcher and same mode.
   if(id==='workflow_read'||id==='programmatic_read'||id==='programmatic_tools')return true;
+  if(id==='mailbox_message_list')return true; // Same-account local metadata; dispatcher and replay guards still apply.
   if (!mode || mode==='deep') return true; // Historical jobs retain their original contract.
   if (mode==='quick') return quick.has(id)||id==='knowledge_compare';
   return !research.has(id)&&!indirect.has(id);

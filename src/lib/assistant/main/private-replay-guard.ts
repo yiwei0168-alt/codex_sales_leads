@@ -4,8 +4,9 @@ import {getMailboxMessageForReview} from '@/lib/mailbox/repository';
 import {listMailboxCustomers,readCustomerTimeline} from '@/lib/mailbox/customer-timeline';
 import {digest,type ModelMessage} from './contracts';
 import {expandHybridEvidence} from './hybrid-contracts';
+import {listImportedMailMetadata,mailboxMessageListInput} from '@/lib/mailbox/message-list';
 
-export const PRIVATE_REPLAY_TOOLS=['mail_read','customer_timeline'] as const;
+export const PRIVATE_REPLAY_TOOLS=['mail_read','customer_timeline','mailbox_message_list'] as const;
 const mailInput=z.object({messageId:z.uuid()}).strict();
 const timelineInput=z.object({customerId:z.uuid().optional(),country:z.string().max(7).optional(),offset:z.number().int().min(0).max(100000).default(0)}).strict();
 const wireHash=(value:unknown)=>digest(JSON.parse(JSON.stringify(value)));
@@ -30,6 +31,8 @@ export async function assertCurrentPrivateReplayMessages(userId:string,messages:
         and not coalesce((metadata->>'rawContentPurged')::boolean,false)`,[userId,p.messageId]);
       if(rows.length!==1)throw new Error('Private replay source unavailable');
       current=await getMailboxMessageForReview(userId,p.messageId);
+    }else if(call.tool==='mailbox_message_list'){
+      current=await listImportedMailMetadata(userId,mailboxMessageListInput.parse(call.arguments));
     }else{
       const p=timelineInput.parse(call.arguments);
       if(p.customerId){

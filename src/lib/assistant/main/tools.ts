@@ -24,6 +24,7 @@ import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
 import {listPendingMailboxCandidates,reviewMailboxCandidate} from "@/lib/mailbox/candidate-review";
 import { listOutbound } from "@/lib/mailbox/outbound";
+import {mailboxMessageListInput,listImportedMailMetadata} from '@/lib/mailbox/message-list';
 import { buildLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
 import { importSkill, listSkills, readSkill, changeSkill, skillImportSchema } from "./skills";
@@ -209,7 +210,9 @@ export const productTools: ProductTool[] = [
     cost: "unknown", connections: ["openrouter"], execute: async i => result(await buildLeadMarketPlaybook(i, [])) }),
   defineTool({ id: "mail_connections", description: "List current account mailbox identities and connection states; no credentials.", input: empty,
     execute: async (_, c) => result((await listMailboxConnections(c.userId)).map(v => ({ id: v.id, email: v.email, displayName:v.displayName, accessMode:v.accessMode, status: v.status })), { cost: "known" }) }),
-  defineTool({ id: "mail_history", description: "Read outbound history for a company, or unassociated account mail when company is omitted.",
+  defineTool({id:'mailbox_message_list',description:'Page all current-account imported inbound/outbound message metadata in an explicit timestamp interval, including mail not linked to a customer. Use for account-wide date counts; mail_history and customer timelines are narrower scopes. from is inclusive, until exclusive; specify timezone offsets, convert the requested local date boundaries, and follow nextOffset until hasMore=false. Up to 20 records/page, interval at most 366 days. No body read, IMAP, sync or model call. Private metadata must not be sent to external research tools.',input:mailboxMessageListInput,
+    execute:async(i,c)=>{const data=await listImportedMailMetadata(c.userId,i);return result(data,{cost:'known',...(data.paginationLimitReached?{status:'partial' as const,missing:['Pagination offset limit reached; narrow the interval before claiming complete coverage']}: {})});}}),
+  defineTool({ id: "mail_history", description: "Read outbound history for a company, or unassociated account mail when company is omitted. Not an account-wide imported-mail inventory; use mailbox_message_list for date-range counts.",
     input: z.object({ companyExternalId: z.string().max(180).optional(), offset: z.number().int().min(0).max(100000).default(0) }).strict(),
     execute: async (i, c) => result(await listOutbound(c.userId, i.companyExternalId ?? "", i.offset, 20), { cost: "known" }) }),
   defineTool({ id: "mail_read", description: "Read one account-owned imported message for the current task. This private content must not be sent to web search or unrelated external tools.",

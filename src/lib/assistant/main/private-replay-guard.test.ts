@@ -5,6 +5,7 @@ vi.mock('@/lib/rag/db',()=>({tenantQuery:mocks.query}));
 vi.mock('@/lib/mailbox/repository',()=>({getMailboxMessageForReview:mocks.mail}));
 vi.mock('@/lib/mailbox/customer-timeline',()=>({listMailboxCustomers:mocks.list,readCustomerTimeline:mocks.timeline}));
 import {assertCurrentPrivateReplayMessages as guard} from './private-replay-guard';
+import {listImportedMailMetadata} from '@/lib/mailbox/message-list';
 const id='00000000-0000-4000-8000-000000000001';
 const messages=(tool:string,args:unknown,data:unknown):ModelMessage[]=>[
   {role:'assistant',content:null,tool_calls:[{id:'read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool,arguments:args})}}]},
@@ -33,3 +34,13 @@ it('binds customer-list scope, pagination and serialized dates',async()=>{
   expect(mocks.list).toHaveBeenCalledWith('owner',{country:'DE',offset:20});
 });
 it('does not accept user text as a tool receipt',async()=>{await guard('owner',[{role:'user',content:JSON.stringify({tool:'mail_read',data:{id}})}]);expect(mocks.query).not.toHaveBeenCalled();});
+it('rechecks account-wide mail pages and refuses changed IDs or coverage',async()=>{
+ const input={from:'2026-11-02T00:00:00+08:00',until:'2026-11-06T00:00:00+08:00',offset:0};
+ mocks.query.mockResolvedValue([{id,sentAt:'2026-11-02 09:00:00+00',direction:'inbound'}]);
+ const data=await listImportedMailMetadata('owner',input);
+ await guard('owner',messages('mailbox_message_list',input,data));
+ expect(mocks.query).toHaveBeenLastCalledWith('owner',expect.stringContaining('where user_id=$1'),['owner',input.from,input.until,0]);
+ await expect(guard('owner',messages('mailbox_message_list',input,{...data,hasMore:true}))).rejects.toThrow('changed');
+ mocks.query.mockResolvedValue([]);
+ await expect(guard('other',messages('mailbox_message_list',input,data))).rejects.toThrow('changed');
+});

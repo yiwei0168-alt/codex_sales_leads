@@ -1,0 +1,28 @@
+{
+  "version": "mailbox-message-list-isolated-integration-v2",
+  "pages": [
+    {
+      "count": 20,
+      "hasMore": true
+    },
+    {
+      "count": 20,
+      "hasMore": false
+    }
+  ],
+  "counts": [
+    8,
+    12,
+    12,
+    8
+  ],
+  "total": 40,
+  "crossAccountIdsExcluded": true,
+  "datedForeignSentinelVisibleOnlyToOwner": true,
+  "crossAccountReplayRejected": true,
+  "temporarySentinelDateRestored": true,
+  "realWasmProgram": true,
+  "replayGuardPassed": true,
+  "modelCalls": 0,
+  "scope": "Actual isolated database reads and WASM through tool execute; not queued-agent/model end-to-end acceptance."
+}
