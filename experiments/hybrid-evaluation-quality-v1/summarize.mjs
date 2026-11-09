@@ -43,14 +43,22 @@ for(const version of ['v3','v4','v4b']){
   for(const c of trace.calls)if(c.tool_id==='main_model'&&c.metrics?.failureDiagnostic)
    transportFailures.push({version,taskId:r.taskId,arm:r.arm,model:c.metrics.requestedModel,diagnostic:c.metrics.failureDiagnostic});
   let auditHold=null;
+  let taskValidityReason=null;
+  if(r.taskId==='P10')taskValidityReason='Year omitted and fixture clock not supplied to executing model.';
+  if(r.taskId==='P24'){
+   const systemTexts=trace.calls.filter(c=>c.tool_id==='main_model').flatMap(c=>c.input?.messages??[])
+    .filter(m=>m.role==='system').map(m=>m.content??'');
+   assert(systemTexts.some(text=>text.includes('涉及新版且版本不明时询问版本或是否查找最新已登记版本')));
+   taskValidityReason='Frozen system policy requires clarification for an unspecified new version. Original task omitted version IDs while expecting direct v1/v2 comparison. This policy/assertion conflict invalidates qualification; preserve original grading, do not count compliant clarification as capability failure.';
+  }
   if(r.taskId==='P02'&&r.arm==='C'){
    const timeline=trace.calls.find(c=>c.tool_id==='customer_timeline').output.data;
    assert.equal(timeline.hasMore,false);assert.equal(timeline.events.length,4);
    assert(answer.includes('时间线显示还有更早记录'));
    auditHold='Model reviewer passed, but answer says the timeline contains older records after describing all four. Actual page has four events and hasMore=false; workflow read only three bodies. Coverage wording is ambiguous/misleading. Hold this record out of accepted quality/performance pending correction; preserve original reviewer score.';
   }
-  rows.push({...r,version,reviewScore:q.total,modelReviewPassed:q.passed,taskValid:r.taskId!=='P10',auditHold,
-   acceptedForDiagnosticComparison:r.taskId!=='P10'&&q.passed&&!auditHold});
+  rows.push({...r,version,reviewScore:q.total,modelReviewPassed:q.passed,taskValid:taskValidityReason===null,taskValidityReason,auditHold,
+   acceptedForDiagnosticComparison:taskValidityReason===null&&q.passed&&!auditHold});
  }
 }
 assert.equal(rows.length,18);
@@ -63,14 +71,14 @@ for(const taskId of [...new Set(rows.map(r=>r.taskId))])for(const [baseline,trea
   latencyReductionFraction:qualityEligible?1-b.backendEnqueueToTerminalMs/a.backendEnqueueToTerminalMs:null,
   costReductionFraction:costEligible?1-b.knownCostUsd/a.knownCostUsd:null});
 }
-const report={version:'six-task-diagnostic-panel-audit-v1',modelReviewPassed:quality.passed,records:rows.length,
+const report={version:'six-task-diagnostic-panel-audit-v2',modelReviewPassed:quality.passed,records:rows.length,
  validTaskRecords:rows.filter(r=>r.taskValid).length,acceptedAfterAudit:rows.filter(r=>r.acceptedForDiagnosticComparison).length,
  arms:Object.fromEntries(['A','B','C'].map(arm=>[arm,{valid:rows.filter(r=>r.arm===arm&&r.taskValid).length,
   accepted:rows.filter(r=>r.arm===arm&&r.acceptedForDiagnosticComparison).length}])),
  knownTaskCostUsd:rows.reduce((s,r)=>s+r.knownCostUsd,0),unknownTaskCharges:rows.reduce((s,r)=>s+r.unknownCharges.length,0),
  knownQualityReviewCostUsd:quality.knownReviewCostUsd,previousUnknownChargesOutsidePanel:6,
  timing:'Backend enqueue to terminal only; no browser TTFT/user-visible latency.',
- conclusion:'Diagnostic only, not qualification. Mixed prospective execution versions, one repetition per task, synthetic sources, no pagination pressure or external discovery. P10 invalid context; P02-C post-review coverage hold. Unknown fees are not zero. No pooled savings, CI, or overall pass claim.',
+ conclusion:'Diagnostic only, not qualification. Mixed prospective execution versions, one repetition per task, synthetic sources, no pagination pressure or external discovery. P10 invalid context; P24 system-policy/assertion conflict; P02-C post-review coverage hold. Unknown fees are not zero. No pooled savings, CI, or overall pass claim. Audit v2 supersedes v1 denominators, preserving original model grades and previous audit in Git history.',
  checks,transportFailures,rows,pairs,productionChanged:false};
 await writeFile(`${root}/results/panel-audit.json`,JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({records:report.records,valid:report.validTaskRecords,accepted:report.acceptedAfterAudit,knownTaskCostUsd:report.knownTaskCostUsd,unknown:report.unknownTaskCharges,pairs:pairs.filter(p=>p.qualityEligible)},null,2));

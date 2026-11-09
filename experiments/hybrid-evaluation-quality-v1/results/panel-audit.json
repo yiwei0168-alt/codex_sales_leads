@@ -1,20 +1,20 @@
 {
-  "version": "six-task-diagnostic-panel-audit-v1",
+  "version": "six-task-diagnostic-panel-audit-v2",
   "modelReviewPassed": 10,
   "records": 18,
-  "validTaskRecords": 15,
+  "validTaskRecords": 12,
   "acceptedAfterAudit": 9,
   "arms": {
     "A": {
-      "valid": 5,
+      "valid": 4,
       "accepted": 4
     },
     "B": {
-      "valid": 5,
+      "valid": 4,
       "accepted": 3
     },
     "C": {
-      "valid": 5,
+      "valid": 4,
       "accepted": 2
     }
   },
@@ -23,7 +23,7 @@
   "knownQualityReviewCostUsd": 0.090758,
   "previousUnknownChargesOutsidePanel": 6,
   "timing": "Backend enqueue to terminal only; no browser TTFT/user-visible latency.",
-  "conclusion": "Diagnostic only, not qualification. Mixed prospective execution versions, one repetition per task, synthetic sources, no pagination pressure or external discovery. P10 invalid context; P02-C post-review coverage hold. Unknown fees are not zero. No pooled savings, CI, or overall pass claim.",
+  "conclusion": "Diagnostic only, not qualification. Mixed prospective execution versions, one repetition per task, synthetic sources, no pagination pressure or external discovery. P10 invalid context; P24 system-policy/assertion conflict; P02-C post-review coverage hold. Unknown fees are not zero. No pooled savings, CI, or overall pass claim. Audit v2 supersedes v1 denominators, preserving original model grades and previous audit in Git history.",
   "checks": [
     {
       "taskId": "P09",
@@ -189,6 +189,7 @@
       "reviewScore": 97,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -216,6 +217,7 @@
       "reviewScore": 97,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -243,6 +245,7 @@
       "reviewScore": 97,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -270,6 +273,7 @@
       "reviewScore": 98,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -303,6 +307,7 @@
       "reviewScore": 98,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -330,6 +335,7 @@
       "reviewScore": 96,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -357,6 +363,7 @@
       "reviewScore": 96,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -390,6 +397,7 @@
       "reviewScore": 1,
       "modelReviewPassed": false,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -423,6 +431,7 @@
       "reviewScore": 1,
       "modelReviewPassed": false,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -450,6 +459,7 @@
       "reviewScore": 96,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -477,6 +487,7 @@
       "reviewScore": 94,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": null,
       "acceptedForDiagnosticComparison": true
     },
@@ -504,6 +515,7 @@
       "reviewScore": 96,
       "modelReviewPassed": true,
       "taskValid": true,
+      "taskValidityReason": null,
       "auditHold": "Model reviewer passed, but answer says the timeline contains older records after describing all four. Actual page has four events and hasMore=false; workflow read only three bodies. Coverage wording is ambiguous/misleading. Hold this record out of accepted quality/performance pending correction; preserve original reviewer score.",
       "acceptedForDiagnosticComparison": false
     },
@@ -531,6 +543,7 @@
       "reviewScore": 14,
       "modelReviewPassed": false,
       "taskValid": false,
+      "taskValidityReason": "Year omitted and fixture clock not supplied to executing model.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -558,6 +571,7 @@
       "reviewScore": 14,
       "modelReviewPassed": false,
       "taskValid": false,
+      "taskValidityReason": "Year omitted and fixture clock not supplied to executing model.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -596,6 +610,7 @@
       "reviewScore": 1,
       "modelReviewPassed": false,
       "taskValid": false,
+      "taskValidityReason": "Year omitted and fixture clock not supplied to executing model.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -628,7 +643,8 @@
       "version": "v4b",
       "reviewScore": 1,
       "modelReviewPassed": false,
-      "taskValid": true,
+      "taskValid": false,
+      "taskValidityReason": "Frozen system policy requires clarification for an unspecified new version. Original task omitted version IDs while expecting direct v1/v2 comparison. This policy/assertion conflict invalidates qualification; preserve original grading, do not count compliant clarification as capability failure.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -655,7 +671,8 @@
       "version": "v4b",
       "reviewScore": 10,
       "modelReviewPassed": false,
-      "taskValid": true,
+      "taskValid": false,
+      "taskValidityReason": "Frozen system policy requires clarification for an unspecified new version. Original task omitted version IDs while expecting direct v1/v2 comparison. This policy/assertion conflict invalidates qualification; preserve original grading, do not count compliant clarification as capability failure.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     },
@@ -682,7 +699,8 @@
       "version": "v4b",
       "reviewScore": 10,
       "modelReviewPassed": false,
-      "taskValid": true,
+      "taskValid": false,
+      "taskValidityReason": "Frozen system policy requires clarification for an unspecified new version. Original task omitted version IDs while expecting direct v1/v2 comparison. This policy/assertion conflict invalidates qualification; preserve original grading, do not count compliant clarification as capability failure.",
       "auditHold": null,
       "acceptedForDiagnosticComparison": false
     }

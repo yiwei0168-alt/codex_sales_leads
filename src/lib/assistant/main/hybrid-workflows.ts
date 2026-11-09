@@ -32,8 +32,15 @@ export async function runReadWorkflow(input: unknown, call: HybridCall, coverage
     if (mail.data == null) throw new HybridStop('An original message is unavailable; do not infer its contents from the excerpt.');
     messages.push(mail);
   }
-  coverage.push(`Read ${messages.length} latest message bodies from the first timeline page. Older bodies were not read; imported mail only, not a new mailbox sync.`);
-  if (page.data.hasMore || page.data.events.length > selected.length)
-    coverage.push('Additional messages exist. Continue dynamically when the requested date range or completeness requires them.');
+  coverage.push(`The first timeline page lists ${page.data.events.length} events; read ${messages.length} latest message bodies. Scope is imported mail only, not a new mailbox sync.`);
+  const unreadBodies = page.data.events.length - messages.length;
+  coverage.push(unreadBodies > 0
+    ? `${unreadBodies} listed event(s) on this page have unread bodies. Their timeline excerpts were returned; this does not mean another timeline page exists.`
+    : 'Every message body on the returned timeline page was read.');
+  coverage.push(page.data.hasMore
+    ? 'The timeline reports another page. Events and bodies on later pages were not read; their count is unknown. Continue dynamically if the requested range or completeness requires them.'
+    : 'The timeline reports no further page (hasMore=false). Do not claim that additional older timeline records exist.');
+  if (unreadBodies > 0)
+    coverage.push('Read the remaining listed bodies dynamically if their full content is needed to answer the request.');
   return { timeline, messages };
 }
