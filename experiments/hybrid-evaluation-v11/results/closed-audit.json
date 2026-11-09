@@ -1,0 +1,451 @@
+{
+  "version": "v11-closed-credit-blocked",
+  "closed": true,
+  "submitted": 18,
+  "planned": 54,
+  "unsubmitted": 36,
+  "answered": 6,
+  "partial": 12,
+  "paymentRequiredTasks": 12,
+  "mechanicalPasses": 4,
+  "reviewed": 0,
+  "knownTaskCostUsd": 0.09947378600000001,
+  "unknownTaskCharges": 12,
+  "historicalUnknownCharges": 33,
+  "knownReviewCostUsd": 0,
+  "unknownReviewCharges": 0,
+  "qualityPassed": false,
+  "performanceGatePassed": false,
+  "overallAcceptancePassed": false,
+  "maximumPossibleCorrectRate": 0.3333333333333333,
+  "reason": "First repeat already cannot meet >=95% correct-completed gate. Reviewer and repeat requests were not issued; no grades fabricated. Read-only account query confirmed approximately USD 0.050230136 remaining and no per-key limit. Exact 402 limit_source was not captured, so the precise admission constraint is not proven.",
+  "productionChanged": false,
+  "rows": [
+    {
+      "taskId": "P01",
+      "arm": "A",
+      "status": "answered",
+      "httpStatuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "d5e5e4e87804e44682c03e8aa175057175d4e61761569cccf9eb1668170eeaea"
+    },
+    {
+      "taskId": "P01",
+      "arm": "B",
+      "status": "partial",
+      "httpStatuses": [
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "7b49de37c0d5df23f86cd74b6cb9fcdafc09994b5a36486aa8fa731d8edfcafb"
+    },
+    {
+      "taskId": "P01",
+      "arm": "C",
+      "status": "answered",
+      "httpStatuses": [
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "a7899bb8319f975861da93905283a8bc4361d9e9c9242222cdf38d6cc64941ff"
+    },
+    {
+      "taskId": "P07",
+      "arm": "A",
+      "status": "partial",
+      "httpStatuses": [
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "saved-assessments",
+        "checks": [
+          false,
+          false,
+          false
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "a05c6dbf175fb6b308d149fea4b319c9eea2631a8e0039946dcde01281e50c9f"
+    },
+    {
+      "taskId": "P07",
+      "arm": "B",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "saved-assessments",
+        "checks": [
+          false,
+          false,
+          false
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "6dc9a1ccdbd71ee742e75ef71d3b0ff81e3eb787b4fa06c41c25a449185bbd93"
+    },
+    {
+      "taskId": "P07",
+      "arm": "C",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "saved-assessments",
+        "checks": [
+          false,
+          false,
+          false
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "f419fa3f8fb71a4c30c35a95e3e710320d20f59815e59296a78fd2ad632d07cf"
+    },
+    {
+      "taskId": "P08",
+      "arm": "A",
+      "status": "partial",
+      "httpStatuses": [
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "complete-sales-membership",
+        "complete": false,
+        "rows": 0,
+        "groups": {}
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "30f305cffab4cab869c947fb5642501abf1ef61e3929a27f0dad0cc1d8698320"
+    },
+    {
+      "taskId": "P08",
+      "arm": "B",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "complete-sales-membership",
+        "complete": false,
+        "rows": 0,
+        "groups": {}
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "4b6250e8fe83d67230ccc37f67d83dc8df5a87972b78964ba7f0b38d27e59688"
+    },
+    {
+      "taskId": "P08",
+      "arm": "C",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "complete-sales-membership",
+        "complete": false,
+        "rows": 0,
+        "groups": {}
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "51d1bbf6ae14d7a0587243502b848f3a43d43ad64c5916d07c654f1db80e4e4f"
+    },
+    {
+      "taskId": "P19",
+      "arm": "A",
+      "status": "answered",
+      "httpStatuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": true,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "eac121241e04660be1af9ce5c05a051c2862382af826bb7f93359a67a38d054e"
+    },
+    {
+      "taskId": "P19",
+      "arm": "B",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        200,
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": false
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "47dd56ba5d01e974b0013ca711c7556c28af31ada4d9ced3ba23a1873438f76b"
+    },
+    {
+      "taskId": "P19",
+      "arm": "C",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": false
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "9fc03ead38b24e5dc902d171e27d6f338d408265c0c8e4c04d5c31b64c44918e"
+    },
+    {
+      "taskId": "P20",
+      "arm": "A",
+      "status": "answered",
+      "httpStatuses": [
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "9d3ec9f2d4ca03fcdfdcc604d44e19806046267e46a477b115445b2c5dad5270"
+    },
+    {
+      "taskId": "P20",
+      "arm": "B",
+      "status": "answered",
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "2b923b0575d20b313304d29aa821f943a6c372c73e10ef27e650924168a7dc62"
+    },
+    {
+      "taskId": "P20",
+      "arm": "C",
+      "status": "answered",
+      "httpStatuses": [
+        200,
+        200
+      ],
+      "paymentRequired": false,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "2c635a85582cd5fb416449196baa5efb3a84737baf97e479b0c2ab6f5dd11029"
+    },
+    {
+      "taskId": "P24",
+      "arm": "A",
+      "status": "partial",
+      "httpStatuses": [
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "c17a85357acf53dbed64b256d9f66c0a4f32d65c24f9ee34cacf7bd722daba47"
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "6f4fb108a495f7a6921eeb851933b68acd5b5a0fc1941be9f2826c142e7975b2"
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "status": "partial",
+      "httpStatuses": [
+        200,
+        402
+      ],
+      "paymentRequired": true,
+      "mechanics": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "qualityScore": null,
+      "reviewed": false,
+      "traceHash": "12e86f9373b508bd210c1d01058c206789027e6159290e2f157834652fab9656"
+    }
+  ]
+}

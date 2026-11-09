@@ -1,0 +1,307 @@
+{
+  "version": "v11-network-phase-audit",
+  "rows": [
+    {
+      "task": "P01-A-1",
+      "traceHash": "d5e5e4e87804e44682c03e8aa175057175d4e61761569cccf9eb1668170eeaea",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-B-1",
+      "traceHash": "7b49de37c0d5df23f86cd74b6cb9fcdafc09994b5a36486aa8fa731d8edfcafb",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P01-C-1",
+      "traceHash": "a7899bb8319f975861da93905283a8bc4361d9e9c9242222cdf38d6cc64941ff",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P07-A-1",
+      "traceHash": "a05c6dbf175fb6b308d149fea4b319c9eea2631a8e0039946dcde01281e50c9f",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P07-B-1",
+      "traceHash": "6dc9a1ccdbd71ee742e75ef71d3b0ff81e3eb787b4fa06c41c25a449185bbd93",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P07-C-1",
+      "traceHash": "f419fa3f8fb71a4c30c35a95e3e710320d20f59815e59296a78fd2ad632d07cf",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P08-A-1",
+      "traceHash": "30f305cffab4cab869c947fb5642501abf1ef61e3929a27f0dad0cc1d8698320",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P08-B-1",
+      "traceHash": "4b6250e8fe83d67230ccc37f67d83dc8df5a87972b78964ba7f0b38d27e59688",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P08-C-1",
+      "traceHash": "51d1bbf6ae14d7a0587243502b848f3a43d43ad64c5916d07c654f1db80e4e4f",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-A-1",
+      "traceHash": "eac121241e04660be1af9ce5c05a051c2862382af826bb7f93359a67a38d054e",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-B-1",
+      "traceHash": "47dd56ba5d01e974b0013ca711c7556c28af31ada4d9ced3ba23a1873438f76b",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-C-1",
+      "traceHash": "9fc03ead38b24e5dc902d171e27d6f338d408265c0c8e4c04d5c31b64c44918e",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P20-A-1",
+      "traceHash": "9d3ec9f2d4ca03fcdfdcc604d44e19806046267e46a477b115445b2c5dad5270",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P20-B-1",
+      "traceHash": "2b923b0575d20b313304d29aa821f943a6c372c73e10ef27e650924168a7dc62",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P20-C-1",
+      "traceHash": "2c635a85582cd5fb416449196baa5efb3a84737baf97e479b0c2ab6f5dd11029",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-A-1",
+      "traceHash": "c17a85357acf53dbed64b256d9f66c0a4f32d65c24f9ee34cacf7bd722daba47",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24-B-1",
+      "traceHash": "6f4fb108a495f7a6921eeb851933b68acd5b5a0fc1941be9f2826c142e7975b2",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24-C-1",
+      "traceHash": "12e86f9373b508bd210c1d01058c206789027e6159290e2f157834652fab9656",
+      "httpAttempts": 2,
+      "headersReceived": 2,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}

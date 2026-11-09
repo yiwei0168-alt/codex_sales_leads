@@ -1,0 +1,13 @@
+# V11 closed: credit admission failures and incomplete task coverage
+
+18 of 54 planned submissions ran under the recorded freeze: 6 answered, 12 partial. Every partial task encountered HTTP 402 (12 affected tasks); no request failed before response headers. This differs from V10's connection/stream failures. The exact provider `limit_source` was not captured, so 402 alone does not identify the precise admission constraint.
+
+A separate read-only OpenRouter `/key` and `/credits` check returned HTTP 200: no per-key limit and approximately **USD 0.050230136** account balance. No model generation, top-up, credential change, or production mutation occurred in this diagnostic. Provider documentation distinguishes account balance, per-key limits and in-flight credit admission: https://openrouter.ai/docs/api-reference/limits.
+
+Known submitted task cost is **USD 0.099473786**, with **12 unknown charge records** preserved (not assumed zero). The earlier 33 unknown charges remain separate. No reviewer requests or remaining 36 task requests were issued. Even treating all six answered tasks as correct would give only 33.33%, below the registered 95% quality gate. This run is closed and failed; no cost/latency improvement or overall acceptance is claimed.
+
+Deterministic source coverage passed for four submitted tasks, including one partial task; only three of the six answered tasks passed coverage. P20 A/B/C all asked the user for model names or asset IDs without searching the accessible approved inventory. The frozen knowledge policy required an explicit target before opening material, conflating recommendation discovery with an ambiguous specific-document request. These clarification answers are not completed product recommendations. There is no model-assisted answer grade for this run.
+
+Next work: preserve historical prompts, introduce a separately versioned candidate allowing authorized criteria-based discovery followed by original-source verification, keep ambiguous specific-target and cross-account guards, and qualify it prospectively once credit capacity is restored. A prospective batch guard must stop after the first 402 and preflight saved outcomes before submitting more tasks; it must not retry requests or infer zero charges. Frozen V11 runners and original traces remain unchanged.
+
+Evidence: [closed audit](results/closed-audit.json), [submitted observations](results/progress.json), [network phases](results/network-phases.json). Whole-product acceptance, the remaining full benchmark, external cases and browser-visible timing are still outstanding. Production was not deployed or reconfigured.
