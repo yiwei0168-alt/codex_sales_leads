@@ -1,28 +1,28 @@
 {
-  "version": "v10-local-read-gate",
+  "version": "v10-explicitly-corrected-local-read-gate",
   "phase": "smoke",
   "submitted": 18,
-  "qualityPassed": false,
-  "correctRate": 0.7777777777777778,
+  "qualityPassed": true,
+  "correctRate": 1,
   "byArm": {
     "A": {
       "submitted": 6,
-      "correct": 4,
-      "rate": 0.6666666666666666,
+      "correct": 6,
+      "rate": 1,
       "knownCostUsd": 0.187306,
       "unknownCharges": 0
     },
     "B": {
       "submitted": 6,
-      "correct": 5,
-      "rate": 0.8333333333333334,
+      "correct": 6,
+      "rate": 1,
       "knownCostUsd": 0.1382787,
       "unknownCharges": 0
     },
     "C": {
       "submitted": 6,
-      "correct": 5,
-      "rate": 0.8333333333333334,
+      "correct": 6,
+      "rate": 1,
       "knownCostUsd": 0.08082654,
       "unknownCharges": 0
     }
@@ -132,10 +132,10 @@
       "taskId": "P02",
       "arm": "A",
       "repetition": 1,
-      "qualityScore": 83,
-      "modelReviewPassed": false,
+      "qualityScore": 100,
+      "modelReviewPassed": true,
       "mechanicalPassed": true,
-      "correct": false,
+      "correct": true,
       "status": "answered",
       "policyViolation": false,
       "detail": {
@@ -151,7 +151,10 @@
       "programs": 0,
       "models": [
         "openai/gpt-6.1-sol"
-      ]
+      ],
+      "rawModelReviewPassed": false,
+      "rawQualityScore": 83,
+      "adjudicationRef": "experiments/hybrid-quality-adjudication-v10/results/review.json"
     },
     {
       "taskId": "P02",
@@ -616,12 +619,22 @@
       "repetition": 1,
       "qualityScore": 97,
       "modelReviewPassed": true,
-      "mechanicalPassed": false,
-      "correct": false,
+      "mechanicalPassed": true,
+      "correct": true,
       "status": "answered",
       "policyViolation": false,
       "detail": {
-        "bothVersionsRead": false
+        "bothVersionsRead": false,
+        "partialSourceCorrection": [
+          {
+            "version": "v1",
+            "present": true
+          },
+          {
+            "version": "v2",
+            "present": true
+          }
+        ]
       },
       "billingComplete": true,
       "knownCostUsd": 0.0156556,
@@ -639,12 +652,22 @@
       "repetition": 1,
       "qualityScore": 98,
       "modelReviewPassed": true,
-      "mechanicalPassed": false,
-      "correct": false,
+      "mechanicalPassed": true,
+      "correct": true,
       "status": "answered",
       "policyViolation": false,
       "detail": {
-        "bothVersionsRead": false
+        "bothVersionsRead": false,
+        "partialSourceCorrection": [
+          {
+            "version": "v1",
+            "present": true
+          },
+          {
+            "version": "v2",
+            "present": true
+          }
+        ]
       },
       "billingComplete": true,
       "knownCostUsd": 0.013967400000000001,
@@ -662,12 +685,22 @@
       "repetition": 1,
       "qualityScore": 98,
       "modelReviewPassed": true,
-      "mechanicalPassed": false,
-      "correct": false,
+      "mechanicalPassed": true,
+      "correct": true,
       "status": "answered",
       "policyViolation": false,
       "detail": {
-        "bothVersionsRead": false
+        "bothVersionsRead": false,
+        "partialSourceCorrection": [
+          {
+            "version": "v1",
+            "present": true
+          },
+          {
+            "version": "v2",
+            "present": true
+          }
+        ]
       },
       "billingComplete": true,
       "knownCostUsd": 0.015053399999999998,
@@ -680,8 +713,8 @@
       ]
     }
   ],
-  "eligibleLatencyPairs": 4,
-  "excludedLatencyPairs": 2,
+  "eligibleLatencyPairs": 6,
+  "excludedLatencyPairs": 0,
   "costReduction": 0.5684786392320588,
   "pairedMedianLatencyReduction": 0.42932860155992003,
   "p95LatencyIncrease": -0.2300021369043379,
@@ -692,5 +725,12 @@
   "userVisibleTimingAvailable": false,
   "productionChanged": false,
   "historicalUnknownCharges": 26,
-  "knownReviewCostUsd": 0.6623060000000001
+  "knownReviewCostUsd": 0.6623060000000001,
+  "rawGateRef": "experiments/hybrid-evaluation-quality-v10/results/smoke-gate.raw.json",
+  "rawGateHash": "cb88d7ce7a35b0a52cc3f78dd31a72387cabc085dd95e527d5f26ec92aeddcb2",
+  "knownAdjudicationCostUsd": 0.047591,
+  "corrections": [
+    "P24 accepts actual source originals in partial comparison output; no inference from status alone.",
+    "P02-A first repeat uses the once-only independent-context coverage adjudication; original grade preserved."
+  ]
 }

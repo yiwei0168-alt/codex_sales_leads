@@ -1,0 +1,29 @@
+{
+  "version": "model-assisted-coverage-adjudication-v10",
+  "identity": "483a0b5e1495909e0e8de1ae78cb6e3a8bd3267a6073e1865398193ad8cb305c",
+  "reviewerModel": "openai/gpt-6.1-sol",
+  "generationId": "gen-1794248934-gmlZU5RO7aAyYLc7XMri",
+  "reviewerReceivedArmsModelsCosts": false,
+  "independentHumanGold": false,
+  "answers": 1,
+  "passed": 1,
+  "knownReviewCostUsd": 0.047591,
+  "rows": [
+    {
+      "reviewId": "ad1707e510d46210d5d9",
+      "facts": 40,
+      "completeness": 25,
+      "citations": 20,
+      "scope": 10,
+      "readability": 5,
+      "hardGatePass": true,
+      "issues": [],
+      "total": 100,
+      "passed": true,
+      "version": "v10",
+      "taskId": "P02",
+      "arm": "A",
+      "runId": "1d793609-6f78-4929-81df-6b42d7535f8e"
+    }
+  ]
+}
