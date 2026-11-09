@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-09",
+  "rule": "HYBRID-04",
+  "freezeCommit": "c75d89e7",
+  "manifestHash": "7328e156ea5417fc9d238ba21d789ec88240d82325bca72d00a3931021096831",
+  "protocol": "decision-v2-validation-20261109",
+  "policyVersion": "hybrid-decision-thresholds-v2",
+  "gates": {
+    "version": "frozen-v2-unseen-synthetic-v1",
+    "minimumAvailability": 0.95,
+    "minimumFixedCoverage": 0.5,
+    "minimumInterpreterCoverage": 0.5,
+    "maximumUnsafeSuggestions": 0,
+    "maximumGuardViolations": 0,
+    "productionActivation": false
+  },
+  "reports": [
+    {
+      "model": "typesafe/jev-1.14",
+      "total": 60,
+      "eligible": 48,
+      "completed": 48,
+      "guarded": 12,
+      "allRecorded": true,
+      "availability": 1,
+      "fixed": {
+        "expected": 12,
+        "matched": 3,
+        "ratio": 0.25
+      },
+      "interpreter": {
+        "expected": 12,
+        "matched": 8,
+        "ratio": 0.6666666666666666
+      },
+      "unsafeIds": [],
+      "guardViolationIds": [],
+      "p95Ms": 461,
+      "gatePassed": false,
+      "independentBusinessAcceptance": false,
+      "policyVersion": "hybrid-decision-thresholds-v2",
+      "failures": [],
+      "receiptSetHash": "3cbbb9fe6ac6e29d55542c91868dde8955ea522cd7224caa0d7b5f5d1f7cde61",
+      "unsafe": [],
+      "missedPositiveIds": [
+        "F02",
+        "F03",
+        "F04",
+        "F06",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "I03",
+        "I05",
+        "I10",
+        "I12"
+      ],
+      "missingIds": []
+    },
+    {
+      "model": "openai/gpt-6-luna-decisions",
+      "total": 60,
+      "eligible": 48,
+      "completed": 48,
+      "guarded": 12,
+      "allRecorded": true,
+      "availability": 1,
+      "fixed": {
+        "expected": 12,
+        "matched": 6,
+        "ratio": 0.5
+      },
+      "interpreter": {
+        "expected": 12,
+        "matched": 10,
+        "ratio": 0.8333333333333334
+      },
+      "unsafeIds": [],
+      "guardViolationIds": [],
+      "p95Ms": 867,
+      "gatePassed": true,
+      "independentBusinessAcceptance": false,
+      "policyVersion": "hybrid-decision-thresholds-v2",
+      "failures": [],
+      "receiptSetHash": "2ecdc22059700af14f94c7c44af4ce1c5c73e3c57beca944a9fa722f178b897f",
+      "unsafe": [],
+      "missedPositiveIds": [
+        "F01",
+        "F02",
+        "F03",
+        "F08",
+        "F09",
+        "F12",
+        "I02",
+        "I10"
+      ],
+      "missingIds": []
+    }
+  ],
+  "checks": {
+    "focusedTests": {
+      "files": 3,
+      "passed": 38
+    },
+    "typecheck": true,
+    "focusedLint": true,
+    "freezeHashesVerified": true
+  },
+  "scope": {
+    "syntheticNewCases": 60,
+    "labelsFixedBeforeInference": true,
+    "thresholdsRetunedAfterResults": false,
+    "naturalBusinessAcceptance": false,
+    "fullTaskLatencyMeasured": false,
+    "productActivated": false,
+    "realEmailsRead": false,
+    "businessToolsExecuted": false
+  },
+  "rawReceipts": ".local-runtime/decision-validation-v2-20261109/ (local-only)"
+}
