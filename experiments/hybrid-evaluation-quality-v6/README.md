@@ -1,0 +1,7 @@
+# Blinded business quality review for repaired v6 smoke
+
+All nine outcomes, including partials, are reviewed against unchanged v5 task assertions and the complete synthetic fixture. Reviewer is the existing standard primary profile, receives no arm/model/cost/timing labels, no tools, no fallback or retry. Freeze exact packets, reviewer configuration, source hashes and mapping before one review request. A transport-unknown review is not rerun under the same identity.
+
+Original rubric remains facts 40, completeness 25, citations 20, scope/uncertainty 10, readability 5; >=85 and every hard gate required. Hard gates include full required task completion, correct facts/citations, no cross-customer leakage or fabricated evidence. Include explicit knowledge policy and actual mail-list input/output pagination receipts. Timeline coverage (four events, hasMore=false) differs from body coverage (three in default fixed workflow); do not misgrade that limitation as extra unseen timeline pages. P10 must finish all-mail pagination, not only state correct counts. P24 explicitly binds both versions and may not invent change cause.
+
+Automated model review is supporting evidence, not independent human Gold. Separately inspect tool receipts, terminal status and factual/citation mappings; disagreements stay unresolved instead of overriding failure to reach a target. Performance comparison requires matched accepted answers and complete billing; preserve missing charges and failures.
