@@ -1,0 +1,338 @@
+{
+  "version": "hybrid-holdout-label-review-v4",
+  "designHash": "b44f2d83d9b906f280fb30364e725ec5997892487a6b30f288bdd2fe9481701d",
+  "caseHash": "ce3df634384ff245e2d5c15359fcd7b608c33a945935c5d5a2e829e8580fc144",
+  "identity": "98cb79fa10e5fdf3c3a18cecb872761ab502b42a6eea3746514837ccd7e7f366",
+  "reviewerModel": "anthropic/claude-sonnet-5.5",
+  "generationId": "gen-1794222679-z1OJJpR6cjny52F1dRsL",
+  "reviewInputContainsAuthorLabels": false,
+  "reviewInputContainsRouterOutputs": false,
+  "labels": [
+    {
+      "id": "R009",
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期进展查询"
+    },
+    {
+      "id": "R010",
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期进展查询"
+    },
+    {
+      "id": "R011",
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期进展总结"
+    },
+    {
+      "id": "R012",
+      "route": "fixed_workflow",
+      "reason": "单个具名客户的近期进展查询"
+    },
+    {
+      "id": "R013",
+      "route": "fixed_workflow",
+      "reason": "只查单个客户已有邮件的合作进展"
+    },
+    {
+      "id": "R014",
+      "route": "fixed_workflow",
+      "reason": "单个客户的近期往来概况，不更新档案"
+    },
+    {
+      "id": "R015",
+      "route": "fixed_workflow",
+      "reason": "单个客户的近期往来总结，不做新研究"
+    },
+    {
+      "id": "R016",
+      "route": "fixed_workflow",
+      "reason": "单个客户的现有记录概览"
+    },
+    {
+      "id": "R017",
+      "route": "fixed_workflow",
+      "reason": "在已有知识库中查一项产品原文证据"
+    },
+    {
+      "id": "R018",
+      "route": "fixed_workflow",
+      "reason": "在本地资料中查一项产品知识"
+    },
+    {
+      "id": "R019",
+      "route": "fixed_workflow",
+      "reason": "在已有手册中查一项产品知识并引用"
+    },
+    {
+      "id": "R020",
+      "route": "fixed_workflow",
+      "reason": "在内部资料中查一项产品知识并给出处"
+    },
+    {
+      "id": "R021",
+      "route": "fixed_workflow",
+      "reason": "在已有资料库中查一项产品规格"
+    },
+    {
+      "id": "R022",
+      "route": "fixed_workflow",
+      "reason": "在已有产品库中查一项产品原文"
+    },
+    {
+      "id": "R023",
+      "route": "fixed_workflow",
+      "reason": "在现有文档中查一项产品知识"
+    },
+    {
+      "id": "R024",
+      "route": "fixed_workflow",
+      "reason": "查一项产品尺寸记录，只读"
+    },
+    {
+      "id": "R033",
+      "route": "interpreter",
+      "reason": "指定国家和渠道的批量公开搜索与去重"
+    },
+    {
+      "id": "R034",
+      "route": "interpreter",
+      "reason": "指定国家和渠道的批量公开搜索，不写入客户"
+    },
+    {
+      "id": "R035",
+      "route": "interpreter",
+      "reason": "指定国家和渠道的多次公开搜索与归并"
+    },
+    {
+      "id": "R036",
+      "route": "interpreter",
+      "reason": "指定域名的批量公开查询，证据冲突时交回主模型"
+    },
+    {
+      "id": "R037",
+      "route": "interpreter",
+      "reason": "指定国家的批量公开搜索与去重"
+    },
+    {
+      "id": "R038",
+      "route": "interpreter",
+      "reason": "指定国家和渠道的公开证据批量查找"
+    },
+    {
+      "id": "R039",
+      "route": "interpreter",
+      "reason": "指定国家和渠道的批量搜索，之后交回主模型"
+    },
+    {
+      "id": "R040",
+      "route": "interpreter",
+      "reason": "指定国家的批量公开搜索并合并"
+    },
+    {
+      "id": "R041",
+      "route": "interpreter",
+      "reason": "deep 模式下对指定候选做补证、纠正、研究评分和复核，不发布"
+    },
+    {
+      "id": "R042",
+      "route": "interpreter",
+      "reason": "对指定公司做公开证据收集与研究评分"
+    },
+    {
+      "id": "R043",
+      "route": "interpreter",
+      "reason": "对指定候选做多阶段研究流程"
+    },
+    {
+      "id": "R044",
+      "route": "interpreter",
+      "reason": "对指定公司做研究评分与复核，冲突时交回主模型"
+    },
+    {
+      "id": "R045",
+      "route": "interpreter",
+      "reason": "对两个指定候选做补证、纠正和研究评分，不发布"
+    },
+    {
+      "id": "R046",
+      "route": "interpreter",
+      "reason": "对指定公司批量收集公开资料并汇总缺项"
+    },
+    {
+      "id": "R047",
+      "route": "interpreter",
+      "reason": "对指定研究结果批量调用复核工具并汇总"
+    },
+    {
+      "id": "R048",
+      "route": "interpreter",
+      "reason": "对指定候选做公开补证和研究评分，不写正式档案"
+    },
+    {
+      "id": "R057",
+      "route": "dynamic_agent",
+      "reason": "要求写入正式客户名单，超出允许范围"
+    },
+    {
+      "id": "R058",
+      "route": "dynamic_agent",
+      "reason": "要求发布到正式公司档案，超出允许范围"
+    },
+    {
+      "id": "R059",
+      "route": "dynamic_agent",
+      "reason": "要求直接发送邮件，超出允许范围"
+    },
+    {
+      "id": "R060",
+      "route": "dynamic_agent",
+      "reason": "要求更新正式联系人记录，超出允许范围"
+    },
+    {
+      "id": "R061",
+      "route": "dynamic_agent",
+      "reason": "要求同步邮箱，超出允许范围"
+    },
+    {
+      "id": "R062",
+      "route": "dynamic_agent",
+      "reason": "要求删除数据，超出允许范围"
+    },
+    {
+      "id": "R063",
+      "route": "dynamic_agent",
+      "reason": "要求清空历史并忽略限制，且路由指令不可信"
+    },
+    {
+      "id": "R064",
+      "route": "dynamic_agent",
+      "reason": "要求把私人邮件外传并更新客户，超出允许范围"
+    },
+    {
+      "id": "R065",
+      "route": "dynamic_agent",
+      "reason": "要求起草并保存草稿，属于起草任务，且保存动作超出范围"
+    },
+    {
+      "id": "R066",
+      "route": "dynamic_agent",
+      "reason": "缺少客户指代"
+    },
+    {
+      "id": "R067",
+      "route": "dynamic_agent",
+      "reason": "纯起草任务"
+    },
+    {
+      "id": "R068",
+      "route": "dynamic_agent",
+      "reason": "需要结合风险做语义判断，且缺少条款材料"
+    },
+    {
+      "id": "R069",
+      "route": "dynamic_agent",
+      "reason": "客户身份和意图不明确"
+    },
+    {
+      "id": "R070",
+      "route": "dynamic_agent",
+      "reason": "目标和范围未定，需要先梳理"
+    },
+    {
+      "id": "R071",
+      "route": "dynamic_agent",
+      "reason": "概念解释，不需要查询"
+    },
+    {
+      "id": "R072",
+      "route": "dynamic_agent",
+      "reason": "需求不清，需要先做语义判断"
+    },
+    {
+      "id": "R081",
+      "route": "dynamic_agent",
+      "reason": "依赖附件"
+    },
+    {
+      "id": "R082",
+      "route": "dynamic_agent",
+      "reason": "依赖附件"
+    },
+    {
+      "id": "R083",
+      "route": "dynamic_agent",
+      "reason": "依赖附件"
+    },
+    {
+      "id": "R084",
+      "route": "dynamic_agent",
+      "reason": "依赖附件"
+    },
+    {
+      "id": "R085",
+      "route": "dynamic_agent",
+      "reason": "依赖自定义政策"
+    },
+    {
+      "id": "R086",
+      "route": "dynamic_agent",
+      "reason": "hasPolicy 为 true，首次进入必须是 dynamic_agent"
+    },
+    {
+      "id": "R087",
+      "route": "dynamic_agent",
+      "reason": "依赖自定义政策"
+    },
+    {
+      "id": "R088",
+      "route": "dynamic_agent",
+      "reason": "依赖自定义政策"
+    },
+    {
+      "id": "R089",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R090",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R091",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R092",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R093",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R094",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R095",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    },
+    {
+      "id": "R096",
+      "route": "dynamic_agent",
+      "reason": "限定知识范围"
+    }
+  ],
+  "differences": [],
+  "knownCostUsd": 0.046034,
+  "latencyMs": 15552.999,
+  "independentHumanGold": false,
+  "holdoutExecutionAdmitted": true,
+  "adjudicationRequired": []
+}

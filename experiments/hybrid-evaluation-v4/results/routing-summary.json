@@ -1,0 +1,76 @@
+{
+  "version": "route-holdout-summary-v4",
+  "reviewSha256": "c6b54dfc992d1c192942d15f7cc47891d7756b66a5d956774138d846bce08a2a",
+  "reviewer": "anthropic/claude-sonnet-5.5",
+  "labelAgreement": true,
+  "independentHumanGold": false,
+  "plannedCases": 64,
+  "observedCases": 64,
+  "remainingCases": 0,
+  "complete": true,
+  "providerAttempts": 44,
+  "providerCompleted": 44,
+  "ruleOrGuardCases": 20,
+  "guardOrRuleProviderCalls": 0,
+  "pipelineCorrect": 60,
+  "providerCorrect": 40,
+  "perClass": {
+    "fixed_workflow": {
+      "tp": 12,
+      "predicted": 12,
+      "expected": 12,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "interpreter": {
+      "tp": 12,
+      "predicted": 12,
+      "expected": 16,
+      "precision": 1,
+      "recall": 0.75,
+      "f1": 0.8571428571428571
+    },
+    "dynamic_agent": {
+      "tp": 16,
+      "predicted": 20,
+      "expected": 16,
+      "precision": 0.8,
+      "recall": 1,
+      "f1": 0.888888888888889
+    }
+  },
+  "macroF1": 0.9153439153439153,
+  "successfulP95Ms": 1080.9339999999993,
+  "errors": [
+    {
+      "caseId": "R038",
+      "expected": "interpreter",
+      "actual": "dynamic_agent",
+      "providerStatus": "completed"
+    },
+    {
+      "caseId": "R039",
+      "expected": "interpreter",
+      "actual": "dynamic_agent",
+      "providerStatus": "completed"
+    },
+    {
+      "caseId": "R045",
+      "expected": "interpreter",
+      "actual": "dynamic_agent",
+      "providerStatus": "completed"
+    },
+    {
+      "caseId": "R048",
+      "expected": "interpreter",
+      "actual": "dynamic_agent",
+      "providerStatus": "completed"
+    }
+  ],
+  "knownRouteCostUsd": 0.0035551739999999978,
+  "unknownRouteCharges": 0,
+  "reviewCostUsd": 0.046034,
+  "thresholdsChanged": false,
+  "qualification": "Diagnostic model-reviewed labels; report partial runs as partial. Not independent human Gold or business answer quality acceptance."
+}

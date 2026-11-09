@@ -1,0 +1,87 @@
+{
+  "version": "hybrid-performance-smoke-v4-progress",
+  "runtimeFreezeHash": "3a80e29a7ebee7d2f9a292fa8260c3f89c1ef4e0584c01da46523dc5290f3c2f",
+  "submitted": 3,
+  "planned": 15,
+  "answered": 3,
+  "remaining": 12,
+  "knownCostUsd": 0.062520531,
+  "unknownCharges": 1,
+  "rows": [
+    {
+      "taskId": "P23",
+      "arm": "A",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 21011,
+      "modelAttempts": 7,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0.029475900000000003,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "71ee8263ed7a47635357df8b7f80fe30a323d57ed278dfa764091202561faa88",
+      "observationHash": "57a7854bb1cb6132a69fa526cc2a1570130928145988cefce816e82f8bb6d0cc"
+    },
+    {
+      "taskId": "P23",
+      "arm": "B",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 11711,
+      "modelAttempts": 2,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "fixed_workflow"
+      ],
+      "knownCostUsd": 0.0311874,
+      "unknownCharges": [
+        {
+          "eventId": "c5ef3954-05a3-431c-a422-0179c63c91bf",
+          "stage": "router",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "9a942aa308493e967253f18590a6e9a937e053c2c86974407de521e44fcc5566",
+      "observationHash": "5a854af06e257cb66185570e9c84d1dd89703ef3a2be16511d9f9c90b18cb053"
+    },
+    {
+      "taskId": "P23",
+      "arm": "C",
+      "status": "answered",
+      "backendEnqueueToTerminalMs": 11125,
+      "modelAttempts": 3,
+      "models": [
+        "openai/gpt-6-luna"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "fixed_workflow"
+      ],
+      "knownCostUsd": 0.001857231,
+      "unknownCharges": [],
+      "billingComplete": true,
+      "qualityReview": null,
+      "traceHash": "b46d523eea38754b6d38f1de0cf382e881bf62b26bf639402a3486f5a73ed901",
+      "observationHash": "e2a6a5d4e6ef468ac23454cb5fe566fc7987fa390fb4d93a545516aff8c01964"
+    }
+  ],
+  "historicalUnknownCharges": 6,
+  "independentQualityAccepted": false,
+  "performanceGatePassed": false,
+  "userVisibleTimingAvailable": false,
+  "conclusion": "Diagnostic smoke only. Independent quality/holdout review and broader fixtures remain required before claiming overall latency/cost improvement.",
+  "productionChanged": false
+}

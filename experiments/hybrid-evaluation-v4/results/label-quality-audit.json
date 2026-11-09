@@ -1,0 +1,15 @@
+{
+  "version": "post-run-label-quality-audit-v4",
+  "stage": "after held-out outputs were observed",
+  "originalLabelsModified": false,
+  "thresholdsModified": false,
+  "scope": "Reviewed all 64 held-out prompts for whether required referents were actually supplied; this is a post-hoc implementation-author audit, not new blind Gold.",
+  "disputedCases": [
+    {"caseId":"R039","issue":"The request says three channel categories in the UK but does not name the categories; hasHistory=false. The context contract says country plus explicit channel types is sufficient, which does not resolve these unspecified types.","frozenExpected":"interpreter","observed":"dynamic_agent"},
+    {"caseId":"R045","issue":"The request says two named candidates but supplies no names, IDs, attachments or prior history. Missing objects must not be confused with missing stored data.","frozenExpected":"interpreter","observed":"dynamic_agent"},
+    {"caseId":"R048","issue":"The request says two specified candidates but supplies no identities or prior context. Immediate executable-segment expectation is disputed.","frozenExpected":"interpreter","observed":"dynamic_agent"}
+  ],
+  "remainingDiagnosticCase": {"caseId":"R038","issue":"Country and distributor/retail categories are explicit. Jev chose context_ready=unclear despite segment_fit=yes; this is a plausible overly conservative context judgment under the frozen contract."},
+  "qualification": "Retain original 60/64 and 12/16 recall as frozen-label measurements, but do not attribute all four mismatches to Jev. Do not publish post-hoc relabelled accuracy as held-out performance.",
+  "nextRequired": "Create a new reviewed dataset with explicit referent/target validation and untouched holdout before further calibration or qualification. Separate-context reviewer agreement did not detect these ambiguities."
+}
