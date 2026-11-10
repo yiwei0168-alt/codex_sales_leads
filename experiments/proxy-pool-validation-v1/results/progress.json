@@ -1,0 +1,95 @@
+{
+  "identity": "b4f6244be1eb3ede0aa08108581380c0434af7f5e2971c9671622b1c0c6f357a",
+  "manifest": {
+    "profile": {
+      "mode": "deep",
+      "version": "agent-modes-v1",
+      "promptVersion": "agent-mode-prompts-v1.3.0",
+      "firstOutputMs": 60000,
+      "totalMs": 300000,
+      "routes": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "effort": "high"
+        },
+        {
+          "model": "anthropic/claude-opus-5.5",
+          "effort": "high"
+        },
+        {
+          "model": "z-ai/glm-5.3",
+          "effort": "high"
+        }
+      ]
+    },
+    "prompts": [
+      "Proxy pool validation v1 case 1. Reply exactly READY. No tools.",
+      "Proxy pool validation v1 case 2. Reply exactly READY. No tools.",
+      "Proxy pool validation v1 case 3. Reply exactly READY. No tools."
+    ],
+    "sources": {
+      "experiments/proxy-pool-validation-v1/run.ts": "3998e3737204f7b075dbe536b77f116458bbaecf8943607f59e3900ff4fe1f37",
+      "experiments/proxy-pool-validation-v1/README.md": "ad6c32a3295c0fb3c7a5a86fcf3488d838d59ea07f3d7b40f8179353d1a9a7be",
+      "src/lib/network/model-transport.ts": "b89949f52d988bc0f871b356bce32397ab69e5db4e6f10a47ecb34859b2dcddc",
+      "src/lib/assistant/main/model.ts": "541f6dfddb31df3b831f38387798099708c784cc0d96e606e5714dad245fa1be",
+      "src/lib/assistant/main/model-stream.ts": "93605dda6d366657892b90406fa3ade3e937b211886b731780187327a680a204"
+    },
+    "proxyRequired": true,
+    "maximumRequests": 3,
+    "consecutiveFailureStop": 2
+  },
+  "submitted": 3,
+  "passed": true,
+  "rows": [
+    {
+      "case": 1,
+      "status": "completed",
+      "complete": true,
+      "latencyMs": 3358.0146999999997,
+      "reply": "READY",
+      "costUsd": 0.000276,
+      "generationId": "gen-1794280850-cWBXkL9nC0xbrGnK62Rt",
+      "error": null,
+      "wire": [
+        {
+          "status": 200,
+          "headersMs": 2081.6404999999995
+        }
+      ]
+    },
+    {
+      "case": 2,
+      "status": "completed",
+      "complete": true,
+      "latencyMs": 1699.0330999999996,
+      "reply": "READY",
+      "costUsd": 0.000276,
+      "generationId": "gen-1794280852-unEgxgcabJBJXGtO9xdi",
+      "error": null,
+      "wire": [
+        {
+          "status": 200,
+          "headersMs": 1036.5728
+        }
+      ]
+    },
+    {
+      "case": 3,
+      "status": "completed",
+      "complete": true,
+      "latencyMs": 2652.8241000000007,
+      "reply": "READY",
+      "costUsd": 0.000276,
+      "generationId": "gen-1794280854-oaLY3YjPYxBr9TYz6Xos",
+      "error": null,
+      "wire": [
+        {
+          "status": 200,
+          "headersMs": 1312.8473999999997
+        }
+      ]
+    }
+  ],
+  "productionChanged": false,
+  "businessAcceptance": false
+}
