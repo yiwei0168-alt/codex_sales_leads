@@ -3,7 +3,7 @@ import type {RetrievedChunk} from '@/lib/rag/types';
 const mocks=vi.hoisted(()=>({search:vi.fn(),facts:vi.fn(),authorize:vi.fn()}));
 vi.mock('@/lib/rag/repository',()=>({hybridSearch:mocks.search,authorizedKnowledgeChunkIds:mocks.authorize}));
 vi.mock('@/lib/knowledge/fact-repository',()=>({resolveVerifiedFacts:mocks.facts}));
-import {knowledgeCompareTool as tool} from './knowledge-compare-tool';
+import {knowledgeCompareTool as tool,comparisonAttributeKey} from './knowledge-compare-tool';
 const context={userId:'owner',runId:'run',leaseToken:'lease',role:'member' as const};
 const input={entities:['Fixture Alpha','Fixture Beta'],attributes:['ethernet_port_count','dc_input']};
 const chunk=(id:string):RetrievedChunk=>({id,documentId:id,collection:'product',title:id,content:`${'navigation '.repeat(50)}tail value`,sourceType:'public-product-datasheet',
@@ -19,6 +19,14 @@ it('reads each requested entity independently with fixed account and product sco
   expect(packet.entities.map(e=>e.evidence[0].id)).toEqual(input.entities);
   expect(packet.entities[0].evidence[0].content).toContain('tail value');
   expect(packet.entities.every(e=>e.missingFields.length===2)).toBe(true);expect(response.status).toBe('partial');
+});
+it('resolves exact bilingual field aliases before fact lookup without mixing PoE ports and Ethernet ports',async()=>{
+ mocks.facts.mockResolvedValue([{id:'poe',attributeKey:'poe_power_budget',status:'verified',typedValue:250,unit:'W',chunkId:'a'}]);
+ const response=await tool.execute({entities:input.entities,attributes:['PoE 功率预算','网口','PoE 供电口']},context);
+ expect(mocks.facts).toHaveBeenCalledWith('owner','Fixture Alpha',['poe_power_budget','ethernet_port_count','poe_output_port_count']);
+ expect(response.data).toMatchObject({entities:[{fields:[{attribute:'PoE 功率预算',canonicalAttribute:'poe_power_budget',status:'verified',value:250},{status:'missing'},{status:'missing'}]},{fields:[{value:250},{status:'missing'},{status:'missing'}]}]});
+ expect(comparisonAttributeKey('总端口数')).toBe('总端口数');
+ expect(comparisonAttributeKey('PoE 瓦数猜测')).toBe('PoE 瓦数猜测');
 });
 it('does not fill a missing counterpart with the available entity evidence',async()=>{
   mocks.search.mockImplementation(async(_u,_q,_v,filters)=>filters.structuredProductTerms[0]==='Fixture Alpha'?[chunk('a')]:[]);

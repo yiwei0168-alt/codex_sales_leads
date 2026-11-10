@@ -16,7 +16,12 @@ describe("main Agent contracts", () => {
     expect(new Set(productTools.map(t => t.id)).size).toBe(productTools.length);
     for (const tool of availableTools({ role: "member" })) {
       expect(typeof tool.execute).toBe("function");
-      expect(describeTool(tool).inputSchema).toHaveProperty("additionalProperties", false);
+      const schema=describeTool(tool).inputSchema;
+      // Reviewed workflows use a strict discriminated union; its branches,
+      // rather than the oneOf container, own the object-property restrictions.
+      const branches=Array.isArray(schema.oneOf)?schema.oneOf:[schema];
+      expect(branches.length).toBeGreaterThan(0);
+      for(const branch of branches)expect(branch).toHaveProperty("additionalProperties",false);
       expect(productPrompt(productTools)).toContain(tool.id);
     }
   });

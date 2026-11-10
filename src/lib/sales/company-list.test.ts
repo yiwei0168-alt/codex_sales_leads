@@ -1,9 +1,13 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 const mock=vi.hoisted(()=>({query:vi.fn()}));
 vi.mock('@/lib/rag/db',()=>({tenantQuery:mock.query}));
-import {listOwnedSalesCompanies} from './company-list';
+import {listOwnedSalesCompanies,companyListSource} from './company-list';
 beforeEach(()=>vi.clearAllMocks());
 const rows=Array.from({length:21},(_,i)=>({id:`c${i}`,name:`Company ${i}`,domain:`company-${i}.invalid`,countryCode:'GB',roles:['Distributor']}));
+it('links to the same bounded page without putting an account identifier in the URL',()=>{
+ expect(companyListSource({countryCode:'DE',offset:20}).url).toBe('/api/workspaces/current/companies?offset=20&countryCode=DE');
+ expect(()=>companyListSource({userId:'other'})).toThrow();
+});
 it('keeps the sentinel out of results and exposes the next offset with an exact country/owner scope',async()=>{
  mock.query.mockResolvedValue(rows);const out=await listOwnedSalesCompanies('owner',{countryCode:'GB',offset:20});
  expect(out.items).toHaveLength(20);expect(out).toMatchObject({hasMore:true,nextOffset:40,offset:20,paginationLimitReached:false});

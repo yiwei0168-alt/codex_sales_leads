@@ -7,6 +7,12 @@ export const companyListData=z.object({items:z.array(z.object({id:z.string().min
  countryCode:z.string(),roles:z.array(z.string())})),offset:z.number().int().min(0),hasMore:z.boolean(),
  nextOffset:z.number().int().min(0).nullable(),paginationLimitReached:z.boolean(),scope:z.string()});
 
+export function companyListSource(input:unknown){
+ const p=companyListInput.parse(input),query=new URLSearchParams({offset:String(p.offset)});
+ if(p.countryCode)query.set('countryCode',p.countryCode);
+ return {title:`已保存公司列表（当前账号，第 ${Math.floor(p.offset/20)+1} 页，实时数据）`,url:`/api/workspaces/current/companies?${query}`};
+}
+
 /** Stable account/market membership pages; no discovery, scoring or identity merge. */
 export async function listOwnedSalesCompanies(userId:string,input:unknown){
  const p=companyListInput.parse(input);

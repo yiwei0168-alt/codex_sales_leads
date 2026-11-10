@@ -7,24 +7,33 @@ import type {RetrievedChunk} from '@/lib/rag/types';
 import {defineTool} from './tool-definition';
 import {result} from './contracts';
 
+/** Exact registered aliases only. Generic port counts must not become PoE counts. */
+export function comparisonAttributeKey(value:string){
+  const normalize=(s:string)=>s.normalize('NFKC').toLowerCase().replace(/\s+/g,'');
+  const target=normalize(value);
+  const matches=registry.attributes.filter(a=>[a.key,...a.aliases,...(a.key==='poe_power_budget'?['PoE 功率预算','PoE 总功率预算']:[])].some(alias=>normalize(alias)===target));
+  return matches.length===1?matches[0].key:value;
+}
+
 export const knowledgeCompareInput=z.object({
   entities:z.array(z.string().trim().min(1).max(180)).length(2)
     .refine(values=>new Set(values.map(v=>v.toLowerCase())).size===2,'Two distinct explicit entities required'),
-  attributes:z.array(z.string().trim().min(1).max(120)).min(1).max(6)
+  attributes:z.array(z.string().trim().min(1).max(120).describe('Prefer registry keys: ethernet_port_count (Ethernet only), poe_output_port_count (PoE supplying ports), poe_power_budget (W). Exact registered field aliases are accepted; ambiguous total-port wording is not silently mapped.')).min(1).max(6)
     .refine(values=>new Set(values).size===values.length,'Duplicate attributes'),
 }).strict();
 
-export const knowledgeCompareTool=defineTool({id:'knowledge_compare',
+export const knowledgeCompareTool=defineTool({id:'knowledge_compare',version:'2',
   description:'Read two explicit product entities independently for up to six requested attribute keys or field names. Returns a per-entity field matrix, verifiedFacts and separate full raw evidence. Missing or conflicting verified fields remain unresolved; raw retrieval is not verification. Uses local lexical/fact queries, max four evidence blocks per entity, eight total. Ask for unclear entities first. Only product collection; never infers absent specifications.',
   input:knowledgeCompareInput,
   execute:async(i,c)=>{
     if(c.knowledgeScope&&!c.knowledgeScope.includes('product'))return result({kind:'deny',reason:'collection-scope',
       message:'当前选定资料范围不包含产品资料，不能跨范围读取。'}, {status:'unavailable',cost:'known'});
+    const attributeKeys=i.attributes.map(comparisonAttributeKey);
     const packets=await Promise.all(i.entities.map(async entity=>{
       const [facts,searches]=await Promise.all([
-        resolveVerifiedFacts(c.userId,entity,i.attributes),
+        resolveVerifiedFacts(c.userId,entity,[...new Set(attributeKeys)]),
         Promise.all(i.attributes.map(async attribute=>{
-          const aliases=registry.attributes.find(a=>a.key===attribute)?.aliases??[attribute.replace(/_/g,' ')];
+          const aliases=registry.attributes.find(a=>a.key===comparisonAttributeKey(attribute))?.aliases??[attribute.replace(/_/g,' ')];
           const question=`${entity} ${aliases.join(' ')}`;
           const chunks=await hybridSearch(c.userId,question,null,{collections:['product'],
             structuredProductTerms:[entity],lexicalQuery:buildControlledLexicalQuery(question)},4);
@@ -46,10 +55,10 @@ export const knowledgeCompareTool=defineTool({id:'knowledge_compare',
       const evidence=packet.selected.filter(s=>allowed.has(s.id));
       const verifiedFacts=packet.facts.filter(f=>f.status==='verified'&&f.chunkId&&allowed.has(f.chunkId));
       const fields=i.attributes.map(attribute=>{
-        const matching=verifiedFacts.filter(f=>f.attributeKey===attribute);
+        const matching=verifiedFacts.filter(f=>f.attributeKey===comparisonAttributeKey(attribute));
         const values=new Set(matching.map(f=>JSON.stringify([f.typedValue,f.unit])));
         const evidenceIds=evidence.filter(e=>packet.searches.find(s=>s.attribute===attribute)!.chunks.some(s=>s.id===e.id)).map(e=>e.id);
-        return {attribute,status:values.size>1?'conflicting':values.size===1?'verified':'missing',
+        return {attribute,canonicalAttribute:comparisonAttributeKey(attribute),status:values.size>1?'conflicting':values.size===1?'verified':'missing',
           factIds:matching.map(f=>f.id),evidenceIds,
           ...(values.size===1?{value:matching[0].typedValue,unit:matching[0].unit}:{})};
       });
