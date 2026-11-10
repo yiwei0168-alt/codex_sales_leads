@@ -1,0 +1,608 @@
+{
+  "version": "v13-expanded-local-read-gate",
+  "phase": "smoke",
+  "submitted": 18,
+  "reviewed": 18,
+  "qualityPassed": false,
+  "correctRate": 0.5555555555555556,
+  "byArm": {
+    "A": {
+      "submitted": 6,
+      "correct": 3,
+      "rate": 0.5,
+      "knownCostUsd": 0.18515550000000003,
+      "unknownCharges": 0
+    },
+    "B": {
+      "submitted": 6,
+      "correct": 4,
+      "rate": 0.6666666666666666,
+      "knownCostUsd": 0.20972714599999998,
+      "unknownCharges": 3
+    },
+    "C": {
+      "submitted": 6,
+      "correct": 3,
+      "rate": 0.5,
+      "knownCostUsd": 0.233737123,
+      "unknownCharges": 1
+    }
+  },
+  "rows": [
+    {
+      "taskId": "P01",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "0eee64db-96fa-480f-8198-8c2dac177a91",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.023492700000000002,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 27413,
+      "mainCalls": 7,
+      "programs": 0
+    },
+    {
+      "taskId": "P01",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "89d5ea38-f800-49bc-aa53-bdf401340922",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.027521,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 14950,
+      "mainCalls": 1,
+      "programs": 0
+    },
+    {
+      "taskId": "P01",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "9cd694a5-e871-4132-b54b-bed896cdb47f",
+      "status": "answered",
+      "qualityScore": 94,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "latest-original-mail"
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.001258175,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 5459,
+      "mainCalls": 1,
+      "programs": 0
+    },
+    {
+      "taskId": "P07",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "8172dee0-f404-4e88-a978-bd5f20cedca2",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "saved-assessments",
+        "checks": [
+          true,
+          true,
+          true
+        ]
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0137631,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 16788,
+      "mainCalls": 4,
+      "programs": 0
+    },
+    {
+      "taskId": "P07",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "d278f04a-f9dd-433d-a85e-6b75d8769d4a",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "saved-assessments",
+        "checks": [
+          true,
+          true,
+          true
+        ]
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.04134792599999999,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 32864,
+      "mainCalls": 6,
+      "programs": 3
+    },
+    {
+      "taskId": "P07",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "6a0152cb-ff7c-4c71-8518-4cdca6f5a214",
+      "status": "answered",
+      "qualityScore": 78,
+      "reviewed": true,
+      "modelReviewPassed": false,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "saved-assessments",
+        "checks": [
+          false,
+          false,
+          false
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": false,
+      "knownCostUsd": 0.036606226,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 33808,
+      "mainCalls": 6,
+      "programs": 3
+    },
+    {
+      "taskId": "P08",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "1d19ae40-4280-41c3-896d-f4a6ce799c8f",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "complete-sales-membership",
+        "complete": true,
+        "rows": 12,
+        "groups": {
+          "GB/Distributor": 3,
+          "DE/Distributor": 3,
+          "GB/Retailer": 3,
+          "GB/SI": 3
+        }
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0252852,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 24786,
+      "mainCalls": 6,
+      "programs": 0
+    },
+    {
+      "taskId": "P08",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "5387645c-c215-4df3-a0fa-dbeb4edad97c",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "complete-sales-membership",
+        "complete": true,
+        "rows": 12,
+        "groups": {
+          "GB/Distributor": 3,
+          "DE/Distributor": 3,
+          "GB/Retailer": 3,
+          "GB/SI": 3
+        }
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.019985,
+      "unknownCharges": 1,
+      "billingComplete": false,
+      "backendMs": 34887,
+      "mainCalls": 3,
+      "programs": 1
+    },
+    {
+      "taskId": "P08",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "c31bfd85-97ec-4f49-b6c1-1fe703e0d97c",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "complete-sales-membership",
+        "complete": true,
+        "rows": 12,
+        "groups": {
+          "GB/Distributor": 3,
+          "DE/Distributor": 3,
+          "GB/Retailer": 3,
+          "GB/SI": 3
+        }
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.035499364000000005,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 22966,
+      "mainCalls": 3,
+      "programs": 1
+    },
+    {
+      "taskId": "P19",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "0e296e1b-6a56-4ba4-999e-c892651e7b8e",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": false
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.043581699999999994,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 36833,
+      "mainCalls": 9,
+      "programs": 0
+    },
+    {
+      "taskId": "P19",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "30619283-5987-4ad2-a9f6-1373f49d2271",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0507696,
+      "unknownCharges": 1,
+      "billingComplete": false,
+      "backendMs": 31102,
+      "mainCalls": 7,
+      "programs": 1
+    },
+    {
+      "taskId": "P19",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "23d4ad91-22bb-4ea1-9792-70311115ac68",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": true,
+      "detail": {
+        "passed": true,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      },
+      "correct": true,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.049466458000000005,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 43606,
+      "mainCalls": 10,
+      "programs": 2
+    },
+    {
+      "taskId": "P20",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "92513cde-a269-4224-be28-e2a179bcdc58",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0535476,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 38521,
+      "mainCalls": 7,
+      "programs": 0
+    },
+    {
+      "taskId": "P20",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "78c4020b-deca-4615-8b92-c0fe536172d5",
+      "status": "partial",
+      "qualityScore": 15,
+      "reviewed": true,
+      "modelReviewPassed": false,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": false,
+      "knownCostUsd": 0.04588772,
+      "unknownCharges": 1,
+      "billingComplete": false,
+      "backendMs": 61138,
+      "mainCalls": 7,
+      "programs": 2
+    },
+    {
+      "taskId": "P20",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "682e8261-0a6f-429f-8afc-6eeb072f6ad1",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+            "present": false
+          },
+          {
+            "id": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0797276,
+      "unknownCharges": 1,
+      "billingComplete": false,
+      "backendMs": 64225,
+      "mainCalls": 11,
+      "programs": 7
+    },
+    {
+      "taskId": "P24",
+      "arm": "A",
+      "repetition": 1,
+      "runId": "80ecac1f-fe37-4d3b-9501-5dd39cd54188",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0254852,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 27306,
+      "mainCalls": 5,
+      "programs": 0
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "repetition": 1,
+      "runId": "a318e4d1-1133-46f0-900c-c5138a01550e",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0242159,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 26276,
+      "mainCalls": 4,
+      "programs": 2
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "repetition": 1,
+      "runId": "8ac4369c-0743-4968-b3ed-de5ea09caf19",
+      "status": "answered",
+      "qualityScore": 100,
+      "reviewed": true,
+      "modelReviewPassed": true,
+      "mechanicalPassed": false,
+      "detail": {
+        "passed": false,
+        "kind": "original-document-coverage",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": false
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": false
+          }
+        ]
+      },
+      "correct": false,
+      "policyViolation": false,
+      "hardGatePass": true,
+      "knownCostUsd": 0.0311793,
+      "unknownCharges": 0,
+      "billingComplete": true,
+      "backendMs": 27912,
+      "mainCalls": 4,
+      "programs": 1
+    }
+  ],
+  "eligibleLatencyPairs": 2,
+  "excludedLatencyPairs": 4,
+  "costReduction": null,
+  "pairedMedianLatencyReduction": 0.4371447268919621,
+  "p95LatencyIncrease": -0.1622223032867618,
+  "bootstrap": null,
+  "localReadQualificationPassed": false,
+  "overallAcceptancePassed": false,
+  "independentHumanGold": false,
+  "productionChanged": false,
+  "userVisibleTimingAvailable": false,
+  "historicalUnknownCharges": 45,
+  "knownReviewCostUsd": 0.6781535,
+  "unknownReviewCharges": 0
+}
