@@ -1,0 +1,79 @@
+{
+  "version": "hybrid-performance-six-task-v15-progress",
+  "runtimeFreezeHash": "6a89554647fa908c689247c924bed220d4818096dacbd8c5c7f268f2d83dd912",
+  "submitted": 2,
+  "planned": 54,
+  "answered": 0,
+  "remaining": 52,
+  "knownCostUsd": 0.012553,
+  "unknownCharges": 3,
+  "rows": [
+    {
+      "taskId": "P19",
+      "arm": "A",
+      "repetition": 1,
+      "status": "partial",
+      "backendEnqueueToTerminalMs": 5695,
+      "modelAttempts": 1,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "dynamic_agent"
+      ],
+      "knownCostUsd": 0,
+      "unknownCharges": [
+        {
+          "eventId": "ef759157-0c86-4c2e-a757-bdb0c4840158",
+          "stage": "main",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "d816cfc900bbf2c58e5354c29dc9fa4f6ae9163e6582bed53484d3d6a9dded7f",
+      "observationHash": "105a5ac6681f2598b883d419d6413792a6bdbee1121563988119e947637ab644"
+    },
+    {
+      "taskId": "P19",
+      "arm": "B",
+      "repetition": 1,
+      "status": "partial",
+      "backendEnqueueToTerminalMs": 45213,
+      "modelAttempts": 4,
+      "models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "programAttempts": 0,
+      "successfulPrograms": 0,
+      "actualRoutes": [
+        "fixed_workflow"
+      ],
+      "knownCostUsd": 0.012553,
+      "unknownCharges": [
+        {
+          "eventId": "17c8c79c-1f02-47e5-835d-42679b83c691",
+          "stage": "router",
+          "status": "unknown"
+        },
+        {
+          "eventId": "551f8e19-c5c4-4034-91e3-3c579f8c9400",
+          "stage": "main",
+          "status": "unknown"
+        }
+      ],
+      "billingComplete": false,
+      "qualityReview": null,
+      "traceHash": "11955816a2103b65e173626f791420e8e307722e4d805403eddbc7cfe1b32433",
+      "observationHash": "b80ab6989d1eba291191aaf5eeb27ac4ed8b8a4df00e639301bf14f693c0e653"
+    }
+  ],
+  "historicalUnknownCharges": 57,
+  "independentQualityAccepted": false,
+  "performanceGatePassed": false,
+  "userVisibleTimingAvailable": false,
+  "conclusion": "Diagnostic smoke only. Independent quality/holdout review and broader fixtures remain required before claiming overall latency/cost improvement.",
+  "productionChanged": false
+}

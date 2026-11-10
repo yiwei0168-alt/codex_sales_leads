@@ -1,0 +1,66 @@
+{
+  "modelCalls": 0,
+  "credentialsSent": false,
+  "rows": [
+    {
+      "trial": 1,
+      "path": "configured-proxy",
+      "elapsedMs": 5044,
+      "diagnostic": {
+        "version": "network-failure-diagnostic-v1",
+        "chain": [
+          {
+            "name": "TypeError",
+            "code": null
+          },
+          {
+            "name": "Error",
+            "code": "ECONNRESET"
+          }
+        ],
+        "transport": {
+          "phase": "before-request-headers",
+          "elapsedMs": 5043
+        }
+      },
+      "authenticated": false
+    },
+    {
+      "trial": 1,
+      "path": "direct-diagnostic",
+      "status": 401,
+      "elapsedMs": 1383,
+      "authenticated": false
+    },
+    {
+      "trial": 2,
+      "path": "configured-proxy",
+      "elapsedMs": 5007,
+      "diagnostic": {
+        "version": "network-failure-diagnostic-v1",
+        "chain": [
+          {
+            "name": "TypeError",
+            "code": null
+          },
+          {
+            "name": "Error",
+            "code": "ECONNRESET"
+          }
+        ],
+        "transport": {
+          "phase": "before-request-headers",
+          "elapsedMs": 5007
+        }
+      },
+      "authenticated": false
+    },
+    {
+      "trial": 2,
+      "path": "direct-diagnostic",
+      "status": 401,
+      "elapsedMs": 863,
+      "authenticated": false
+    }
+  ]
+}
