@@ -1,0 +1,167 @@
+{
+  "paidCalls": 0,
+  "modelQualityReviewed": false,
+  "acceptancePassed": false,
+  "rows": [
+    {
+      "taskId": "P08",
+      "arm": "A",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "complete-sales-membership",
+        "complete": true,
+        "rows": 12,
+        "groups": {
+          "GB/Distributor": 3,
+          "DE/Distributor": 3,
+          "GB/Retailer": 3,
+          "GB/SI": 3
+        }
+      }
+    },
+    {
+      "taskId": "P08",
+      "arm": "B",
+      "status": "partial",
+      "coverage": {
+        "passed": false,
+        "kind": "complete-sales-membership",
+        "complete": false,
+        "rows": 0,
+        "groups": {}
+      }
+    },
+    {
+      "taskId": "P08",
+      "arm": "C",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "complete-sales-membership",
+        "complete": true,
+        "rows": 12,
+        "groups": {
+          "GB/Distributor": 3,
+          "DE/Distributor": 3,
+          "GB/Retailer": 3,
+          "GB/SI": 3
+        }
+      }
+    },
+    {
+      "taskId": "P19",
+      "arm": "A",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "taskId": "P19",
+      "arm": "B",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "taskId": "P19",
+      "arm": "C",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+            "present": true
+          },
+          {
+            "id": "c2684dd0-b094-4e9b-af54-cf0636210321",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "taskId": "P24",
+      "arm": "A",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": true
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "taskId": "P24",
+      "arm": "B",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": true
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "taskId": "P24",
+      "arm": "C",
+      "status": "answered",
+      "coverage": {
+        "passed": true,
+        "kind": "bound-full-original-coverage-v2",
+        "checks": [
+          {
+            "id": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+            "present": true
+          },
+          {
+            "id": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+            "present": true
+          }
+        ]
+      }
+    }
+  ]
+}

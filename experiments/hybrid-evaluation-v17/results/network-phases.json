@@ -1,0 +1,157 @@
+{
+  "version": "v17-network-phase-audit",
+  "rows": [
+    {
+      "task": "P08-A-1",
+      "traceHash": "c1248a1ee06c53a8f984c8e490147f2c11b8a9ee297006efd07a3defaf6c4b64",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P08-B-1",
+      "traceHash": "d2fd9f8122cebc546f8ba561a6805295e24dc995b90874d83d4100cefaa2cb65",
+      "httpAttempts": 3,
+      "headersReceived": 2,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 2492
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "UND_ERR_SOCKET",
+                "name": "SocketError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 27614
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P08-C-1",
+      "traceHash": "9dbe5fcef7952db5421b96e51d64ceaeb9120da3367bfba95daf952aad6c2d06",
+      "httpAttempts": 4,
+      "headersReceived": 3,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 2499
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-A-1",
+      "traceHash": "c4ba7bcf3db21221b8ae099c0375ac30ce1b33119531cbf13ce7a6e83882a0bf",
+      "httpAttempts": 9,
+      "headersReceived": 9,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-B-1",
+      "traceHash": "7921fc77249d938680a2849306494c9429aaed5af77bdf5ed153fa3740ba2c7b",
+      "httpAttempts": 10,
+      "headersReceived": 10,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-C-1",
+      "traceHash": "d27414f6bc4412e28285666970228ee7441b2474282011479df3d26e1b6a361d",
+      "httpAttempts": 10,
+      "headersReceived": 10,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-A-1",
+      "traceHash": "89179fc961b0f068b31221fbe7a150a745012b5c19e7675923206ce342381e39",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-B-1",
+      "traceHash": "f0a7def9edc7a7e6a35128a4c0265c01ae06748849353d46a05911199fa86ae0",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-C-1",
+      "traceHash": "3c170e0cdc0bbf8d970efaee42dab4dab2475fbd0af8544a92185bcebd893b51",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}
