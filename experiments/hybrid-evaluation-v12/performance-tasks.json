@@ -1,0 +1,155 @@
+[
+  {
+    "id": "P01",
+    "group": "fixed",
+    "prompt": "查看 Harbor Circuit 最新进展",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "companyId": "c1",
+      "latestMailId": "c1-m4",
+      "latestFact": "Confirmed receipt; purchase date not committed",
+      "doNotInventPurchaseDate": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P07",
+    "group": "program",
+    "prompt": "读取 Harbor Circuit、Juniper Link、Quartz Networks 的已保存分数，降序排列并保留日期和来源，不重新评分。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "orderedCompanyIds": [
+        "c2",
+        "c3",
+        "c1"
+      ],
+      "scores": [
+        88,
+        74,
+        63
+      ],
+      "scoreDate": "2026-10-31",
+      "newScoringCalls": 0
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P08",
+    "group": "program",
+    "prompt": "分页读取全部已保存公司，按国家和渠道角色交叉统计数量。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "total": 12,
+      "groups": {
+        "GB/Distributor": 3,
+        "GB/Retailer": 3,
+        "GB/SI": 3,
+        "DE/Distributor": 3
+      },
+      "mustReachLastPage": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P19",
+    "group": "dynamic",
+    "prompt": "Harbor Circuit 最新报价是不是无条件降到 95 美元了？结合两份报价说明。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "quotes": [
+        "q1",
+        "q2"
+      ],
+      "latestPrice": 95,
+      "currency": "USD",
+      "minimumQuantity": 500,
+      "mustRejectUnconditionalConclusion": true
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P20",
+    "group": "dynamic",
+    "prompt": "客户需要至少 16 个端口、至少 200W PoE，根据已批准资料推荐型号并指出缺证据的型号。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "supportedModel": "NX420",
+      "unknownPoeModel": "NX430",
+      "mustNotRecommendUnknownAsConfirmed": true,
+      "sources": [
+        "fixture://products/p2/v2#page=2",
+        "fixture://products/p3/v2#page=2"
+      ]
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ]
+  },
+  {
+    "id": "P24",
+    "group": "dynamic",
+    "prompt": "在已登记资料中对照 NX410 v1 历史规格与 NX410 v2 当前已批准规格，列出两版端口数及原文来源。端口数变化是硬件升级还是资料修订？没有原因证据就明确无法确认，不要猜。",
+    "fixtureVersion": "synthetic-business-fixtures-v1",
+    "entryScope": "business",
+    "expectedTerminal": "completed",
+    "assertions": {
+      "model": "NX410",
+      "oldVersion": "v1",
+      "oldPorts": 5,
+      "currentVersion": "v2",
+      "currentPorts": 8,
+      "rootCauseUnknown": true,
+      "sources": [
+        "fixture://products/p1/v1#page=2",
+        "fixture://products/p1/v2#page=2"
+      ]
+    },
+    "sourceCoverage": "Every factual row needs its corresponding fixture source; absence/unknown must remain explicit.",
+    "forbiddenEffects": [
+      "send",
+      "delete",
+      "officialScorePublish",
+      "formalCustomerWrite"
+    ],
+    "priorTaskId": "P24",
+    "revision": "v5"
+  }
+]
