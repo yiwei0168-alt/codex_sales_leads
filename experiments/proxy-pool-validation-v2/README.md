@@ -1,0 +1,3 @@
+# Isolated proxy pool readiness
+
+Register three serial independent primary-model requests in one persistent process after separating OpenRouter decision, generation and metadata proxy pools. Existing model/profile/permissions/proxy route stay unchanged. Freeze source and config before calls; exclusive claims, no fallback/retry and stop after two consecutive failures. Require exact READY and complete usage/generation receipts on all three. Do not force a paid network failure. Cross-lane failure isolation is tested deterministically; these short successful calls cannot establish long-response reliability or full business/performance acceptance. Production is not restarted.

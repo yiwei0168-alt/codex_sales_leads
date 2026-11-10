@@ -75,13 +75,20 @@ export function modelRoutedTransport(
   const proxyEnvironment = modelProxyEnvironment(input, init);
   if (!proxyEnvironment) return transport;
   const url = localProxyUrl(proxyEnvironment);
+  const target=requestUrl(input);
+  // Deadline-bound routing must not share a tunnel/session with long model
+  // streams or metadata probes. No change to proxy selection or retry policy.
+  const lane=target.hostname==='openrouter.ai'
+    ?target.pathname==='/api/alpha/decisions'?'decision':target.pathname==='/api/v1/chat/completions'?'generation':'metadata'
+    :'default';
+  const poolKey=`${url}|${lane}`;
   return async (request, options) => {
     // A caller may retain this transport across multiple requests. Resolve the
     // current pool at invocation time so it cannot reuse a retired dispatcher.
-    let selectedAgent=agents.get(url);
-    if(!selectedAgent){selectedAgent=new ProxyAgent(url);agents.set(url,selectedAgent);}
+    let selectedAgent=agents.get(poolKey);
+    if(!selectedAgent){selectedAgent=new ProxyAgent(url);agents.set(poolKey,selectedAgent);}
     const retire=()=>{
-      if(agents.get(url)===selectedAgent){agents.delete(url);void selectedAgent.close().catch(()=>undefined);}
+      if(agents.get(poolKey)===selectedAgent){agents.delete(poolKey);void selectedAgent.close().catch(()=>undefined);}
     };
     try{const response=await observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
       ...options,

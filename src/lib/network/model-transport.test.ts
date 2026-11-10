@@ -19,6 +19,24 @@ const openRouter = "https://openrouter.ai/api/v1/chat/completions";
 const request = (model: string) => ({ method: "POST", body: JSON.stringify({ model }) });
 
 describe("product external API network routes", () => {
+  it('isolates router cancellation and retirement from generation and metadata pools',async()=>{
+    vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:17996');
+    const init=request('openai/gpt-5.6-sol');
+    await modelRoutedTransport(fetch,openRouter,init)(openRouter,init);
+    const generation=mocked.fetch.mock.calls[0][1].dispatcher;
+    const decisionUrl='https://openrouter.ai/api/alpha/decisions';
+    const failure=Object.assign(new Error('reset'),{code:'ECONNRESET'});
+    mocked.fetch.mockRejectedValueOnce(failure);
+    await expect(modelRoutedTransport(fetch,decisionUrl,init)(decisionUrl,init)).rejects.toBe(failure);
+    const decision=mocked.fetch.mock.calls[1][1].dispatcher;
+    expect(decision).not.toBe(generation);expect(decision.close).toHaveBeenCalledOnce();expect(generation.close).not.toHaveBeenCalled();
+    await modelRoutedTransport(fetch,openRouter,init)(openRouter,init);
+    expect(mocked.fetch.mock.calls[2][1].dispatcher).toBe(generation);
+    const metadataUrl='https://openrouter.ai/api/v1/key';
+    await modelRoutedTransport(fetch,metadataUrl)(metadataUrl);
+    const metadata=mocked.fetch.mock.calls[3][1].dispatcher;
+    expect(metadata).not.toBe(generation);expect(metadata).not.toBe(decision);
+  });
   it('retires an owned response pool after a socket failure during body consumption',async()=>{
     vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:17995');
     const init=request('openai/gpt-5.6-sol'),transport=modelRoutedTransport(fetch,openRouter,init);

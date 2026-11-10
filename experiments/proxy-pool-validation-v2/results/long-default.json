@@ -1,0 +1,16 @@
+{
+  "status": "unknown",
+  "replyCharacters": 0,
+  "replyPrefix": null,
+  "usage": null,
+  "latencyMs": 54179.469,
+  "wire": [
+    {
+      "status": 200,
+      "headersMs": 8773.3416
+    }
+  ],
+  "error": {
+    "name": "TypeError"
+  }
+}
