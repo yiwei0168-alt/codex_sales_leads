@@ -10,6 +10,7 @@ export const DISCOVERY_AUTOMATIC_EXECUTION_VERSION = 'hybrid-auto-v2-discovery';
 export const automaticConfigSchema = z.object({
   version: z.enum([AUTOMATIC_EXECUTION_VERSION,DISCOVERY_AUTOMATIC_EXECUTION_VERSION]),
   capabilityMode: z.enum(['deep','quick']),
+  segmentPlanning: z.literal('bounded-segments-v1').optional(),
   profiles: z.object({fixed_workflow: modeConfigSchema, interpreter: modeConfigSchema, dynamic_agent: modeConfigSchema}).strict(),
 }).strict();
 export type AutomaticExecutionConfig = z.infer<typeof automaticConfigSchema>;
@@ -21,6 +22,7 @@ export function automaticModelConfig(scope: 'business'|'knowledge' = 'business')
   const interpreterTier=process.env.HYBRID_INTERPRETER_PROFILE==='quick'?'quick'
     :process.env.HYBRID_INTERPRETER_PROFILE==='deep'?'deep':'standard';
   return {...base, automatic: automaticConfigSchema.parse({version: process.env.HYBRID_KNOWLEDGE_DISCOVERY==='1'?DISCOVERY_AUTOMATIC_EXECUTION_VERSION:AUTOMATIC_EXECUTION_VERSION,
+    ...(process.env.HYBRID_PROGRAM_SEGMENT_PLANNING==='1'?{segmentPlanning:'bounded-segments-v1'}:{}),
     capabilityMode: scope === 'knowledge' ? 'quick' : 'deep', profiles: {
       fixed_workflow: modeModelConfig('quick').profile,
       interpreter: modeModelConfig(interpreterTier).profile,

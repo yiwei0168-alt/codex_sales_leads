@@ -12,6 +12,16 @@ import {KNOWLEDGE_RESPONSE_POLICY,KNOWLEDGE_DISCOVERY_RESPONSE_POLICY} from './k
 afterEach(()=>vi.unstubAllEnvs());
 const input={content:'查看 Atlas 最新进展',attachments:[]};
 const context={userId:'owner',role:'member' as const,mode:'deep' as const};
+it('pins segment planning at enqueue and never adds it to historical or non-hybrid requests',()=>{
+ vi.stubEnv('HYBRID_PROGRAM_SEGMENT_PLANNING','0');const old=automaticModelConfig();
+ vi.stubEnv('HYBRID_PROGRAM_SEGMENT_PLANNING','1');const candidate=automaticModelConfig();
+ vi.stubEnv('ENABLE_HYBRID_EXECUTION','1');
+ expect(initialTaskMessages(context,input,candidate,[]).some(m=>m.content?.startsWith('[bounded-segments-v1]'))).toBe(true);
+ expect(initialTaskMessages(context,input,old,[]).some(m=>m.content?.startsWith('[bounded-segments-v1]'))).toBe(false);
+ vi.stubEnv('ENABLE_HYBRID_EXECUTION','0');
+ expect(initialTaskMessages(context,input,candidate,[]).some(m=>m.content?.startsWith('[bounded-segments-v1]'))).toBe(false);
+ expect(candidate.automatic!.profiles).toEqual(old.automatic!.profiles);
+});
 it('pins discovery to an explicit new job version, preserving prior jobs and capabilities',()=>{
  vi.stubEnv('HYBRID_KNOWLEDGE_DISCOVERY','0');const old=automaticModelConfig();
  const oldPrompt=automaticPromptRules(old.automatic!);

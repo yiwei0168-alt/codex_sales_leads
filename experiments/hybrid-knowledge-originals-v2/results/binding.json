@@ -1,0 +1,126 @@
+{
+  "version": "synthetic-originals-v2",
+  "releaseId": "ebd54bce-963f-475a-8493-685e87b0d287",
+  "documents": [
+    {
+      "model": "NX410",
+      "version": "v1",
+      "documentId": "9d849cc5-cd78-45fd-9465-f243e4a92126",
+      "contentHash": "7d48a2a4e0abb0b723b9ce53e2a33b2164f74e0542b9797e786b878b2e4fe771",
+      "assetId": "778f13c5-2bc7-45b9-a885-1bf638eba022",
+      "sourceUrl": "fixture://products/p1/v1#page=2",
+      "ports": 5,
+      "poeBudgetW": null,
+      "chunkId": "fa383e8d-9a8d-4d8d-8157-82a3f1205c0f"
+    },
+    {
+      "model": "NX410",
+      "version": "v2",
+      "documentId": "f25d96d5-f186-4b88-b26d-cfc6e6867b41",
+      "contentHash": "0c89d785279a03a8924c90d61ec26e3f4c95e6b94042ed6e8d72c3a847171ecc",
+      "assetId": "e95fa78e-c7e4-4b57-9304-9ae465262b94",
+      "sourceUrl": "fixture://products/p1/v2#page=2",
+      "ports": 8,
+      "poeBudgetW": 120,
+      "chunkId": "86a7ca8a-42b5-4a52-8de9-ec2a7b34cff6"
+    },
+    {
+      "model": "NX420",
+      "version": "v1",
+      "documentId": "545e7307-beb4-413a-b57a-d5c3bbcfde93",
+      "contentHash": "831fc2ab16f947cac37a430c04d7b472d292e31041f76cfcb98e04a2e5bd706f",
+      "assetId": "64f2a029-5227-4be7-b4de-3423089688bf",
+      "sourceUrl": "fixture://products/p2/v1#page=2",
+      "ports": 8,
+      "poeBudgetW": null,
+      "chunkId": "67e8d4a0-1024-40aa-8d0a-4fc1bffb8c6b"
+    },
+    {
+      "model": "NX420",
+      "version": "v2",
+      "documentId": "8de61747-79d3-49a0-8727-3fc9f7b9d8c8",
+      "contentHash": "48b785d58c90feeeb9f6b846951d43339eb4709c0cb3589f3133cc6be3a7eab3",
+      "assetId": "f12ccb03-a6ee-4fe9-bf45-b6e144023b93",
+      "sourceUrl": "fixture://products/p2/v2#page=2",
+      "ports": 16,
+      "poeBudgetW": 250,
+      "chunkId": "1ac27152-6739-426f-8692-cde101f5c0bf"
+    },
+    {
+      "model": "NX430",
+      "version": "v1",
+      "documentId": "aaa50aa2-dc70-452c-8035-da66c24f291f",
+      "contentHash": "73ea909f2d88c165d0dff196900646e425374d3c7600d75a25a6cb433bdb98d3",
+      "assetId": "85dd563b-87d3-4682-b624-ae701ee49895",
+      "sourceUrl": "fixture://products/p3/v1#page=2",
+      "ports": 16,
+      "poeBudgetW": null,
+      "chunkId": "980055c8-436f-4033-8003-435452c22aa8"
+    },
+    {
+      "model": "NX430",
+      "version": "v2",
+      "documentId": "e216d9dc-e837-4ec5-a0ba-dff7658d4d1b",
+      "contentHash": "b2f5a872177f1ea21b93e0ab92abe0ece6a51e69c16edfbda6757e1a7459e1de",
+      "assetId": "43a3a1d1-ac21-4b1d-adc9-79791ee58b9b",
+      "sourceUrl": "fixture://products/p3/v2#page=2",
+      "ports": 24,
+      "poeBudgetW": null,
+      "chunkId": "36ab42b3-1598-4668-8fe2-02d74a3a45af"
+    },
+    {
+      "model": "NX440",
+      "version": "v1",
+      "documentId": "5b620d2c-ff32-4e77-8282-a543965faf16",
+      "contentHash": "44e0ed3e32aed8c179f844073f29e89b3730a3e0c7a5c0a0cda79dfb235bb8f9",
+      "assetId": "57795d6a-2db5-4371-a3e3-f4c8fecb5c3f",
+      "sourceUrl": "fixture://products/p4/v1#page=2",
+      "ports": 5,
+      "poeBudgetW": null,
+      "chunkId": "297700d3-b555-46fa-8449-efedd85e2508"
+    },
+    {
+      "model": "NX440",
+      "version": "v2",
+      "documentId": "ee652e6b-c4ca-4690-ab19-03e84e2dab69",
+      "contentHash": "dff61cc6955fd2c1c39cb75b4b8178ccb535d42ba8ffc863a67b23e6707ecf5a",
+      "assetId": "132fd314-53d0-4a18-83be-a3f08918aea4",
+      "sourceUrl": "fixture://products/p4/v2#page=2",
+      "ports": 8,
+      "poeBudgetW": 60,
+      "chunkId": "61abbc1c-5707-45a6-8c49-9a3fb9789bfa"
+    },
+    {
+      "id": "q1",
+      "documentId": "e4df3b78-9813-4244-b306-04ec8d5a7c1d",
+      "sourceUrl": "fixture://quotes/q1",
+      "contentHash": "0eca9c9536ff09aed2760f59149bfae718ccbb66afccb8bdde177fcd28af1e46",
+      "assetId": "a99c657b-5907-41c2-88c4-7d8c3da98222",
+      "ports": null,
+      "poeBudgetW": null,
+      "chunkId": "ae5cd630-79c3-4ddb-8a2e-f9622e99046e"
+    },
+    {
+      "id": "q2",
+      "documentId": "c2684dd0-b094-4e9b-af54-cf0636210321",
+      "sourceUrl": "fixture://quotes/q2",
+      "contentHash": "2ce14f1443e5ae32735035442c214e510c4f76fe2763cb3592a4157c8a637a1d",
+      "assetId": "14c30d3e-3f8a-4e4a-87cc-648bb2e59e5a",
+      "ports": null,
+      "poeBudgetW": null,
+      "chunkId": "d6460590-3bd1-4d1c-87ca-ce1910357846"
+    }
+  ],
+  "registeredOriginals": 10,
+  "realByteChecks": true,
+  "realCompareChecks": true,
+  "crossOwnerBlocked": true,
+  "newModelCalls": 0,
+  "productionChanged": false,
+  "caveats": [
+    "Fixture approved state is seeded, not a tested human-review or release-activation workflow",
+    "No vector embeddings; real lexical/fact retrieval only",
+    "Ethernet-port semantics explicitly clarified in new synthetic original revisions",
+    "Historical performance runs remain closed; no score or receipt rewriting"
+  ]
+}

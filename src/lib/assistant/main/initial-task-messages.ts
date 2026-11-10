@@ -26,6 +26,8 @@ export function initialTaskMessages(context:Pick<ExecutionContext,'userId'|'role
   ? `${modePromptRules(context.mode,config.profile?.promptVersion)}\n\n当前可用能力（完整参数执行前 describe_tool）：\n${availableTools(context).map(t=>`${t.id}: ${t.description}`).join('\n')}`
   : productPrompt(availableTools(context))},
   ...hybridMessages,
+  ...(hybrid&&config.automatic?.segmentPlanning==='bounded-segments-v1'?[{role:'system' as const,content:
+   '[bounded-segments-v1] 减少无意义往返：编写程序前，在同一轮并列 describe_tool 已能预见的全部叶工具。已知的数据依赖也可放在同一程序：先查对象，再用真实返回标识读取、分页、筛选、排序和聚合，不必每个阶段都交回主模型。仅在结果已唯一确定所需对象且后续只是既定数据处理时继续；身份多义、证据冲突或必须解释新材料才能选策略时仍 handoff。若只是展示或格式调整，直接用已有程序 value 和原始来源完成回答，不再启动程序抄写结果。需要重新计算已有证据时才用 tools.receipt；不得重做结果不明的调用。程序使用同步 tools.call/tools.parallel，无 await/Promise；有界循环须遵守调用上限并在未穷尽时如实披露。此建议不新增工具权限、不允许猜测标识或编造业务判断。'}]:[]),
   ...(knowledgeScope?.length?[{role:'system' as const,content:`This question came from the knowledge base. Search and cite only these selected knowledge collections: ${knowledgeScope.join(", ")}. Pass this exact list as knowledge_search.collections. Answer in the user's language and distinguish missing evidence from verified facts.`}]:[]),
   ...history.map(({role,content})=>({role,content})),
   {role:'user',content:input.content+(input.attachments.length?`\nAttached registered asset IDs: ${input.attachments.map(a=>a.assetId).join(', ')}`:'')}];
