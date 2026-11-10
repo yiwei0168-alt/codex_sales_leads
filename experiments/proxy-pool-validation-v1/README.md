@@ -1,0 +1,5 @@
+# Proxy pool live validation
+
+Three serial synthetic primary-model requests in one persistent process, distinct declared prompts, existing deep primary/profile and explicit local proxy. No model fallback or automatic retries; exclusive claims persist even on unknown outcomes. Stop after two consecutive failures. Preserve source/config hashes before requesting. Require 3/3 exact READY replies, complete generation/cost receipts and zero failures for this small connectivity check to pass. It is not statistical reliability evidence, business quality qualification or latency/cost benchmark acceptance. Failed responses remain unknown, never free. Existing confirmed network routing is retained. Production is not restarted or repointed.
+
+The retained transport callback is reused to exercise selection of the current cached pool. Deterministic regression separately verifies that a reset retires a pool and the same callback subsequently selects a fresh one, without replaying the failed request. Provider network faults are not deliberately induced in paid requests.

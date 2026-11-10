@@ -69,13 +69,11 @@ export function modelRoutedTransport(
   const proxyEnvironment = modelProxyEnvironment(input, init);
   if (!proxyEnvironment) return transport;
   const url = localProxyUrl(proxyEnvironment);
-  let agent = agents.get(url);
-  if (!agent) {
-    agent = new ProxyAgent(url);
-    agents.set(url, agent);
-  }
-  const selectedAgent=agent;
   return async (request, options) => {
+    // A caller may retain this transport across multiple requests. Resolve the
+    // current pool at invocation time so it cannot reuse a retired dispatcher.
+    let selectedAgent=agents.get(url);
+    if(!selectedAgent){selectedAgent=new ProxyAgent(url);agents.set(url,selectedAgent);}
     try{return await observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
       ...options,
       dispatcher: selectedAgent,

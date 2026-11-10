@@ -39,6 +39,16 @@ describe("product external API network routes", () => {
     await modelRoutedTransport(fetch,openRouter,init)(openRouter,init);
     expect(mocked.fetch.mock.calls[1][1].dispatcher).toBe(first);expect(first.close).not.toHaveBeenCalled();
   });
+  it('reuses a retained transport function with a fresh pool after reset',async()=>{
+    vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:17994');
+    const init=request('openai/gpt-5.6-sol'),transport=modelRoutedTransport(fetch,openRouter,init);
+    const failure=Object.assign(new Error('broken'),{code:'EPIPE'});
+    mocked.fetch.mockRejectedValueOnce(failure).mockResolvedValueOnce(new Response(null));
+    await expect(transport(openRouter,init)).rejects.toBe(failure);
+    await transport(openRouter,init);
+    expect(mocked.fetch).toHaveBeenCalledTimes(2);
+    expect(mocked.fetch.mock.calls[0][1].dispatcher).not.toBe(mocked.fetch.mock.calls[1][1].dispatcher);
+  });
   it("keeps GLM direct while routing OpenAI and Claude on the same gateway through the proxy", async () => {
     vi.stubEnv("MODEL_PROXY_URL", "http://127.0.0.1:7892");
     expect(modelProxyEnvironment(openRouter, request("z-ai/glm-5.3"))).toBeNull();
