@@ -34,6 +34,7 @@ import { registerVectorlessUpload } from "@/lib/knowledge/vectorless-registratio
 import {contactVerificationConfigured,evaluateSavedContact,publishSavedContactDecision} from "@/lib/contacts/verification/saved-service";
 import {publishReviewedStandaloneScore} from "@/lib/leads/workflow/standalone-score-publication";
 import {readSharedReleaseGate,activateSharedRelease} from "@/lib/knowledge/release-activation";
+import {assessmentOutput} from './read-output-contracts';
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -51,10 +52,10 @@ export const businessTools = [
       if (!launch?.jobId) return result(launch, { status: "unavailable", missing: ["Owned Agent call and successfully queued existing lead workflow"] });
       return result(launch, { artifacts: [{ id: launch.actionId, title: "销售线索工作流", url: `/tasks/${launch.actionId}?kind=search` }], receipt: launch.jobId, cost: "unknown" });
     } }),
-  defineTool({id:"company_assessment_read",description:"Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence.",
-    input:z.object({companyExternalId:companyId}).strict(),execute:async(i,c)=>{
+  defineTool({id:"company_assessment_read",version:'2',description:"Read the latest saved formal assessment: data.assessment contains totalScore, assessedAt, policyVersion and evidence. Pass the selected company_search.companies[].id or company_list.items[].id unchanged as companyExternalId. Company record updatedAt is not a scoring date. Returns an authenticated source link. Does not score, alter qualification or treat research as formal evidence.",
+    input:z.object({companyExternalId:companyId.describe('Selected sales candidate id from company_search.companies[].id or company_list.items[].id, not a mailbox UUID.')}).strict(),output:assessmentOutput,execute:async(i,c)=>{
       const assessment=await readSavedCompanyAssessment(c.userId,i.companyExternalId);
-      return assessment?result({assessment}):result({assessment:null},{status:"missing_input",missing:["Saved formal assessment for this owned company"]});
+      return assessment?result({assessment},{sources:[{title:'已保存评分与评分日期',url:`/api/workspaces/current/companies/${encodeURIComponent(i.companyExternalId)}/assessment`}]}):result({assessment:null},{status:"missing_input",missing:["Saved formal assessment for this owned company"]});
     }}),
   defineTool({id:"company_score_publish",description:"Publish one saved, eligible and independently reviewed standalone score as this owned company's formal assessment after exact approval of domain, score, policy version and market revision. Rechecks cited fresh evidence and preserves manual company decisions; no new research or model call.",
     input:z.object({sourceCallId:z.uuid(),companyExternalId:companyId,expectedRevision:z.number().int().min(0),expectedDomain:z.string().min(3).max(253),expectedTotalScore:z.number().int().min(0).max(100),expectedPolicyVersion:z.string().min(1).max(120)}).strict(),

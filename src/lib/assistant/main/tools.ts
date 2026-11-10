@@ -9,6 +9,7 @@ import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/rev
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
 import {listKnowledgeUploadJobs} from "@/lib/knowledge/upload";
 import { searchOwnedCompanies } from './company-search';
+import {companySearchOutput,knowledgeSearchOutput,knowledgeFactsOutput} from './read-output-contracts';
 import {listOwnedSalesCompanies,companyListInput,companyListData,companyListSource} from '@/lib/sales/company-list';
 import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
 import {memoryEditorSchema} from "@/lib/outreach/memory-editor";
@@ -101,7 +102,7 @@ export const productTools: ProductTool[] = [
       const output = await runSkillScript(skill.files as Record<string, string>, i.entry, i.input);
       return result(output, { status: output.status, missing: "missing" in output ? output.missing : [] });
     } }),
-  defineTool({ id: "knowledge_search", description: "Search accessible knowledge evidence using lexical and structured lanes, without another answer model. Returns chunks and source coordinates; v3 remains authoritative.",
+  defineTool({ id: "knowledge_search",version:'2',output:knowledgeSearchOutput,description: "Search accessible knowledge evidence using lexical and structured lanes, without another answer model. data is an ARRAY of chunks (not data.chunks/items): id, documentId, title, content, sourceUrl, metadata including registered assetId when available. Return only requested fields and citations from programs, not every full chunk. Search order is not approval or completeness proof; v3 remains authoritative.",
     input: z.object({ query: z.string().min(2).max(4000), limit: z.number().int().min(1).max(20).default(8),
       collections: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional() }).strict(),
     execute: async (i, c) => {
@@ -123,7 +124,7 @@ export const productTools: ProductTool[] = [
         ?{cost:'known',status:'partial',missing:['Local BGE unavailable; vector lane omitted']}
         :{cost:'known'});
     } }),
-  defineTool({ id: "knowledge_facts", description: "Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence.",
+  defineTool({ id: "knowledge_facts",version:'2',output:knowledgeFactsOutput,description: "Read verified facts for an entity and explicit attribute keys. data is an ARRAY of facts: attributeKey, typedValue, unit, status, assetId, documentVersion and chunkId when available. Check requested keys individually; an empty or shorter array leaves other fields unknown. Quarantined facts are not formal evidence.",
     input: z.object({ entity: z.string().min(1).max(180), attributes: z.array(z.string().max(120)).min(1).max(30) }).strict(),
     execute: async (i, c) => {
       const facts=await resolveVerifiedFacts(c.userId,i.entity,i.attributes);
@@ -152,10 +153,10 @@ export const productTools: ProductTool[] = [
   defineTool({id:'company_list',description:'Page through all current-account saved sales company/market memberships, optionally by country. data.items contains id, name, domain, countryCode and saved roles; follow nextOffset until hasMore=false before counting all companies. Use IDs with company_read or company_assessment_read. No model, search, scoring or merge.',
     version:'2',input:companyListInput,output:toolResultSchema.extend({data:companyListData.nullable().optional()}),cost:'known',
     execute:async(i,c)=>result(await listOwnedSalesCompanies(c.userId,i),{cost:'known',sources:[companyListSource(i)]})}),
-  defineTool({ id: "company_search",version:'2', description: "Search owned sales companies AND mailbox customers by full name, partial name or domain/URL, with optional country. Returns candidates, not confirmed identities. For mailboxCustomers use their id with customer_timeline; for companies use candidate id with company_read. Clarify ambiguous candidates; never infer absence of mail from an empty sales-company list alone. No model, external lookup or merge.",
+  defineTool({ id: "company_search",version:'3',output:companySearchOutput, description: "Search owned sales companies AND mailbox customers by name/domain, optionally country. data.companies[] has id, name, domain, countryCode; pass selected id unchanged as company_read.candidateId or company_assessment_read.companyExternalId. data.mailboxCustomers.items[].id is a DIFFERENT ID for customer_timeline. Check hasMore and ambiguity in the relevant store before selecting. Empty sales results do not imply absent mail. No model, external lookup or merge.",
     input: z.object({ query: z.string().max(180), countryCode: z.string().regex(/^[A-Z]{2}$/).optional() }).strict(),
     execute: async (i, c) => result(await searchOwnedCompanies(c.userId,i), { cost: "known" }) }),
-  defineTool({ id: "company_read", description: "Read the account's company/market state and saved evidence, without generating a score or re-running discovery.",
+  defineTool({ id: "company_read",version:'2',description: "Read account company/market state. data is an array of rows with candidate_id, market_country_code, record, updated_at and revision. record.fitScore is a summary; record.updatedAt/updated_at are not assessment dates. For saved scores with assessment dates/policy/evidence, use company_assessment_read with the same candidateId value as companyExternalId. No score generation or discovery.",
     input: z.object({ candidateId: z.string().min(1).max(200) }).strict(),
     execute: async (i, c) => {const rows=await tenantQuery<{revision:string}>(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at,locked.revision
       from user_company_market wc join market_workspace w on w.id=wc.workspace_id join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
