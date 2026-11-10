@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach,beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocked = vi.hoisted(() => ({ fetch: vi.fn(),agents:[] as Array<{close:ReturnType<typeof vi.fn>}> }));
 
@@ -7,7 +7,8 @@ vi.mock("undici", () => ({
   ProxyAgent: class {close=vi.fn().mockResolvedValue(undefined);constructor(){mocked.agents.push(this);}},
 }));
 
-import { modelProxyEnvironment, modelRoutedTransport } from "./model-transport";
+import { modelProxyEnvironment, modelRoutedTransport,retireModelResponseTransport } from "./model-transport";
+beforeEach(()=>{mocked.fetch.mockReset().mockResolvedValue(new Response(null));});
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -18,6 +19,20 @@ const openRouter = "https://openrouter.ai/api/v1/chat/completions";
 const request = (model: string) => ({ method: "POST", body: JSON.stringify({ model }) });
 
 describe("product external API network routes", () => {
+  it('retires an owned response pool after a socket failure during body consumption',async()=>{
+    vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:17995');
+    const init=request('openai/gpt-5.6-sol'),transport=modelRoutedTransport(fetch,openRouter,init);
+    mocked.fetch.mockResolvedValueOnce(new Response('partial')).mockResolvedValueOnce(new Response('next'));
+    const response=await transport(openRouter,init),first=mocked.fetch.mock.calls[0][1].dispatcher;
+    retireModelResponseTransport(response,new Error('invalid JSON'));expect(first.close).not.toHaveBeenCalled();
+    const failure=new TypeError('terminated',{cause:Object.assign(new Error('socket'),{code:'UND_ERR_SOCKET'})});
+    retireModelResponseTransport(new Response('unowned'),failure);expect(first.close).not.toHaveBeenCalled();
+    retireModelResponseTransport(response,failure);expect(first.close).toHaveBeenCalledOnce();
+    await transport(openRouter,init);
+    expect(mocked.fetch.mock.calls[1][1].dispatcher).not.toBe(first);
+    retireModelResponseTransport(response,failure);expect(first.close).toHaveBeenCalledOnce();
+    expect(mocked.fetch.mock.calls[1][1].dispatcher.close).not.toHaveBeenCalled();
+  });
   it('retires a reset proxy pool for the next request without replaying failed paid work',async()=>{
     vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:17992');
     const failure=new TypeError('fetch failed',{cause:Object.assign(new Error('reset'),{code:'ECONNRESET'})});

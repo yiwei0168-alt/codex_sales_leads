@@ -1,0 +1,126 @@
+{
+  "version": "v16-network-phase-audit",
+  "rows": [
+    {
+      "task": "P19-A-1",
+      "traceHash": "3f0a5b2932c930c38e42d64d2cd1e61db62a15b9f9354387ba92581e5b668d22",
+      "httpAttempts": 9,
+      "headersReceived": 9,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-B-1",
+      "traceHash": "7efbe082ab47ce70bc8db921d3082bc8dbfa82ca5d7876a6c290b1f56f762842",
+      "httpAttempts": 10,
+      "headersReceived": 9,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 2493
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-C-1",
+      "traceHash": "84bd874d0940d80e82b38936671b257380b3f002e1cd25428cfc485786671619",
+      "httpAttempts": 9,
+      "headersReceived": 9,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-B-1",
+      "traceHash": "f8f7063d70d7d4490350134ad4e20b7306e64a45ce8c0221b76f5b30fb5d3574",
+      "httpAttempts": 7,
+      "headersReceived": 6,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 2467
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24-C-1",
+      "traceHash": "5f694c63c221d24df4786507f9dd1f6a704a707a81ad56d4027c4ae217220ff6",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "UND_ERR_SOCKET",
+                "name": "SocketError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 27171
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}

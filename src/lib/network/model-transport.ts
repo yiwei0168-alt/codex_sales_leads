@@ -5,6 +5,12 @@ type ProxyEnvironment = "GEMINI_PROXY_URL" | "MODEL_PROXY_URL";
 
 const agents = new Map<string, ProxyAgent>();
 const defaultFetch = fetch;
+const responseRetirements=new WeakMap<Response,()=>void>();
+
+/** A fetch can succeed before its response stream loses the proxy socket. */
+export function retireModelResponseTransport(response:Response,error:unknown){
+  if(brokenConnection(error))responseRetirements.get(response)?.();
+}
 
 function brokenConnection(error:unknown):boolean {
   const seen=new Set<object>();
@@ -74,17 +80,18 @@ export function modelRoutedTransport(
     // current pool at invocation time so it cannot reuse a retired dispatcher.
     let selectedAgent=agents.get(url);
     if(!selectedAgent){selectedAgent=new ProxyAgent(url);agents.set(url,selectedAgent);}
-    try{return await observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
+    const retire=()=>{
+      if(agents.get(url)===selectedAgent){agents.delete(url);void selectedAgent.close().catch(()=>undefined);}
+    };
+    try{const response=await observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
       ...options,
       dispatcher: selectedAgent,
-    } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>);}
+    } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>);
+    responseRetirements.set(response,retire);return response;}
     catch(error){
       // Never replay a potentially paid request. Retire the failed pool for the
       // next independent request; close drains concurrent work, unlike destroy.
-      if(brokenConnection(error)&&agents.get(url)===selectedAgent){
-        agents.delete(url);
-        void selectedAgent.close().catch(()=>undefined);
-      }
+      if(brokenConnection(error))retire();
       throw error;
     }
   };

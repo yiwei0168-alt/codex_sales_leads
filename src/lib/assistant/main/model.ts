@@ -4,7 +4,7 @@ import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { ModelConfig, ModelMessage } from "./contracts";
 import { assertOpenRouterResponse } from "@/providers/openrouter-batch";
 import { matchesBatchModel } from '@/providers/openrouter-batch';
-import { modelRoutedTransport } from '@/lib/network/model-transport';
+import { modelRoutedTransport,retireModelResponseTransport } from '@/lib/network/model-transport';
 import { collectModelStream, withModeStream, ModelWaitError, ModelReceiptError } from './model-stream';
 import type { ModeConfig } from './mode-config';
 import {modelRequestManifest} from './model-request-manifest';
@@ -42,7 +42,8 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
       const response=await Promise.race([modelRoutedTransport(transport,input,init)(input,init),aborted]);
       if(!response.ok){clearTimeout(first);return response;}
       streaming=true;
-      return await collectModelStream(response,controller.signal,()=>clearTimeout(first));
+      try{return await collectModelStream(response,controller.signal,()=>clearTimeout(first));}
+      catch(error){retireModelResponseTransport(response,error);throw error;}
     }catch(error){if(streaming)markTransportFailure(error,'response-stream',started);transportError=error;throw error;}
   };
   try{
