@@ -1,0 +1,244 @@
+{
+  "version": "v14-network-phase-audit",
+  "rows": [
+    {
+      "task": "P19-A-1",
+      "traceHash": "2d45c821604adde9c4e0ea6fb882d5d27e5af527f62629528313102b186fecb5",
+      "httpAttempts": 11,
+      "headersReceived": 9,
+      "preResponseFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "Error",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 59991
+            }
+          }
+        },
+        {
+          "model": "anthropic/claude-opus-5.5",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "Error",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 59993
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 59991
+            }
+          }
+        },
+        {
+          "model": "anthropic/claude-opus-5.5",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "awaiting-response-headers",
+              "elapsedMs": 59993
+            }
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "UND_ERR_SOCKET",
+                "name": "SocketError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 27976
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-B-1",
+      "traceHash": "ea690d24e7f6e202c75cd9ed80cf0a555682c19f125a8ff1f2079c203ea1d2c7",
+      "httpAttempts": 3,
+      "headersReceived": 1,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 2403
+            }
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TypeError",
+                "code": null
+              },
+              {
+                "name": "Error",
+                "code": "ECONNRESET"
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 5008
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "ECONNRESET",
+                "name": "Error"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 5008
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P19-C-1",
+      "traceHash": "63fafa93946b3365194b501171dd440fafcefdf34d8fdfceb6c69591d2359c5f",
+      "httpAttempts": 10,
+      "headersReceived": 10,
+      "preResponseFailures": [],
+      "modelFailures": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "TypeError"
+              },
+              {
+                "code": "UND_ERR_SOCKET",
+                "name": "SocketError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1",
+            "transport": {
+              "phase": "response-stream",
+              "elapsedMs": 34597
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task": "P24-C-1",
+      "traceHash": "36015afe9f2957f42bdbe945a4fb28e96f367e3f941760afe72d71b41d806890",
+      "httpAttempts": 5,
+      "headersReceived": 4,
+      "preResponseFailures": [
+        {
+          "model": "typesafe/jev-1.14",
+          "diagnostic": {
+            "version": "network-failure-diagnostic-v1",
+            "chain": [
+              {
+                "name": "TimeoutError",
+                "code": null
+              }
+            ],
+            "transport": {
+              "phase": "before-request-headers",
+              "elapsedMs": 2464
+            }
+          }
+        }
+      ],
+      "modelFailures": [
+        {
+          "diagnostic": {
+            "chain": [
+              {
+                "code": null,
+                "name": "OtherError"
+              }
+            ],
+            "version": "network-failure-diagnostic-v1"
+          }
+        }
+      ]
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}

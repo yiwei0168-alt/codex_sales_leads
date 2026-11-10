@@ -8,7 +8,7 @@ Set `HYBRID_KNOWLEDGE_DISCOVERY=1` only in the new isolated runner process befor
 
 The candidate distinguishes an ambiguous request for a particular document from a criteria-based product recommendation. For the latter, search the authorized scope first, then verify candidates against returned originals and approval/version evidence. Search order alone does not prove relevance or approval. Never select another account's private content, invent IDs or turn missing evidence into a negative specification. An unresolved requirement may be reported conditionally where evidence supports that; genuinely blocking ambiguity still requires clarification. This is a prompt candidate, not an enforced guarantee of model behavior.
 
-## Next evaluation, not yet started
+## Historical V11 follow-up registration (retained)
 
 1. Restore usable OpenRouter credit capacity. Read-only balance checks do not authorize charging or prove that every larger request will be admitted.
 2. Register and freeze a new run with the candidate policy, unchanged task prompts and quality/cost/time gates, all current source/model/fixture hashes and the guard included. Never reuse V11's freeze or relabel its outcomes. Keep its 12 unknown charges and the earlier 33 separate.
@@ -17,3 +17,11 @@ The candidate distinguishes an ambiguous request for a particular document from 
 5. Only after quality passes, complete all three repetitions and apply the original cost/latency gates with full submitted-cost accounting. Then continue the outstanding full-24 and live-external strata. This small known-family development test cannot establish whole-product acceptance.
 
 No paid request was made to validate this new policy while credit-blocked. Default production settings and running services remain unchanged.
+
+## After V14: graceful batch controls
+
+`guarded-batch.mjs` is the frozen historical HTTP-402-only guard. Do not retrofit completed versions with different stop semantics.
+
+New runs can register `controlled-batch.mjs`: supply `stopRequested: () => fileStopRequested(runtimeStopPath)` and freeze `maximumConsecutiveTransportFailures` (default 2). Create the separate runtime STOP file to request an operator stop. The current task finishes and saves its trace/observation; the scheduler checks the signal before the next submission. Do not kill a process based on observing a result file: the next task may already be running. In-flight model transports retain their existing bounded deadlines.
+
+Two successive tasks with transport/stream failures stop further new tasks; HTTP 402 stops immediately. Saved failures are checked too. This is an aborted qualification, not success on the remaining subset. Keep all submitted tasks, unknown charges and missing observations in the final denominator. A new frozen run is required after changing code, configuration or the stop policy. No task/provider retries, automatic zero-cost inference, or permission changes.
