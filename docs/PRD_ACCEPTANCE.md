@@ -2311,3 +2311,7 @@ Status: implemented; focused automated verification and live follow-up are recor
 ### 2026-11-10 / HYBRID-10：程序读取契约与来源核验修复
 
 `company_search` v3 明示销售候选 `id` 可直接传给 `company_assessment_read.companyExternalId`，保留邮箱客户 UUID 的独立语义和歧义限制；评分读取 v2 返回原评分日期及现有鉴权 GET 引用，不用公司更新时间代替评分日期。知识搜索/事实读取 v2 提供实际数组输出契约及元数据，避免程序为探测字段重复规划。35 项针对性测试、类型检查、lint 通过；18 条旧任务中的 41 份真实读取收据与新契约兼容。新原件核验器 10 项正反例通过，旧收据仅作无模型回归诊断（17/18 来源覆盖，P07-C 仍缺评分读取），不覆盖原 V13 分数，也不构成新独立验收。[前瞻核验说明](../experiments/hybrid-source-coverage-v2/README.md)。未部署到生产，路由超时/未知费用仍待解决。
+
+### 2026-11-10 / HYBRID-10：V14 契约修复后前瞻复测
+
+V14 保持六题、模型、阈值、路由 2.5 秒时限及质量/效率门槛；仅纳入输出契约、销售 ID 映射、评分引用及已本地验证的原件核验器。先执行 18 次；质量或账单完整性任一失败均不提交后续 36 次。保留历史 49 条未知费用，未知不计零；已知题族非独立 Gold，未变更生产配置。[登记方案](../experiments/hybrid-evaluation-v14/README.md)。
