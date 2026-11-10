@@ -6,6 +6,17 @@ type ProxyEnvironment = "GEMINI_PROXY_URL" | "MODEL_PROXY_URL";
 const agents = new Map<string, ProxyAgent>();
 const defaultFetch = fetch;
 
+function brokenConnection(error:unknown):boolean {
+  const seen=new Set<object>();
+  while(error&&typeof error==='object'&&!seen.has(error)){
+    seen.add(error);
+    const value=error as {code?:unknown;cause?:unknown};
+    if(['ECONNRESET','EPIPE','UND_ERR_SOCKET'].includes(String(value.code)))return true;
+    error=value.cause;
+  }
+  return false;
+}
+
 function requestUrl(input: RequestInfo | URL): URL {
   return new URL(input instanceof Request ? input.url : String(input));
 }
@@ -63,8 +74,20 @@ export function modelRoutedTransport(
     agent = new ProxyAgent(url);
     agents.set(url, agent);
   }
-  return (request, options) => observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
-    ...options,
-    dispatcher: agent,
-  } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>);
+  const selectedAgent=agent;
+  return async (request, options) => {
+    try{return await observeModelTransport(request,options,()=>undiciFetch(request as Parameters<typeof undiciFetch>[0], {
+      ...options,
+      dispatcher: selectedAgent,
+    } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>);}
+    catch(error){
+      // Never replay a potentially paid request. Retire the failed pool for the
+      // next independent request; close drains concurrent work, unlike destroy.
+      if(brokenConnection(error)&&agents.get(url)===selectedAgent){
+        agents.delete(url);
+        void selectedAgent.close().catch(()=>undefined);
+      }
+      throw error;
+    }
+  };
 }
