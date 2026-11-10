@@ -1,0 +1,16 @@
+{
+  "httpStatus": 200,
+  "modelCalls": 0,
+  "identityMatches": true,
+  "fields": {
+    "model": "openai/gpt-6.1-sol-20260929",
+    "streamed": true,
+    "cancelled": true,
+    "finish_reason": null,
+    "native_finish_reason": null,
+    "generation_time": 24798,
+    "latency": 13289,
+    "total_cost": 0.005056,
+    "tokens_completion": 455
+  }
+}

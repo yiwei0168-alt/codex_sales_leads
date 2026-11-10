@@ -7,6 +7,7 @@ export const modeConfigSchema = z.object({
   mode: z.enum(AGENT_MODES), version: z.literal('agent-modes-v1'),
   promptVersion: z.enum([MODE_PROMPT_VERSION,READABILITY_MODE_PROMPT_VERSION,KNOWLEDGE_MODE_PROMPT_VERSION,LEGACY_MODE_PROMPT_VERSION]),
   firstOutputMs: z.number().int().min(1000).max(300000), totalMs: z.number().int().min(1000).max(900000),
+  responseMode:z.literal('json').optional(),
   routes: z.array(z.object({model:z.string().min(1),effort:z.enum(['none','low','medium','high'])}).strict()).length(3),
 }).strict().refine(v=>v.firstOutputMs<=v.totalMs&&new Set(v.routes.map(r=>r.model)).size===3);
 export type ModeConfig = z.infer<typeof modeConfigSchema>;
@@ -22,6 +23,7 @@ export function modeModelConfig(selection: unknown): ModelConfig {
   const configured = process.env.AGENT_MODE_TIMEOUTS_JSON ? JSON.parse(process.env.AGENT_MODE_TIMEOUTS_JSON) : {};
   const [firstOutputMs,totalMs] = configured[mode] ?? times[mode];
   const profile=modeConfigSchema.parse({mode,version:'agent-modes-v1',promptVersion:MODE_PROMPT_VERSION,firstOutputMs,totalMs,
+    ...(process.env.AGENT_MODE_RESPONSE_MODE==='json'?{responseMode:'json'}:{}),
     routes:routes[mode].map(model=>({model,effort:mode==='deep'?'high':model==='openai/gpt-6-luna'?'none':'low'}))});
   return {model:profile.routes[0].model,providers:[],version:profile.version,profile};
 }

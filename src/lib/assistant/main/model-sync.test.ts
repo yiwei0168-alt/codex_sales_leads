@@ -1,6 +1,27 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { defaultModelConfig } from "./product";
-import { requestModel, transportMessages } from "./model";
+import { requestModel,requestModeModel,parseModelResponse, transportMessages } from "./model";
+import {modeModelConfig} from './mode-config';
+
+it('accepts absent reasoning represented as null without accepting invalid reasoning types or incomplete answers',()=>{
+ const response={choices:[{message:{role:'assistant',content:'READY',reasoning:null},finish_reason:'stop'}]};
+ expect(parseModelResponse(response).message).toMatchObject({content:'READY',reasoning:undefined});
+ expect(()=>parseModelResponse({choices:[{message:{role:'assistant',content:'READY',reasoning:7},finish_reason:'stop'}]})).toThrow();
+ expect(()=>parseModelResponse({choices:[{message:{role:'assistant',content:null,reasoning:null},finish_reason:'stop'}]})).toThrow();
+ expect(()=>parseModelResponse({...response,choices:[{...response.choices[0],finish_reason:'length'}]})).toThrow();
+});
+it('pins an opt-in JSON response mode with unchanged model and no failed-stream replay',async()=>{
+ vi.stubEnv('AGENT_MODE_RESPONSE_MODE','json');vi.stubEnv('OPENROUTER_API_KEY','synthetic-key');
+ const profile=modeModelConfig('deep').profile!;
+ expect(profile.responseMode).toBe('json');
+ const transport=vi.fn(async(_input:RequestInfo|URL,init?:RequestInit)=>{
+  const body=JSON.parse(String(init?.body));expect(body.stream).toBe(false);expect(body.model).toBe(profile.routes[0].model);
+  return Response.json({id:'synthetic-generation',model:body.model,choices:[{message:{role:'assistant',content:'READY',reasoning:null},finish_reason:'stop'}],usage:{prompt_tokens:1,completion_tokens:1,cost:.001}});
+ });
+ expect((await requestModeModel([{role:'user',content:'test'}],profile,0,transport as typeof fetch)).message.content).toBe('READY');
+ expect(transport).toHaveBeenCalledOnce();
+ vi.stubEnv('AGENT_MODE_RESPONSE_MODE','');expect(modeModelConfig('deep').profile).not.toHaveProperty('responseMode');
+});
 import type { ModelMessage } from "./contracts";
 
 it("encodes malformed historical tool arguments without changing executable state or receipt pairing", () => {

@@ -1,0 +1,28 @@
+{
+  "responseMode": "json",
+  "status": "unknown",
+  "latencyMs": 57653.7684,
+  "response": null,
+  "error": {
+    "name": "ZodError"
+  },
+  "wire": [
+    {
+      "status": 200,
+      "headersMs": 4636.25
+    },
+    {
+      "failure": {
+        "version": "network-failure-diagnostic-v1",
+        "chain": [
+          {
+            "name": "OtherError",
+            "code": null
+          }
+        ]
+      }
+    }
+  ],
+  "productionChanged": false,
+  "retry": false
+}

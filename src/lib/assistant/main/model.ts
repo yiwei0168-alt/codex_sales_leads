@@ -12,7 +12,7 @@ import {markTransportFailure} from '@/lib/network/transport-observation';
 
 export const modelReplySchema = z.object({
   role: z.literal("assistant"), content: z.string().nullable().optional(),
-  reasoning: z.string().optional(), reasoning_details: z.array(z.record(z.string(),z.unknown())).optional(),
+  reasoning: z.preprocess(value=>value===null?undefined:value,z.string().optional()), reasoning_details: z.array(z.record(z.string(),z.unknown())).optional(),
   tool_calls: z.array(z.object({ id: z.string().min(1).max(200), type: z.literal("function"),
     function: z.object({ name: z.string().max(100), arguments: z.string().max(100_000) }) })).max(12).optional(),
 });
@@ -23,7 +23,7 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
   signal?.throwIfAborted();
   const candidate=profile.routes[index];if(!candidate)throw new Error('Invalid model attempt');
   const route=getOpenRouterConfig(),controller=new AbortController();
-  const wireBody={model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
+  const wireBody={model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:profile.responseMode!=='json',
     max_tokens:MODE_MODEL_MAX_OUTPUT_TOKENS,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}};
   const wireJson=JSON.stringify(wireBody);
   let transportError:unknown;
@@ -41,6 +41,9 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
       controller.signal.throwIfAborted();
       const response=await Promise.race([modelRoutedTransport(transport,input,init)(input,init),aborted]);
       if(!response.ok){clearTimeout(first);return response;}
+      // JSON mode has a response-header deadline and the existing total deadline;
+      // no first-token/TTFT claim is made. Never switch modes by retrying a call.
+      if(profile.responseMode==='json'){clearTimeout(first);return response;}
       streaming=true;
       try{return await collectModelStream(response,controller.signal,()=>clearTimeout(first));}
       catch(error){retireModelResponseTransport(response,error);throw error;}

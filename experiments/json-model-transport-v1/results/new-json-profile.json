@@ -1,0 +1,31 @@
+{
+  "status": "unknown",
+  "replyCharacters": 0,
+  "replyPrefix": null,
+  "usage": null,
+  "latencyMs": 5304.1042,
+  "wire": [
+    {
+      "failure": {
+        "version": "network-failure-diagnostic-v1",
+        "chain": [
+          {
+            "name": "TypeError",
+            "code": null
+          },
+          {
+            "name": "Error",
+            "code": "ECONNRESET"
+          }
+        ],
+        "transport": {
+          "phase": "before-request-headers",
+          "elapsedMs": 5037
+        }
+      }
+    }
+  ],
+  "error": {
+    "name": "TypeError"
+  }
+}

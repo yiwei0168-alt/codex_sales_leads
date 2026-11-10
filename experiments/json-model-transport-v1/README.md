@@ -1,0 +1,7 @@
+# Explicit JSON model response candidate
+
+The existing model/profile now accepts an optional pinned `responseMode: "json"`, selected for newly enqueued profiles only when server environment `AGENT_MODE_RESPONSE_MODE=json`. Default/historical profiles retain SSE. JSON mode uses the same model, tools, output cap, account billing and total deadline; the existing first-output deadline instead bounds response headers, so no token-time/TTFT claim applies. There is no automatic SSE-to-JSON replay or fallback of unknown paid work. Production configuration has not changed.
+
+An independent earlier JSON probe received a complete terminal stop/usage receipt after about 58 seconds but was rejected locally because the gateway represents absent reasoning as null. The parser now normalizes only null reasoning to absence; wrong types, empty answers and incomplete finish reasons still fail. The old probe is retained as a parse failure and is not retrospectively called passed. Its billing was reported, not unknown.
+
+Register one fresh JSON-profile synthetic request: twenty fictional inventory paragraphs of about forty words each, primary deep model, no tool effects, same proxy, no retry/fallback. Require complete parsed content and generation/usage receipts. This is long-response readiness only; it does not prove general reliability, equal latency/cost, tool-chain quality or final business acceptance. New evaluation must pin this changed transport configuration before a full comparison.

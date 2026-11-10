@@ -1,0 +1,11 @@
+# JSON compatibility fixed; proxy restart remains required for diagnosis
+
+An owned incomplete streaming generation was queried once without a new model request. Matching metadata reported cancelled=true, no finish reason, 455 completion tokens, generation_time 24798 ms and latency 13289 ms. This establishes cancellation in the provider record, not which intermediary closed the connection. The local request total deadline had not elapsed. No cancelled report was used to force historical fee settlement.
+
+A separate non-streaming request reached HTTP 200 and a complete finish_reason=stop/usage receipt after about 57.7 seconds (1153 completion tokens, reported cost present), then local parsing raised ZodError. A second short independent format probe captured a synthetic READY response with reasoning=null. The parser previously allowed absent/string reasoning but rejected null. Normalizing only null to absence fixes this compatibility defect. Offline re-parsing the saved actual response now succeeds with no model call and no retrospective relabeling of the old paid failure. Thirty-four relevant tests, typecheck and lint passed.
+
+Explicit optional JSON response profiles are implemented; default and historical profiles remain streaming. A fresh long JSON-profile check failed before request headers with ECONNRESET at about 5.3 seconds, leaving output/fee unknown. Hence JSON mode is a candidate, not a proven fix for the proxy path, and was not enabled in production or a new whole-task benchmark.
+
+TrojanXCore PID 15484 is owned by TrojanXHelperService PID 6016. The service reports Running and CanStop=true, but this agent session is not elevated. A controlled Restart-Service attempt failed with CouldNotStopService; the original service and 127.0.0.1:7892 listener remain active. No process was force-killed. Restarting this Windows service requires user action from an administrator PowerShell, or the client's authorized restart-core control. Do not keep buying long probes until that external condition changes.
+
+Evidence: [format regression](results/parser-regression.json), [earlier JSON probe](results/earlier-json-probe.json), [new JSON-profile failure](results/new-json-profile.json), [owned streaming status](results/provider-status.json).
