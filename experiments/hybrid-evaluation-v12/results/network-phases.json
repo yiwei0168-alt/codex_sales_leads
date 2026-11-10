@@ -1,0 +1,151 @@
+{
+  "version": "v12-network-phase-audit",
+  "rows": [
+    {
+      "task": "P01-A-1",
+      "traceHash": "dc0a7635c84ccfe083e17d4c16da97e58bd4fc01b7407b8a0bdd151499a645c8",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-B-1",
+      "traceHash": "5e2f39481492457ebbad978268cf778eedd933af29c3ba4ab9ff0074c63921c4",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P01-C-1",
+      "traceHash": "b16290fc1cd8aea4c2344d49049c1b5680e8d60bf9444c81e54233726bc24c74",
+      "httpAttempts": 1,
+      "headersReceived": 1,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P07-A-1",
+      "traceHash": "0678dc50083a4e66096caca37e46a7c10b2ff6cbcb7792d8b941468ee3a43771",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P07-B-1",
+      "traceHash": "073246dad48fc8c8475a488969221a8cb7ade9eae7db9cca950f467c124f1540",
+      "httpAttempts": 8,
+      "headersReceived": 8,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P07-C-1",
+      "traceHash": "e5b727eedc4f201d3e4ea58a482e7e1fb6041f90ff35b68010327a47029c75b8",
+      "httpAttempts": 8,
+      "headersReceived": 8,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P08-A-1",
+      "traceHash": "1476b3abf663604581e473d3d9911cc541d538a506d05735fd0d6e78c63bc5e0",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P08-B-1",
+      "traceHash": "846de3f8ab4c8a2d06668815eaf449ff4eb704d44ffaae6b08651bffb993413f",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P08-C-1",
+      "traceHash": "f511d98faeca0d424a76ccb6a8b6ba3402dad82403b7db25b7b2f8fd9d9a3438",
+      "httpAttempts": 4,
+      "headersReceived": 4,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-A-1",
+      "traceHash": "b841be31fa55c031761ee105c9a80fc035fbbe1c6314e2ef8ba386b8b03230ad",
+      "httpAttempts": 9,
+      "headersReceived": 9,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-B-1",
+      "traceHash": "15b58bcdf07f608ab904823c091febd969bbf9c1cc5f1eadb9b22a6eb934b715",
+      "httpAttempts": 12,
+      "headersReceived": 12,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P19-C-1",
+      "traceHash": "a3dd869a146e908996333a698ba7561e59af0ad797b8d2626bdcb9658fc452ff",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P20-A-1",
+      "traceHash": "96d15b224de0c82533b79238037340d5258b1f66627cf007ef57b41a886dd544",
+      "httpAttempts": 7,
+      "headersReceived": 7,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P20-B-1",
+      "traceHash": "4e0a8c90489a09e37944d56332faf0e17bf078b45b7396118d7f2ad8cec0dbca",
+      "httpAttempts": 10,
+      "headersReceived": 10,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P20-C-1",
+      "traceHash": "37cf92d8e6c0c8156fdf960db28d4b8fb7e5b04cb781fbe2524c828e3fd30e0d",
+      "httpAttempts": 12,
+      "headersReceived": 12,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-A-1",
+      "traceHash": "d52611c705c5d86d70394d08b38ec5700492b2c001fcb154e10aa772569186f1",
+      "httpAttempts": 5,
+      "headersReceived": 5,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-B-1",
+      "traceHash": "49dabfa8d9c7f8a3ddc7ab709771e473dd4f9bd66b4af60f4ed80ff554e6f318",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    },
+    {
+      "task": "P24-C-1",
+      "traceHash": "a020826e86e01574dbacb61cfe3d75eab11169e1eefd75dca0314ed2276726f8",
+      "httpAttempts": 6,
+      "headersReceived": 6,
+      "preResponseFailures": [],
+      "modelFailures": []
+    }
+  ],
+  "paidCalls": 0,
+  "conclusion": "Per-request phases are diagnostic only. Model failures and wire failures may describe the same request and must not be summed as distinct failures. No retry or zero-charge inference. External failing component remains unproven."
+}
